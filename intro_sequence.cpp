@@ -36,35 +36,35 @@ GameSequence* IntroSequence::doRun()
 
 	do
 	{
-		while(InterruptTimer::wasTriggered()) {
-		iZoom=fixsub(iZoom,iZoomSpeed);
-		if (fixtof(iZoom)<1.0)
-			{
-			iZoom=itofix(1);
-			isRunning=false;
-			}
-		clear_bitmap(iDoublebuffer);
-		DrawZoomedLogoInCenter(mini,maxi);
-		// draw 2 horizontal lines
-		hline(iDoublebuffer, 0,0,INTRO_SCREEN_WIDTH,makecol(255,255,255));
-		hline(iDoublebuffer, 0,IntroSequence::maxi-IntroSequence::mini-1,INTRO_SCREEN_WIDTH,makecol(255,255,255));
-		// blit to the screen
-		blit(iDoublebuffer,screen,0,0,0,mini,INTRO_SCREEN_WIDTH,maxi-mini);
-		if (tempo>25)
-			{
-			tempo=0;
-			canQuickExit=true;
-			}
-		else
-			tempo++;
+//		while(InterruptTimer::wasTriggered()) {
+            iZoom=fixsub(iZoom,iZoomSpeed);
+            if (fixtof(iZoom)<1.0)
+                {
+                iZoom=itofix(1);
+                isRunning=false;
+                }
+            clear_bitmap(iDoublebuffer);
+            DrawZoomedLogoInCenter(mini,maxi);
+            // draw 2 horizontal lines
+            hline(iDoublebuffer, 0,0,INTRO_SCREEN_WIDTH,makecol(255,255,255));
+            hline(iDoublebuffer, 0,IntroSequence::maxi-IntroSequence::mini-1,INTRO_SCREEN_WIDTH,makecol(255,255,255));
+            // blit to the screen
+            blit(iDoublebuffer,screen,0,0,0,mini,INTRO_SCREEN_WIDTH,maxi-mini);
+            if (tempo>25)
+                {
+                tempo=0;
+                canQuickExit=true;
+                }
+            else
+                tempo++;
 
-		if (key[KEY_ESC]&&canQuickExit)
-			{
-			quickExit=true;
-			isRunning=false;
-			}
-		vsync();
-		}
+            if (key[KEY_ESC]&&canQuickExit)
+                {
+                quickExit=true;
+                isRunning=false;
+                }
+            vsync();
+//		}
 	} while(isRunning);
 	InterruptTimer::reset();
 

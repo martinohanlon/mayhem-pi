@@ -1,14 +1,15 @@
-CPP  = i686-pc-mingw32-g++.exe
-CC   = gcc.exe
+CPP = g++
+CC = gcc
 RES  = 
 OBJ  = battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o keyboard_input.o mapping_key.o Mayhem2.o option.o physics.o platform_data.o player_info.o player_view.o soundfx.o utils.o vaisseau_data.o vaisseau_gfx.o $(RES)
 LINKOBJ  = battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o keyboard_input.o mapping_key.o Mayhem2.o option.o physics.o platform_data.o player_info.o player_view.o soundfx.o utils.o vaisseau_data.o vaisseau_gfx.o $(RES)
-LIBS =  -L"C:\Users\scala\Desktop\Mayhem\mayhem" -lalleg -luser32 -lgdi32 -lopengl32 -lglu32 -mwindows
+LIBS = -lalleg
 INCS = 
 CXXINCS =  -I"C:\cygwin\usr\i686-pc-mingw32\sys-root\mingw\include" -I"C:\Users\scala\Desktop\Mayhem\mayhem\allegro442_include"
 BIN  = "Mayhem2.exe"
-CXXFLAGS = $(CXXINCS) 
-CFLAGS = $(INCS) 
+STUFF= -O0 -g -Werror -Wno-write-strings -Wno-deprecated-declarations
+CXXFLAGS = $(CXXINCS) $(STUFF) 
+CFLAGS = $(INCS) $(STUFF)
 
 .PHONY: all all-before all-after clean clean-custom
 

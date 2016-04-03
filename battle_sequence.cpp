@@ -147,7 +147,7 @@ void BattleSequence::InitAllSpriteGfx()
   init_vaisseau_gfx_from_file(&gfx_vaisseaux[3],"ship4_256c.bmp",
 	                                            "ship4_thrust_256c.bmp",
 												"ship4_shield_256c.bmp");
-  init_sprite_explosion("sprite_explosion.bmp");
+  init_sprite_explosion("Sprite_explosion.bmp");
 
   for(int i=0;i<nb_players;i++)
     init_vaisseau_data(&vaisseaux[i],&gfx_vaisseaux[i],0.9,0.32,5,1284,1,8,214,2,2);
