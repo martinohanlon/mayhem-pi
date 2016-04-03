@@ -19,6 +19,9 @@ git clone https://github.com/martinohanlon/mayhem-pi
 ```
 
 ##Run
+
+Mayhem needs to be run from X-windows (GUI), so if you are at the console, run startx.
+
 ```
 cd mayhem-pi
 ./mayhem2-pi
