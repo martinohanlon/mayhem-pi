@@ -6,20 +6,20 @@ LINKOBJ  = battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o k
 LIBS = -lalleg
 INCS = 
 CXXINCS =  -I"C:\cygwin\usr\i686-pc-mingw32\sys-root\mingw\include" -I"C:\Users\scala\Desktop\Mayhem\mayhem\allegro442_include"
-BIN  = "Mayhem2.exe"
+BIN  = "mayhem2-pi"
 STUFF= -O0 -g -Werror -Wno-write-strings -Wno-deprecated-declarations
 CXXFLAGS = $(CXXINCS) $(STUFF) 
 CFLAGS = $(INCS) $(STUFF)
 
 .PHONY: all all-before all-after clean clean-custom
 
-all: all-before "Mayhem2.exe" all-after
+all: all-before "mayhem2-pi" all-after
 
 clean: clean-custom
 	rm -f $(OBJ) $(BIN)
 
 $(BIN): $(OBJ)
-	$(CPP) $(LINKOBJ) -o "Mayhem2.exe" $(LIBS)
+	$(CPP) $(LINKOBJ) -o "mayhem2-pi" $(LIBS)
 
 battle_sequence.o: battle_sequence.cpp
 	$(CPP) -c battle_sequence.cpp -o battle_sequence.o $(CXXFLAGS)
