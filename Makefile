@@ -5,11 +5,11 @@ OBJ  = battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o keybo
 LINKOBJ  = battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o keyboard_input.o mapping_key.o Mayhem2.o option.o physics.o platform_data.o player_info.o player_view.o soundfx.o utils.o vaisseau_data.o vaisseau_gfx.o $(RES)
 LIBS = -lalleg
 INCS = 
-CXXINCS =  -I"C:\cygwin\usr\i686-pc-mingw32\sys-root\mingw\include" -I"C:\Users\scala\Desktop\Mayhem\mayhem\allegro442_include"
 BIN  = "mayhem2-pi"
-STUFF= -O0 -g -Werror -Wno-write-strings -Wno-deprecated-declarations
-CXXFLAGS = $(CXXINCS) $(STUFF) 
-CFLAGS = $(INCS) $(STUFF)
+CXXINCS= -O0 -g -Werror -Wno-write-strings -Wno-deprecated-declarations
+INCS= -O0 -g -Werror -Wno-write-strings -Wno-deprecated-declarations
+CXXFLAGS = $(CXXINCS)
+CFLAGS = $(INCS)
 
 .PHONY: all all-before all-after clean clean-custom
 
