@@ -7,7 +7,7 @@ A [Raspberry Pi](https://www.raspberrypi.org) port of the game [Mayhem](http://w
 
 It was ported to the PC in 2002 by [devpack](https://github.com/devpack) and released onto github in 2011 [github.com/devpack/mayhem](https://github.com/devpack/mayhem).
 
-I picked up it up from [code.google.com/p/mayhem](https://code.google.com/archive/p/mayhem/) [https://opensource.org/licenses/BSD-3-Clause](New BSD License) and ported it to the Raspberry Pi.
+I picked up it up from [code.google.com/p/mayhem](https://code.google.com/archive/p/mayhem/) [New BSD License](https://opensource.org/licenses/BSD-3-Clause) and ported it to the Raspberry Pi.
 
 [Video of the original amiga game](https://www.youtube.com/watch?v=fs30DLGxqhs). 
 
@@ -20,11 +20,9 @@ git clone https://github.com/martinohanlon/mayhem-pi
 
 ##Run
 
-Mayhem needs to be run from X-windows (GUI), so if you are at the console, run startx.
-
 ```
 cd mayhem-pi
-./mayhem2-pi
+./start
 ```
 
 ##Compile
