@@ -9,7 +9,11 @@ It was ported to the PC in 2002 by [devpack](https://github.com/devpack) and rel
 
 I picked up it up from [code.google.com/p/mayhem](https://code.google.com/archive/p/mayhem/) [New BSD License](https://opensource.org/licenses/BSD-3-Clause) and ported it to the Raspberry Pi.
 
+[Video](https://youtu.be/Vxozz0Ijdr0)
+
 [Video of the original amiga game](https://www.youtube.com/watch?v=fs30DLGxqhs). 
+
+[Blog post](http://www.stuffaboutcode.com/2016/04/mayhem-classic-amiga-game-ported-to.html)
 
 ##Install
 
