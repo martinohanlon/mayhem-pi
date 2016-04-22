@@ -41,7 +41,16 @@
 	{ 66, 145, 1180 },
 	{ 38, 93, 1121 } };
 
-
+  struct platform_data level4[] =
+  { { 565, 616, 459 },
+    { 14, 65, 111 },
+	{ 343, 398, 207 },
+	{ 713, 760, 231 },
+	{ 473, 540, 617 },
+	{ 316, 385, 805 },
+	{ 492, 548, 987 },
+	{ 66, 145, 1180 },
+	{ 38, 93, 1121 } };
 
 
 
@@ -108,6 +117,9 @@ void BattleSequence::InitLevelData()
   init_level_data(&levels[2],"Mayhem_Level3_Map_256c.bmp", "Mini_map3.bmp", level3,9);
   init_level_dca(&(&levels[2])->alldca[0], 180, 555, 90, 25);
   init_level_dca(&(&levels[2])->alldca[1], 152, 1012, 90, 25);
+  init_level_data(&levels[3],"Mayhem_Level4_Map_256c.bmp", "Mini_map4.bmp", level3,9);
+  init_level_dca(&(&levels[3])->alldca[0], 180, 555, 90, 25);
+  init_level_dca(&(&levels[3])->alldca[1], 152, 1012, 90, 25);
 }
 
 void BattleSequence::InitMappingAndControls()
@@ -242,6 +254,14 @@ GameSequence* BattleSequence::doRun()
 		{
 		unload_level(currentlevel);
 		currentlevel=&levels[2];
+		load_level(currentlevel, screen_width, screen_height);
+		for(i=0;i<nb_players;i++)
+			init_ship_pos_from_platforms(&vaisseaux[i],&(currentlevel->platformdata[i]));
+		}
+		else if (key[KEY_4])
+		{
+		unload_level(currentlevel);
+		currentlevel=&levels[3];
 		load_level(currentlevel, screen_width, screen_height);
 		for(i=0;i<nb_players;i++)
 			init_ship_pos_from_platforms(&vaisseaux[i],&(currentlevel->platformdata[i]));
