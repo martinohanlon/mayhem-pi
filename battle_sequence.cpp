@@ -68,6 +68,7 @@ BattleSequence::BattleSequence(GameSequence *previous,int nbviews, int nbplayers
   nb_views = nbviews;
   nb_players = nbplayers;
   currentlevel=&levels[level];
+  currentlevelno = level;
   //
   InitLevelData();
   InitMappingAndControls();
@@ -237,6 +238,7 @@ GameSequence* BattleSequence::doRun()
 		{
 		unload_level(currentlevel);
 		currentlevel=&levels[0];
+		currentlevelno = 0;
 		load_level(currentlevel, screen_width, screen_height);
 		for(i=0;i<nb_players;i++)
 			init_ship_pos_from_platforms(&vaisseaux[i],&(currentlevel->platformdata[i]));
@@ -246,6 +248,7 @@ GameSequence* BattleSequence::doRun()
 		{
 		unload_level(currentlevel);
 		currentlevel=&levels[1];
+		currentlevelno = 1;
 		load_level(currentlevel, screen_width, screen_height);
 		for(i=0;i<nb_players;i++)
 			init_ship_pos_from_platforms(&vaisseaux[i],&(currentlevel->platformdata[i]));
@@ -254,6 +257,7 @@ GameSequence* BattleSequence::doRun()
 		{
 		unload_level(currentlevel);
 		currentlevel=&levels[2];
+		currentlevelno = 2;
 		load_level(currentlevel, screen_width, screen_height);
 		for(i=0;i<nb_players;i++)
 			init_ship_pos_from_platforms(&vaisseaux[i],&(currentlevel->platformdata[i]));
@@ -262,6 +266,18 @@ GameSequence* BattleSequence::doRun()
 		{
 		unload_level(currentlevel);
 		currentlevel=&levels[3];
+		currentlevelno = 3;
+		load_level(currentlevel, screen_width, screen_height);
+		for(i=0;i<nb_players;i++)
+			init_ship_pos_from_platforms(&vaisseaux[i],&(currentlevel->platformdata[i]));
+		}
+		else if(key[KEY_F5])
+		{
+		unload_level(currentlevel);
+		currentlevelno = currentlevelno + 1;
+		if(currentlevelno == NB_LEVELS) 
+		    currentlevelno = 0;
+		currentlevel=&levels[currentlevelno];
 		load_level(currentlevel, screen_width, screen_height);
 		for(i=0;i<nb_players;i++)
 			init_ship_pos_from_platforms(&vaisseaux[i],&(currentlevel->platformdata[i]));

@@ -65,6 +65,7 @@ private:
 
        struct level_data levels[NB_LEVELS];
        struct level_data * currentlevel;
+       int currentlevelno;
        struct player_info players[NB_MAX_PLAYERS];
        struct player_view views[NB_MAX_PLAYERS];
        struct vaisseau_gfx gfx_vaisseaux[NB_MAX_TYPE_VAISSEAU];
