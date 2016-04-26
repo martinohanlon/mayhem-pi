@@ -1,5 +1,7 @@
+#include <stdio.h>
 #include "intro_sequence.h"
 #include "battle_sequence.h"
+
 
 const int IntroSequence::mini=150;
 const int IntroSequence::maxi=400;
@@ -29,6 +31,8 @@ GameSequence* IntroSequence::doRun()
 	bool quickExit=false;
 	int tempo=0;
 	bool canQuickExit=false;
+    int levelchoice=0;
+    char strlevelchoice[50];
 
 	set_palette(iLogoPalette);
 	clear_bitmap(screen);
@@ -68,71 +72,79 @@ GameSequence* IntroSequence::doRun()
 	} while(isRunning);
 	InterruptTimer::reset();
 
-
 	int choice=0;
 
 	if (!quickExit)
 	{
-	tempo=0;
-	int black=makecol(0,0,0);
-	int red=makecol(255,0,0);
-	int currentcolor=red;
-	do
-	{
+        tempo=0;
+        int black=makecol(0,0,0);
+        int red=makecol(255,0,0);
+        int currentcolor=red;
+        do
+        {
 
-		if(tempo++ == 50)
-			{
-			tempo=0;
-			//if(currentcolor==red)
-				//currentcolor=black;
-			//else
-				currentcolor=red;
-			}
-		if (key[KEY_ESC])
-			break;
-		if (key[KEY_ENTER])
-			{
-			choice=2;
-			break;
-			}
-		if (key[KEY_F2])
-			{
-			choice=2;
-			break;
-			}
-		if (key[KEY_F3])
-			{
-			choice=3;
-			break;
-			}
-		if (key[KEY_F4])
-			{
-			choice=4;
-			break;
-			}
-		if (key[KEY_MINUS_PAD] || key[KEY_MINUS_PAD])
-			{
-            width = 800;
-            height = 600;
-            set_gfx_mode( GFX_AUTODETECT, width, height, 0, 0 );
-            }
-		if (key[KEY_PLUS_PAD] || key[KEY_PLUS_PAD])
-			{
-            width = 1280;
-            height = 800;
-            set_gfx_mode( GFX_AUTODETECT, width, height, 0, 0 );
-            }
-		if (key[KEY_ASTERISK])
-			{
-            width = 1024;
-            height = 768;
-            set_gfx_mode( GFX_AUTODETECT, width, height, 0, 0 );
-            }
+            if(tempo++ == 50)
+                {
+                tempo=0;
+                //if(currentcolor==red)
+                    //currentcolor=black;
+                //else
+                    currentcolor=red;
+                }
+            if (key[KEY_ESC])
+                break;
+            if (key[KEY_ENTER])
+                {
+                choice=2;
+                break;
+                }
+            if (key[KEY_F2])
+                {
+                choice=2;
+                break;
+                }
+            if (key[KEY_F3])
+                {
+                choice=3;
+                break;
+                }
+            if (key[KEY_F4])
+                {
+                choice=4;
+                break;
+                }
+            if (key[KEY_F5])
+                {
+                levelchoice += 1;
+                if(levelchoice == NB_LEVELS) levelchoice = 0;
+                //short rest to stop multiple key presses
+                rest(100);
+                }
+            if (key[KEY_MINUS_PAD] || key[KEY_MINUS_PAD])
+                {
+                width = 800;
+                height = 600;
+                set_gfx_mode( GFX_AUTODETECT, width, height, 0, 0 );
+                }
+            if (key[KEY_PLUS_PAD] || key[KEY_PLUS_PAD])
+                {
+                width = 1280;
+                height = 800;
+                set_gfx_mode( GFX_AUTODETECT, width, height, 0, 0 );
+                }
+            if (key[KEY_ASTERISK])
+                {
+                width = 1024;
+                height = 768;
+                set_gfx_mode( GFX_AUTODETECT, width, height, 0, 0 );
+                }
 
-		textout_centre(screen, font, "[ Press ENTER to play or (F2/F3/F4 for 2/3/4 players) or ESC to leave ]", INTRO_SCREEN_WIDTH/2, maxi+5, currentcolor);
-
-		vsync();
-	} while (1);
+            textout_centre(screen, font, "[ Press ENTER to play or (F2/F3/F4 for 2/3/4 players) or ESC to leave ]", INTRO_SCREEN_WIDTH/2, maxi+5, currentcolor);
+            snprintf(strlevelchoice, sizeof(strlevelchoice), "[ Press F5 to change level ] - %d", levelchoice + 1);
+            textout_centre(screen, font, strlevelchoice, INTRO_SCREEN_WIDTH/2, maxi+15, currentcolor);
+            
+            vsync();
+        } while (1);
 	}
 	clear_bitmap(screen);
 
@@ -140,7 +152,7 @@ GameSequence* IntroSequence::doRun()
 	if (choice)
 		{
 		iZoom=iZoomMax;
-		seq=new BattleSequence(this,choice,choice,0, width, height);
+		seq=new BattleSequence(this,choice,choice,levelchoice, width, height);
 		}
 	else
 		seq=ReturnScreen();
