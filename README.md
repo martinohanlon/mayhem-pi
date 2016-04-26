@@ -7,7 +7,7 @@ A [Raspberry Pi](https://www.raspberrypi.org) port of the game [Mayhem](http://w
 
 It was ported to the PC in 2002 by [devpack](https://github.com/devpack) and released onto github in 2011 [github.com/devpack/mayhem](https://github.com/devpack/mayhem).
 
-I picked up it up from [code.google.com/p/mayhem](https://code.google.com/archive/p/mayhem/) [New BSD License](https://opensource.org/licenses/BSD-3-Clause) and ported it to the Raspberry Pi.
+I picked up it up from [code.google.com/p/mayhem](https://code.google.com/archive/p/mayhem/) ([New BSD License](https://opensource.org/licenses/BSD-3-Clause)) and ported it to the Raspberry Pi.
 
 [Video](https://youtu.be/Vxozz0Ijdr0)
 
@@ -46,4 +46,9 @@ Player 3 - b, n, 'comma', m, l
 Player 4 - y, u, o, i, 0
 
 ##Version history
-* beta - compiles, runs but not full tested
+* beta - compiles, runs, ongoing mods
+
+##Contributors
+[Anthony Prieur](https://github.com/devpack)
+[Martin O'Hanlon](https://github.com/martinohanlon)
+Lee Taylor
