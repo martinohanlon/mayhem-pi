@@ -50,5 +50,7 @@ Player 4 - y, u, o, i, 0
 
 ##Contributors
 [Anthony Prieur](https://github.com/devpack)
+
 [Martin O'Hanlon](https://github.com/martinohanlon)
+
 Lee Taylor
