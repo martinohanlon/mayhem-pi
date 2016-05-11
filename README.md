@@ -9,6 +9,10 @@ It was ported to the PC in 2002 by [devpack](https://github.com/devpack) and rel
 
 I picked up it up from [code.google.com/p/mayhem](https://code.google.com/archive/p/mayhem/) ([New BSD License](https://opensource.org/licenses/BSD-3-Clause)) and ported it to the Raspberry Pi.
 
+Myself and Lee Taylor have since extended the game with new levels and features.
+
+If you want to play it on Windows I maintain a fork of the original version [github.com/martinohanlon/mayhem](https://github.com/devpack/mayhem) and keep it up to date with the pi version.
+
 [Video](https://youtu.be/Vxozz0Ijdr0)
 
 [Video of the original amiga game](https://www.youtube.com/watch?v=fs30DLGxqhs). 
@@ -47,6 +51,7 @@ Player 4 - y, u, o, i, 0
 
 ##Version history
 * beta - compiles, runs, ongoing mods
+* 0.1 - added new levels and features
 
 ##Contributors
 [Anthony Prieur](https://github.com/devpack)
