@@ -52,6 +52,7 @@ Player 4 - y, u, o, i, 0
 ##Version history
 * beta - compiles, runs, ongoing mods
 * 0.1 - added new levels and features
+* 0.2 - seamless warping across map edges
 
 ##Contributors
 [Anthony Prieur](https://github.com/devpack)

@@ -111,39 +111,30 @@ void attrib_option(struct option_data *opt, struct vaisseau_data *allv, int test
 
 }
 
-void draw_option(struct option_data *opt, struct player_view *views, int nbplayers)
+void draw_option(struct option_data *opt, struct level_data *currentlevel)
 {
-   if(opt->print_it)
-   {
-      struct player_view *view=views;
-      for(int i=0; i<nbplayers; i++)
-      {
-      draw_sprite(view->back_map_buffer, opt->option_sprite,
-      view->bordersize+view->w/2+opt->x-view->player->ship->xpos,
-      view->bordersize+view->h/2+opt->y-view->player->ship->ypos);
-      view++;
-      }
-   }
+    if(opt->print_it)
+    {
+        draw_sprite(currentlevel->level_buffer, opt->option_sprite, opt->x, opt->y);
+    }
 }
 
 void gestion_option(struct option_data *opt, struct level_data *currentlevel, struct vaisseau_data *allv, struct player_view *views, int nbplayers, int nbviews)
 {
-   int test;
-   option_time(opt);                         // alternance option active ou pas
+    int test;
+    option_time(opt);                         // alternance option active ou pas
 
-   if(opt->active)
-   {
-   init_option(opt, currentlevel);           // init la pos + type de l'option
+    if(opt->active)
+    {
+        init_option(opt, currentlevel);           // init la pos + type de l'option
 
-   test = take_option(opt, allv, nbplayers); // -1 = pas prise, sinon num du vaisseau qui prend option
-   attrib_option(opt, allv, test);           // gestion type option avec num vaisseau
+        test = take_option(opt, allv, nbplayers); // -1 = pas prise, sinon num du vaisseau qui prend option
+        attrib_option(opt, allv, test);           // gestion type option avec num vaisseau
 
-   draw_option(opt, views, nbviews);       // affiche sprite option
+        draw_option(opt, currentlevel);       // affiche sprite option
 
-   }
+    }
 }
-
-
 
 int init_option_data(struct option_data *opt, char *option_sprite_name, int active_time, int inactive_time)
 {

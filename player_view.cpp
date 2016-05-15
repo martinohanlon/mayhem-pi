@@ -42,10 +42,6 @@ void draw_basic_player_view(struct player_view *v,int nbviews, BITMAP *src_map,P
 	hline(v->back_map_buffer,0,v->h+2*v->bordersize-1,v->w+2*v->bordersize,color);
 	vline(v->back_map_buffer,0,0,v->h+2*v->bordersize,color);
 	vline(v->back_map_buffer,v->w+2*v->bordersize-1,0,v->h+2*v->bordersize,color);
-	// blit from the backmap into screen buffer for each player
-	blit(src_map, v->back_map_buffer,
-		 ship->xpos-(v->w/2), ship->ypos-(v->h/2),
-		 v->bordersize, v->bordersize, v->w, v->h);
 
 	char buffer[20];
     char bufferx[20];
@@ -57,19 +53,20 @@ void draw_basic_player_view(struct player_view *v,int nbviews, BITMAP *src_map,P
         sprintf(buffer,"Game over");
     else 
         sprintf(buffer,"Live(s): %d",v->player->nblives);
-    
-	sprintf(bufferx,"x=%d",ship->xpos);
+
+    //debug x,y data    
+	/*sprintf(bufferx,"x=%d",ship->xpos);
 	sprintf(buffery,"y=%d",ship->ypos);
 	sprintf(buffervx,"vx=%d",fixtoi(ship->vx));
-	sprintf(buffervy,"vy=%d",-fixtoi(ship->vy));
+	sprintf(buffervy,"vy=%d",-fixtoi(ship->vy));*/
+
+    /*textout(v->back_map_buffer, font, bufferx, 3 , v->h+v->bordersize+1, color);
+    textout(v->back_map_buffer, font, buffery, 55 , v->h+v->bordersize+1, color);
+    textout(v->back_map_buffer, font, buffervx, 195 , v->h+v->bordersize+1, color);
+    textout(v->back_map_buffer, font, buffervy, 250 , v->h+v->bordersize+1, color);*/
 
 	textout(v->back_map_buffer, font, v->player->name, 3, 2, color);
 	textout(v->back_map_buffer, font, buffer, v->bordersize+195 , 2, color);
-
-    textout(v->back_map_buffer, font, bufferx, 3 , v->h+v->bordersize+1, color);
-    textout(v->back_map_buffer, font, buffery, 55 , v->h+v->bordersize+1, color);
-    textout(v->back_map_buffer, font, buffervx, 195 , v->h+v->bordersize+1, color);
-    textout(v->back_map_buffer, font, buffervy, 250 , v->h+v->bordersize+1, color);
 
  	int barheight_fuel=v->h*ship->fuel/ship->max_fuel;
 	int barheight_shield=v->h*ship->shield_force/ship->max_shield_force;
@@ -118,22 +115,24 @@ void rotate_sprite(struct player_view * v)
 
 	}
 
-void display_rotate_sprite_in_all_view(struct player_view * v, struct player_view allviews[], int nbviews)
+void display_rotate_sprites(struct player_view allviews[], int nbviews, struct level_data *currentlevel)
 {
-	struct vaisseau_data *ship = v->player->ship;
+	struct vaisseau_data *ship;
 	int j=0;
 	for(j=0;j<nbviews;j++)
 	{
-		struct player_view* oppview = &allviews[j];
-		struct vaisseau_data *oppship = oppview->player->ship;
-        if(!v->player->ship->explode)
-			{
-			draw_sprite(oppview->back_map_buffer, ship->sprite_buffer_rota,
-			        oppview->bordersize+oppview->w/2+ship->xpos-oppship->xpos,
-					oppview->bordersize+oppview->h/2+ship->ypos-oppship->ypos);
-			}
+        struct player_view* view = &allviews[j];
+        struct vaisseau_data *ship = view->player->ship;
+		if(!ship->explode)
+		{
+			draw_sprite(currentlevel->level_buffer, ship->sprite_buffer_rota, ship->xpos, ship->ypos);
+                    
+            // if the ship is halfway across the gap, draw it on the other side
+            if (ship->xpos + 32 > currentlevel->edgedata.rightx)
+                draw_sprite(currentlevel->level_buffer, ship->sprite_buffer_rota, ship->xpos - currentlevel->bitmap->w, ship->ypos);
+		}
 	}
-  }
+}
 
 void init_tir(struct vaisseau_data *v)
 {
@@ -142,128 +141,138 @@ void init_tir(struct vaisseau_data *v)
 
      if(v->fire && (test_place_tir(v)!=-1) && v->fire_delay)
      {
-	 int place_free_tir=test_place_tir(v);
-	 if (place_free_tir == -1)
-		 return; // only do something IF THERE IS A FREE SHOOT !
-     shoot = &v->tir[test_place_tir(v)];
-     int cx;
-     int cy;
-     cx = v->xpos+15;
-     cy = v->ypos+16;
-     shoot->x = cx+fixtoi(fixmul(itofix(18),fixsin(itofix(v->angle))));
-     shoot->y = cy+fixtoi(fixmul(itofix(18),-fixcos(itofix(v->angle))));
-     shoot->xposprecise = itofix(shoot->x);
-     shoot->yposprecise = itofix(shoot->y);
-     shoot->dx = fixmul(ftofix(5.1),fixsin(itofix(v->angle)));
-     shoot->dy = fixmul(ftofix(5.1),-fixcos(itofix(v->angle)));
+        int place_free_tir=test_place_tir(v);
+        if (place_free_tir == -1)
+            return; // only do something IF THERE IS A FREE SHOOT !
+        shoot = &v->tir[test_place_tir(v)];
+        int cx;
+        int cy;
+        cx = v->xpos+15;
+        cy = v->ypos+16;
+        shoot->x = cx+fixtoi(fixmul(itofix(18),fixsin(itofix(v->angle))));
+        shoot->y = cy+fixtoi(fixmul(itofix(18),-fixcos(itofix(v->angle))));
+        shoot->xposprecise = itofix(shoot->x);
+        shoot->yposprecise = itofix(shoot->y);
+        shoot->dx = fixmul(ftofix(5.1),fixsin(itofix(v->angle)));
+        shoot->dy = fixmul(ftofix(5.1),-fixcos(itofix(v->angle)));
 
-     shoot->dx = fixadd(shoot->dx, fixdiv(v->vx, ftofix(3.5)));
-     shoot->dy = fixadd(shoot->dy, fixdiv(v->vy, ftofix(3.5)));
+        shoot->dx = fixadd(shoot->dx, fixdiv(v->vx, ftofix(3.5)));
+        shoot->dy = fixadd(shoot->dy, fixdiv(v->vy, ftofix(3.5)));
 
-     shoot->free=false;
+        shoot->free=false;
 
 
-     if(v->option_type==5)
-     {
-     struct tir_data *backshoot;
-     place_free_tir=test_place_backtir(v);
-	 if (place_free_tir == -1)
-	 return; // only do something IF THERE IS A FREE BACKSHOOT !
+        if(v->option_type==5)
+        {
+            struct tir_data *backshoot;
+            place_free_tir=test_place_backtir(v);
+            if (place_free_tir == -1)
+            return; // only do something IF THERE IS A FREE BACKSHOOT !
 
-     backshoot = &v->backtir[test_place_backtir(v)];
+            backshoot = &v->backtir[test_place_backtir(v)];
 
-     backshoot->x = 2*(v->xpos+16) - shoot->x;
-     backshoot->y = 2*(v->ypos+16) - shoot->y;
-     backshoot->xposprecise = itofix(backshoot->x);
-     backshoot->yposprecise = itofix(backshoot->y);
-     backshoot->dx = -fixmul(ftofix(5.1),fixsin(itofix(v->angle)));
-     backshoot->dy = -fixmul(ftofix(5.1),-fixcos(itofix(v->angle)));
-     backshoot->free=false;
-     }
+            backshoot->x = 2*(v->xpos+16) - shoot->x;
+            backshoot->y = 2*(v->ypos+16) - shoot->y;
+            backshoot->xposprecise = itofix(backshoot->x);
+            backshoot->yposprecise = itofix(backshoot->y);
+            backshoot->dx = -fixmul(ftofix(5.1),fixsin(itofix(v->angle)));
+            backshoot->dy = -fixmul(ftofix(5.1),-fixcos(itofix(v->angle)));
+            backshoot->free=false;
+        }
 
 
      }
 }
 
-void plot_tir(struct vaisseau_data *v, struct player_view *views, int nbviews, BITMAP *src_map)
+void plot_tir(struct vaisseau_data *v, struct level_data *currentlevel)
 {
      struct tir_data *shoot;
 
      for (int i=0; i<MAX_TIR; i++)
      {
-     shoot = &v->tir[i];
-	 if (shoot->free)
-		 continue; // only iterate through the non free shoot
-	 if (testcollision_bullet4pix(src_map,shoot->x,shoot->y))
-		{
-		 // if there is collision we free the shoot
-		 // and we go on!
-		 shoot->free=true;
-		 continue;
-		}
+        shoot = &v->tir[i];
+        if (shoot->free)
+            continue; // only iterate through the non free shoot
+        if (testcollision_bullet4pix(currentlevel->collision_bitmap, shoot->x, shoot->y))
+            {
+            // if there is collision we free the shoot
+            // and we go on!
+            shoot->free=true;
+            continue;
+            }
 
-	 // display in all views!
-	 int nbsaveviews=nbviews;
-	 struct player_view *view=views;
-	 while(nbsaveviews--)
-		{
-		put_big_pixel(view->back_map_buffer,
-					view->bordersize+view->w/2+shoot->x-view->player->ship->xpos,
-					view->bordersize+view->h/2+shoot->y-view->player->ship->ypos, makecol(255,255,255));
-		view++;
-		}
+        put_big_pixel(currentlevel->level_buffer, shoot->x, shoot->y, makecol(255,255,255));
 
-     shoot->xposprecise = fixadd(shoot->xposprecise, shoot->dx);
-     shoot->yposprecise = fixadd(shoot->yposprecise, shoot->dy);
-     shoot->x = fixtoi(shoot->xposprecise);
-     shoot->y = fixtoi(shoot->yposprecise);
+        shoot->xposprecise = fixadd(shoot->xposprecise, shoot->dx);
+        shoot->yposprecise = fixadd(shoot->yposprecise, shoot->dy);
+        shoot->x = fixtoi(shoot->xposprecise);
+        shoot->y = fixtoi(shoot->yposprecise);
+        
+        //warp tir
+        if (currentlevel->edgedata.wrapx)
+        {
+            if (shoot->x < currentlevel->edgedata.leftx)
+            {
+                shoot->x = currentlevel->edgedata.rightx;
+                shoot->xposprecise = itofix(currentlevel->edgedata.rightx);
+            }
+            else if (shoot->x > currentlevel->edgedata.rightx) 
+            {
+                shoot->x = currentlevel->edgedata.leftx;
+                shoot->xposprecise = itofix(currentlevel->edgedata.leftx);
+            }
+        }
      }
-
 
      if(v->option_type==5)
      {
-     struct tir_data *backshoot;
+        struct tir_data *backshoot;
 
-     for (int i=0; i<MAX_TIR; i++)
-     {
-     backshoot = &v->backtir[i];
-	 if (backshoot->free)
-		 continue; // only iterate through the non free shoot
-	 if (testcollision_bullet4pix(src_map,backshoot->x,backshoot->y))
-		{
-		 // if there is collision we free the shoot
-		 // and we go on!
-		 backshoot->free=true;
-		 continue;
-		}
+        for (int i=0; i<MAX_TIR; i++)
+        {
+            backshoot = &v->backtir[i];
+            if (backshoot->free)
+                continue; // only iterate through the non free shoot
+            if (testcollision_bullet4pix(currentlevel->collision_bitmap, backshoot->x, backshoot->y))
+                {
+                // if there is collision we free the shoot
+                // and we go on!
+                backshoot->free=true;
+                continue;
+                }
 
-	 // display in all views!
-	 int nbsaveviews=nbviews;
-	 struct player_view *view=views;
-	 while(nbsaveviews--)
-		{
-		put_big_pixel(view->back_map_buffer,
-		view->bordersize+view->w/2+backshoot->x-view->player->ship->xpos,
-		view->bordersize+view->h/2+backshoot->y-view->player->ship->ypos, makecol(255,255,255));
+            put_big_pixel(currentlevel->level_buffer, backshoot->x, backshoot->y, makecol(255,255,255));
 
-		view++;
-		}
+            backshoot->xposprecise = fixadd(backshoot->xposprecise, backshoot->dx);
+            backshoot->yposprecise = fixadd(backshoot->yposprecise, backshoot->dy);
+            backshoot->x = fixtoi(backshoot->xposprecise);
+            backshoot->y = fixtoi(backshoot->yposprecise);
+            
+            //warp back tir
+            if (currentlevel->edgedata.wrapx)
+            {
+                if (backshoot->x < currentlevel->edgedata.leftx)
+                {
+                    backshoot->x = currentlevel->edgedata.rightx;
+                    backshoot->xposprecise = itofix(currentlevel->edgedata.rightx);
+                }
+                else if (backshoot->x > currentlevel->edgedata.rightx) 
+                {
+                    backshoot->x = currentlevel->edgedata.leftx;
+                    backshoot->xposprecise = itofix(currentlevel->edgedata.leftx);
+                }
+            }
 
-     backshoot->xposprecise = fixadd(backshoot->xposprecise, backshoot->dx);
-     backshoot->yposprecise = fixadd(backshoot->yposprecise, backshoot->dy);
-     backshoot->x = fixtoi(backshoot->xposprecise);
-     backshoot->y = fixtoi(backshoot->yposprecise);
-     }
+        }
      }
 
 }
 
-
 // src_map necessary for collision detection
-void gestion_tir(struct vaisseau_data *v,  struct player_view *views, int nbviews,BITMAP *src_map)
+void gestion_tir(struct vaisseau_data *v, struct level_data *currentlevel)
 {
      init_tir(v);
-     plot_tir(v,views,nbviews,src_map);
+     plot_tir(v, currentlevel);
 }
 
 
@@ -301,7 +310,7 @@ void put_big_pixel(BITMAP *bmp, int x, int y, int color)
      putpixel(bmp, x+1, y-1, color);
 }
 
-void draw_explosion(struct player_info *allpi, struct player_view *views, struct platform_data * plats, int nombre_vaisseau, int nbviews)
+void draw_explosion(struct player_info *allpi, struct platform_data * plats, int nombre_vaisseau, struct level_data *currentlevel)
 {
 	int i;
 	int j;
@@ -310,9 +319,14 @@ void draw_explosion(struct player_info *allpi, struct player_view *views, struct
 		if(allpi[i].ship->explode)
 			if (allpi[i].ship->explode_count<48)
 				{
-				for(j=0;j<nbviews;j++)
-					draw_sprite(views[j].back_map_buffer, get_sprite_explosion_frame(allpi[i].ship->explode_count),views[j].bordersize + views[j].w/2 + allpi[i].ship->xpos - allpi[j].ship->xpos, views[j].bordersize + views[j].h/2 + allpi[i].ship->ypos - allpi[j].ship->ypos);
-				allpi[i].ship->explode_count++;
+                draw_sprite(currentlevel->level_buffer, get_sprite_explosion_frame(allpi[i].ship->explode_count), allpi[i].ship->xpos, allpi[i].ship->ypos);
+
+                // if the ship has exploded across the gap, draw it on the other side
+                if (currentlevel->edgedata.wrapx)                    
+                    if ((currentlevel->edgedata.wrapx) && (allpi[i].ship->xpos + 32 > currentlevel->edgedata.rightx))
+                        draw_sprite(currentlevel->level_buffer, get_sprite_explosion_frame(allpi[i].ship->explode_count), allpi[i].ship->xpos - currentlevel->bitmap->w, allpi[i].ship->ypos);
+                    
+                allpi[i].ship->explode_count++;
 				}
 			else
 				{
@@ -415,54 +429,63 @@ void test_collision_debris(struct vaisseau_data *v, BITMAP *src_map)
 }
 
 
-void plot_debris(struct vaisseau_data *v, struct player_view *views,const physics_constants& physics,int nbviews)
+void plot_debris(struct vaisseau_data *v, const physics_constants& physics, struct level_data *currentlevel)
 {
 
-   for (int j=0; j<8; j++)
-   {
-      if(v->debris[j].active)
-      {
-         struct player_view *view = views;
-         int nbsaveviews=nbviews;
-         while(nbsaveviews--)
-         {
-         put_big_pixel(view->back_map_buffer, view->bordersize+view->w/2+v->debris[j].x-view->player->ship->xpos, view->bordersize+view->h/2+v->debris[j].y-view->player->ship->ypos, makecol(255,255,255));
-         view++;
-         }
-      }
-   }
+    for (int j=0; j<8; j++)
+    {
+        if(v->debris[j].active)
+        {
+            put_big_pixel(currentlevel->level_buffer, v->debris[j].x, v->debris[j].y, makecol(255,255,255));
+        }
+    }
 
-   for (int i=0; i<8; i++)
-   {
-   if(v->debris[i].active)
-   {
-   v->debris[i].ax = fixmul(v->debris[i].impultion, fixsin(itofix(v->debris[i].angle)));
-   v->debris[i].ay = fixadd(physics.iG, fixmul(v->debris[i].impultion, -fixcos(itofix(v->debris[i].angle))));
+    for (int i=0; i<8; i++)
+    {
+        if(v->debris[i].active)
+        {
+            v->debris[i].ax = fixmul(v->debris[i].impultion, fixsin(itofix(v->debris[i].angle)));
+            v->debris[i].ay = fixadd(physics.iG, fixmul(v->debris[i].impultion, -fixcos(itofix(v->debris[i].angle))));
 
-   v->debris[i].vx = fixadd(v->debris[i].vx, fixmul(physics.iCoeffax, v->debris[i].ax));
-   v->debris[i].vy = fixadd(v->debris[i].vy, fixmul(physics.iCoeffay, v->debris[i].ay));
+            v->debris[i].vx = fixadd(v->debris[i].vx, fixmul(physics.iCoeffax, v->debris[i].ax));
+            v->debris[i].vy = fixadd(v->debris[i].vy, fixmul(physics.iCoeffay, v->debris[i].ay));
 
-   v->debris[i].vx = fixmul(v->debris[i].vx, physics.iXfrott);
-   v->debris[i].vy = fixmul(v->debris[i].vy, physics.iYfrott);
+            v->debris[i].vx = fixmul(v->debris[i].vx, physics.iXfrott);
+            v->debris[i].vy = fixmul(v->debris[i].vy, physics.iYfrott);
 
-   v->debris[i].vx = fixadd(v->debris[i].vx, fixdiv(v->vx, ftofix(2.5)));
-   v->debris[i].vy = fixadd(v->debris[i].vy, fixdiv(v->vy, ftofix(8.5)));
+            v->debris[i].vx = fixadd(v->debris[i].vx, fixdiv(v->vx, ftofix(2.5)));
+            v->debris[i].vy = fixadd(v->debris[i].vy, fixdiv(v->vy, ftofix(8.5)));
 
-   v->debris[i].xposprecise = fixadd(v->debris[i].xposprecise, fixmul(physics.iCoeffvx, v->debris[i].vx));
-   v->debris[i].yposprecise = fixadd(v->debris[i].yposprecise, fixmul(physics.iCoeffvy, v->debris[i].vy));
+            v->debris[i].xposprecise = fixadd(v->debris[i].xposprecise, fixmul(physics.iCoeffvx, v->debris[i].vx));
+            v->debris[i].yposprecise = fixadd(v->debris[i].yposprecise, fixmul(physics.iCoeffvy, v->debris[i].vy));
 
-   v->debris[i].x = fixtoi(v->debris[i].xposprecise);
-   v->debris[i].y = fixtoi(v->debris[i].yposprecise);
+            v->debris[i].x = fixtoi(v->debris[i].xposprecise);
+            v->debris[i].y = fixtoi(v->debris[i].yposprecise);
 
-   v->debris[i].impultion = itofix(0);
-   }
-   }
-   v->vx=itofix(0);
-   v->vy=itofix(0);
+            v->debris[i].impultion = itofix(0);
+            
+            //warp debris
+            if (currentlevel->edgedata.wrapx) 
+            {
+                if(v->debris[i].x < currentlevel->edgedata.leftx)
+                {
+                    v->debris[i].x = currentlevel->edgedata.rightx;
+                    v->debris[i].xposprecise = itofix(currentlevel->edgedata.rightx);
+                }
+                else if (v->debris[i].x > currentlevel->edgedata.rightx) 
+                {
+                    v->debris[i].x = currentlevel->edgedata.leftx;
+                    v->debris[i].xposprecise = itofix(currentlevel->edgedata.leftx);
+                }
+            }
+        }
+    }
+    v->vx=itofix(0);
+    v->vy=itofix(0);
 }
 
 
-void draw_debris(struct player_info *allpi, struct player_view *views,const physics_constants& physics, int nbviews, int nombre_vaisseau, BITMAP *src_map)
+void draw_debris(struct player_info *allpi, const physics_constants& physics, int nombre_vaisseau, struct level_data *currentlevel)
 {
    for(int i=0;i<nombre_vaisseau;i++)
    {
@@ -471,14 +494,14 @@ void draw_debris(struct player_info *allpi, struct player_view *views,const phys
 
       if((allpi[i].ship->explode) && (allpi[i].ship->explode_count>1))
       {
-         test_collision_debris(allpi[i].ship, src_map);
-         plot_debris(allpi[i].ship, views, physics, nbviews);
+         test_collision_debris(allpi[i].ship, currentlevel->collision_bitmap);
+         plot_debris(allpi[i].ship, physics, currentlevel);
       }
 
       if(!allpi[i].ship->explode)
       for(int j=0; j<8; j++)
       {
-      allpi[i].ship->debris[j].active=FALSE;
+        allpi[i].ship->debris[j].active=FALSE;
       }
 
    }
@@ -543,9 +566,9 @@ void init_dca_tir(struct dca_data *dca, struct vaisseau_data *v)
          dca_tir->yposprecise = itofix(dca_tir->y);
 
          if(deltax<itofix(0))
-         dca_tir->dx = fixmul(ftofix(1.1), -fixsin(angle));
+            dca_tir->dx = fixmul(ftofix(1.1), -fixsin(angle));
          else
-         dca_tir->dx = fixmul(ftofix(1.1), fixsin(angle));
+            dca_tir->dx = fixmul(ftofix(1.1), fixsin(angle));
 
          dca_tir->dy = fixmul(ftofix(1.1), fixcos(angle));
 
@@ -554,7 +577,7 @@ void init_dca_tir(struct dca_data *dca, struct vaisseau_data *v)
       }
 }
 
-void plot_dca_tir(struct dca_data *dca, struct vaisseau_data *v, struct player_view *views, int nbviews, BITMAP *src_map)
+void plot_dca_tir(struct dca_data *dca, struct level_data *currentlevel)
 {
      struct tir_data *dca_tir;
 
@@ -563,41 +586,49 @@ void plot_dca_tir(struct dca_data *dca, struct vaisseau_data *v, struct player_v
         dca_tir = &(dca->dca_tir[i]);
 	    if (dca_tir->free)
         continue;
-	       if (testcollision_bullet4pix(src_map,dca_tir->x,dca_tir->y))
+	       if (testcollision_bullet4pix(currentlevel->collision_bitmap, dca_tir->x, dca_tir->y))
            {
 	       dca_tir->free=true;
 		   continue;
 		   }
 
-        int nbsaveviews=nbviews;
-        struct player_view *view=views;
-        while(nbsaveviews--)
-        {
-        put_big_pixel(view->back_map_buffer,
-					view->bordersize+view->w/2+dca_tir->x-view->player->ship->xpos,
-					view->bordersize+view->h/2+dca_tir->y-view->player->ship->ypos, makecol(255,255,255));
-        view++;
-        }
+        put_big_pixel(currentlevel->level_buffer, dca_tir->x, dca_tir->y, makecol(255,255,255));
 
         dca_tir->xposprecise = fixadd(dca_tir->xposprecise, dca_tir->dx);
         dca_tir->yposprecise = fixadd(dca_tir->yposprecise, dca_tir->dy);
         dca_tir->x = fixtoi(dca_tir->xposprecise);
         dca_tir->y = fixtoi(dca_tir->yposprecise);
+        
+        //warp dca tir
+        if (currentlevel->edgedata.wrapx)
+        {
+            if (dca_tir->x < currentlevel->edgedata.leftx)
+            {
+                dca_tir->x = currentlevel->edgedata.rightx;
+                dca_tir->xposprecise = itofix(currentlevel->edgedata.rightx);
+            }
+            else if (dca_tir->x > currentlevel->edgedata.rightx) 
+            {
+                dca_tir->x = currentlevel->edgedata.leftx;
+                dca_tir->xposprecise = itofix(currentlevel->edgedata.leftx);
+            }
+        }
 
+        
      }
 }
 
 
-void gestion_dca(struct dca_data *dca, struct vaisseau_data *v,  struct player_view *views, int nbviews, BITMAP *src_map)
+void gestion_dca(struct dca_data *dca, struct vaisseau_data *v, struct level_data *currentlevel)
 {
 
       for(int i=0; i<NB_DCA; i++)
       {
       init_dca_tir(dca, v);
-      plot_dca_tir(dca, v, views, nbviews, src_map);
+      plot_dca_tir(dca, currentlevel);
          if(dca->shoot)
          {
-         dca->delayed++;
+            dca->delayed++;
             if(dca->delayed > dca->delay)
             {
             dca->delayed=0;
@@ -667,49 +698,4 @@ void warp_zone(struct vaisseau_data *v, int nbplayers)
     v++;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

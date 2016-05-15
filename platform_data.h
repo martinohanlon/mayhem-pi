@@ -27,6 +27,7 @@ struct edge_data
     {
     int leftx, rightx;
     int topy, bottomy;
+    bool wrapx, wrapy;
     };
 
 struct level_data
@@ -36,6 +37,7 @@ struct level_data
     char * collision_bmpname;
 	BITMAP * bitmap;
 	PALETTE colormap;
+    BITMAP * level_buffer;
 	BITMAP * mini_bitmap;
 	PALETTE mini_colormap;
     BITMAP * collision_bitmap;

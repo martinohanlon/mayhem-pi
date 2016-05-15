@@ -10,6 +10,7 @@
                                 //------------------//
                                 //     VARIABLES    //
                                 //------------------//
+  struct edge_data edgedata = {0, 791, 0, 1500, false, false};
 
   struct platform_data level1[] =
   { { 504, 568, 985 }, 
@@ -22,8 +23,7 @@
 	{ 60, 127, 1045 },
 	{ 499, 586, 1165 },
     { 68, 145, 1181 } };
-  struct edge_data edgedata1 = {0, 792, 0, 1500};
-
+ 
   struct platform_data level2[] =
   {
     { 552, 615, 513 },
@@ -69,8 +69,8 @@
     { 348, 377, 1089 },
 	{ 499, 586, 1165 },
     { 68, 145, 1181 } };
-  struct edge_data edgedata5 = {5, 750, 0, 1500};
-
+struct edge_data edgedata5 = {0, 791, 0, 1500, true, false};
+  
   struct platform_data level6[] =
   { { 565, 616, 459 },
     { 14, 65, 111 },
@@ -81,8 +81,8 @@
 	{ 492, 548, 987 },
 	{ 66, 145, 1180 },
 	{ 38, 93, 1121 } };
-  struct edge_data edgedata6 = {5, 750, 0, 1500};
-  
+  struct edge_data edgedata6 = {0, 791, 0, 1500, true, false};
+     
 // init currentlevel with level
 BattleSequence::BattleSequence(GameSequence *previous, int nbviews, int nbplayers, int nblives, int level, bool usedca, bool wallcollision, int s_width, int s_height)
   : GameSequence(previous),moon_physics(0.07,0.984,0.99,0.6,0.6,0.6,0.6,0.2)
@@ -99,13 +99,14 @@ BattleSequence::BattleSequence(GameSequence *previous, int nbviews, int nbplayer
   currentlevel=&levels[level];
   use_dca = usedca;
   wall_collision = wallcollision;
-  //
+  
   InitLevelData();
   InitMappingAndControls();
   InitAllSpriteGfx();
   InitSoundFx();
   InitPlayerInfo();
   InitPlayerViews();
+  
   // TODO ASSERT?
   load_level(currentlevel, screen_width, screen_height);
 }
@@ -138,20 +139,20 @@ BattleSequence::~BattleSequence()
 
 void BattleSequence::InitLevelData()
 {
-  init_level_data(&levels[0],"Mayhem_Level1_Map_256c.bmp", "Mini_map1.bmp", "Mayhem_Level1_Map_256c.bmp", level1, 10, edgedata1, use_dca, wall_collision);
+  init_level_data(&levels[0],"Mayhem_Level1_Map_256c.bmp", "Mini_map1.bmp", "Mayhem_Level1_Map_256c.bmp", level1, 10, edgedata, use_dca, wall_collision);
                                        // x    y  area  delay
   init_level_dca(&(&levels[0])->alldca[0], 766, 85, 150, 25);
   init_level_dca(&(&levels[0])->alldca[1], 170, 481, 90, 25);
   
-  init_level_data(&levels[1],"Mayhem_Level2_Map_256c.bmp", "Mini_map2.bmp", "Mayhem_Level2_Map_256c.bmp", level2, 8, edgedata1, use_dca, wall_collision);
+  init_level_data(&levels[1],"Mayhem_Level2_Map_256c.bmp", "Mini_map2.bmp", "Mayhem_Level2_Map_256c.bmp", level2, 8, edgedata, use_dca, wall_collision);
   init_level_dca(&(&levels[1])->alldca[0], 647, 273, 150, 25);
   init_level_dca(&(&levels[1])->alldca[1], 267, 947, 90, 25);
   
-  init_level_data(&levels[2],"Mayhem_Level3_Map_256c.bmp", "Mini_map3.bmp", "Mayhem_Level3_Map_256c.bmp", level3, 9, edgedata1, use_dca, wall_collision);
+  init_level_data(&levels[2],"Mayhem_Level3_Map_256c.bmp", "Mini_map3.bmp", "Mayhem_Level3_Map_256c.bmp", level3, 9, edgedata, use_dca, wall_collision);
   init_level_dca(&(&levels[2])->alldca[0], 180, 555, 90, 25);
   init_level_dca(&(&levels[2])->alldca[1], 152, 1012, 90, 25);
   
-  init_level_data(&levels[3],"Mayhem_Level4_Map_256c.bmp", "Mini_map4.bmp", "Mayhem_Level4_Map_256c.bmp", level4, 9, edgedata1, use_dca, wall_collision);
+  init_level_data(&levels[3],"Mayhem_Level4_Map_256c.bmp", "Mini_map4.bmp", "Mayhem_Level4_Map_256c.bmp", level4, 9, edgedata, use_dca, wall_collision);
   init_level_dca(&(&levels[3])->alldca[0], 651, 747, 90, 25);
   init_level_dca(&(&levels[3])->alldca[1], 29, 575, 150, 25);
   
@@ -325,6 +326,7 @@ GameSequence* BattleSequence::doRun()
                 
         calcul_pos(moon_physics,nb_players,vaisseaux,currentlevel->platformdata,currentlevel->nbplatforms);  // Position
         fuel_shield_calcul(nb_players,vaisseaux);
+        
         // sound both player
         play_soundfx_from_shipdata(&sounds[0],&vaisseaux[0]);
         play_soundfx_from_shipdata(&sounds[1],&vaisseaux[1]);
@@ -333,43 +335,69 @@ GameSequence* BattleSequence::doRun()
         if(nb_views>=4)
             play_soundfx_from_shipdata(&sounds[3],&vaisseaux[3]);
 
+        // create level buffer
+        blit(currentlevel->bitmap, currentlevel->level_buffer, 0, 0, 0, 0, currentlevel->bitmap->w, currentlevel->bitmap->h);
 
         draw_basic_player_view(views, nb_views, currentlevel->bitmap, currentlevel->colormap);
 
         // first we rotate the sprite then display the shooting
         for(i=0;i<nb_players;i++)
-                rotate_sprite(&views[i]);
+            rotate_sprite(&views[i]);
 
         mega_collision_test(players, views, vaisseaux, currentlevel, nb_views, nb_players);
 
         gestion_option(opt, currentlevel,vaisseaux, views, nb_players,nb_views);
 
-
         for(i=0;i<nb_players;i++)
-            gestion_tir(&vaisseaux[i], views, nb_views,currentlevel->collision_bitmap);
+            gestion_tir(&vaisseaux[i], currentlevel);
 
-            if(use_dca) {
-                for(i=0;i<nb_players;i++)
-                    gestion_dca(&currentlevel->alldca[0], &vaisseaux[i], views, nb_views, currentlevel->collision_bitmap);
-            }
+        if(use_dca) 
+        {
+            for(i=0;i<nb_players;i++)
+                gestion_dca(&currentlevel->alldca[0], &vaisseaux[i], currentlevel);
+        }
 
-        draw_explosion(players, views, currentlevel->platformdata, nb_players, nb_views);
-        draw_debris(players, views, moon_physics, nb_players, nb_views, currentlevel->collision_bitmap);
+        draw_explosion(players, currentlevel->platformdata, nb_players, currentlevel);
+        
+        draw_debris(players, moon_physics, nb_players, currentlevel);
+        
         gestion_minimap(vaisseaux, currentlevel, nb_players, screen_width, screen_height);
 
         if(currentlevel==&levels[0]) warp_zone(vaisseaux, nb_players);
-
         gestion_warps(vaisseaux, currentlevel, nb_players);
 
-        for(i=0;i<nb_players;i++)
-            display_rotate_sprite_in_all_view(&views[i],views,nb_views);
-            
+        display_rotate_sprites(views, nb_views, currentlevel);
+
         // back_map_buffer dans screen
         for(i=0;i<nb_views;i++)
-            {
+        {
             struct player_view* v = &views[i];
-            blit(v->back_map_buffer, screen, 0, 0, v->x, v->y, v->w+2*v->bordersize, v->h+2*v->bordersize);
+            struct vaisseau_data *ship = v->player->ship;
+            blit(currentlevel->level_buffer, v->back_map_buffer,
+                ship->xpos - (v->w/2), ship->ypos - (v->h/2),
+                v->bordersize, v->bordersize, v->w, v->h);
+
+            // does the level wrap in x
+            if (currentlevel->edgedata.wrapx)
+            {
+
+                if (ship->xpos - (v->w/2) < 0) 
+                {
+                    blit(currentlevel->level_buffer, v->back_map_buffer,
+                        currentlevel->bitmap->w + (ship->xpos - (v->w/2)), ship->ypos - (v->h/2),
+                        v->bordersize, v->bordersize, v->w - (ship->xpos - (v->w/2)), v->h);
+                }
+                else if (ship->xpos + (v->w/2) > currentlevel->bitmap->w)
+                {                    
+                    blit(currentlevel->level_buffer, v->back_map_buffer,
+                        0, ship->ypos - (v->h/2),
+                        v->bordersize + (v->w - (ship->xpos + (v->w/2) - currentlevel->bitmap->w)), v->bordersize, 
+                        ship->xpos + (v->w/2) - currentlevel->bitmap->w, v->h);
+                }
             }
+            
+            blit(v->back_map_buffer, screen, 0, 0, v->x, v->y, v->w+2*v->bordersize, v->h+2*v->bordersize);
+        }
 
     #ifdef CHECKFPS
         check_fps++;
