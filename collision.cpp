@@ -132,7 +132,7 @@ void bounce_vaisseau(struct vaisseau_data *vaisseau)
     vaisseau->ax = itofix(0);
     vaisseau->ay = itofix(0);
     vaisseau->vx = -vaisseau->vx/2;
-    vaisseau->vy = -vaisseau->vy/2;    
+    vaisseau->vy = -vaisseau->vy/2;
 }
 
 bool pixel_collision_detect_inbox(BITMAP *bmp1,int xl1, int yt1,BITMAP *bmp2,int xl2, int yt2,int w, int h,PALETTEPTR commonpalette)

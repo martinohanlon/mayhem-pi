@@ -6,7 +6,7 @@
 const int IntroSequence::mini=150;
 const int IntroSequence::maxi=400;
 
-IntroSequence::IntroSequence(GameSequence* previous,float zoom, float zoomspeed)
+IntroSequence::IntroSequence(GameSequence* previous, float zoom, float zoomspeed, int level, int lives, bool dca, bool wall)
 	: GameSequence(previous)
 {
 	iLogo=load_bitmap("intro_logo.bmp",iLogoPalette);
@@ -16,6 +16,11 @@ IntroSequence::IntroSequence(GameSequence* previous,float zoom, float zoomspeed)
 
 	width = DEFAULT_WIDTH;
 	height = DEFAULT_HEIGHT;
+    
+    levelchoice = level;
+    liveschoice = lives;
+    dcachoice = dca;
+    wallchoice = wall;
 }
 
 
@@ -35,11 +40,6 @@ GameSequence* IntroSequence::doRun()
     int menuitems = 4;
     int menuselected = 0;
     char menutext[50];
-    
-    int levelchoice=0;
-    int liveschoice = 10;
-    bool dcachoice = false;
-    bool wallchoice = true;
     
 	set_palette(iLogoPalette);
 	clear_bitmap(screen);
