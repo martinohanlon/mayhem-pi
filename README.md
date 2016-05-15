@@ -13,7 +13,9 @@ Myself and Lee Taylor have since extended the game with new levels and features.
 
 If you want to play it on Windows I maintain a fork of the original version [github.com/martinohanlon/mayhem](https://github.com/devpack/mayhem) and keep it up to date with the pi version.
 
-[Video](https://youtu.be/Vxozz0Ijdr0)
+[Video 1](https://youtu.be/Vxozz0Ijdr0)
+
+[Video 2 - new level](https://youtu.be/E3mho6J6OG8)
 
 [Video of the original amiga game](https://www.youtube.com/watch?v=fs30DLGxqhs). 
 
