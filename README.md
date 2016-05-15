@@ -21,6 +21,8 @@ If you want to play it on Windows I maintain a fork of the original version [git
 
 [Blog post](http://www.stuffaboutcode.com/2016/04/mayhem-classic-amiga-game-ported-to.html)
 
+![Mayhem game image](mayhem.jpg)
+
 ##Install
 
 ```
