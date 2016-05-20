@@ -6,8 +6,12 @@
 #include "vaisseau_data.h"
 #include "platform_data.h"
 
-#define  NB_OPT_POS  6
-#define  NB_OPT_TYPE 6
+
+#define  NB_OPT_TYPE 7
+#define  OPT_MAXFUEL 0
+#define  OPT_SLOWSHIELD 2
+#define  OPT_BACKSHOT 5
+#define  OPT_DOUBLESHOT 6
 
 
 struct option_data {

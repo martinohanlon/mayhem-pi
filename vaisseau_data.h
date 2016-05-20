@@ -4,7 +4,7 @@
 
 #include "vaisseau_gfx.h"
 
-#define MAX_TIR 20
+#define MAX_TIR 50
 
 
 

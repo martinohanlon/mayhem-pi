@@ -84,13 +84,13 @@ void attrib_option(struct option_data *opt, struct vaisseau_data *allv, int test
    v = &allv[test];
    v->option_type = opt->type;
 
-   if(opt->type == 0)                  // 0 = fuel max
+   if(opt->type == OPT_MAXFUEL)                  // 0 = fuel max
    v->fuel = v->max_fuel;
 
    if(opt->type == 1)                  // 1 = 1/2 fuel
    v->fuel = v->fuel/2;
 
-   if(opt->type == 2) {                // 2 = more time shield on
+   if(opt->type == OPT_SLOWSHIELD) {                // 2 = more time shield on
    v->max_shield_force = 214;
    v->speed_shield_force_down = 1;
    }

@@ -6,7 +6,7 @@
 const int IntroSequence::mini=150;
 const int IntroSequence::maxi=400;
 
-IntroSequence::IntroSequence(GameSequence* previous, float zoom, float zoomspeed, int level, int lives, bool dca, bool wall)
+IntroSequence::IntroSequence(GameSequence* previous, float zoom, float zoomspeed, int players, int level, int lives, bool dca, bool wall)
 	: GameSequence(previous)
 {
 	iLogo=load_bitmap("intro_logo.bmp",iLogoPalette);
@@ -17,6 +17,7 @@ IntroSequence::IntroSequence(GameSequence* previous, float zoom, float zoomspeed
 	width = DEFAULT_WIDTH;
 	height = DEFAULT_HEIGHT;
     
+    playerschoice = players;
     levelchoice = level;
     liveschoice = lives;
     dcachoice = dca;
@@ -37,7 +38,7 @@ GameSequence* IntroSequence::doRun()
 	int tempo=0;
 	bool canQuickExit=false;
     
-    int menuitems = 4;
+    int menuitems = 6;
     int menuselected = 0;
     char menutext[50];
     
@@ -79,7 +80,8 @@ GameSequence* IntroSequence::doRun()
 	} while(isRunning);
 	InterruptTimer::reset();
 
-	int choice=0;
+	bool startgame = false;
+    bool exit = false;
 
 	if (!quickExit)
 	{
@@ -88,7 +90,8 @@ GameSequence* IntroSequence::doRun()
         int red=makecol(255,0,0);
         int lightred=makecol(255, 50, 50);
         int currentcolor=red;
-        do
+        
+        while(!startgame && !exit)
         {
 
             if(tempo++ == 50)
@@ -100,25 +103,31 @@ GameSequence* IntroSequence::doRun()
                     currentcolor=red;
                 }
             if (key[KEY_ESC])
+                {
                 break;
-            if (key[KEY_ENTER])
+                exit = true;
+                }
+            /*if (key[KEY_ENTER])
                 {
                 choice=2;
                 break;
-                }
+                }*/
             if (key[KEY_F2])
                 {
-                choice=2;
+                playerschoice=2;
+                startgame = true;
                 break;
                 }
             if (key[KEY_F3])
                 {
-                choice=3;
+                playerschoice=3;
+                startgame = true;
                 break;
                 }
             if (key[KEY_F4])
                 {
-                choice=4;
+                playerschoice=4;
+                startgame = true;
                 break;
                 }
             if (key[KEY_F5])
@@ -162,16 +171,19 @@ GameSequence* IntroSequence::doRun()
             {
                 switch(menuselected) 
                 {
-                    case 0:
-                        if(levelchoice > 0) levelchoice--;
-                        break;
                     case 1:
-                        if(liveschoice > 0) liveschoice--;
+                        if(playerschoice > 2) playerschoice--;
                         break;
                     case 2:
-                        dcachoice = !dcachoice;
+                        if(levelchoice > 0) levelchoice--;
                         break;
                     case 3:
+                        if(liveschoice > 0) liveschoice--;
+                        break;
+                    case 4:
+                        dcachoice = !dcachoice;
+                        break;
+                    case 5:
                         wallchoice = !wallchoice;
                         break;
                 }
@@ -181,48 +193,84 @@ GameSequence* IntroSequence::doRun()
             {
                 switch(menuselected) 
                 {
-                    case 0:
-                        if(levelchoice < NB_LEVELS - 1) levelchoice++;
-                        break;
                     case 1:
-                        liveschoice++;
+                        if(playerschoice < NB_MAX_PLAYERS) playerschoice++;
                         break;
                     case 2:
-                        dcachoice = !dcachoice;
+                        if(levelchoice < NB_LEVELS - 1) levelchoice++;
                         break;
                     case 3:
+                        liveschoice++;
+                        break;
+                    case 4:
+                        dcachoice = !dcachoice;
+                        break;
+                    case 5:
                         wallchoice = !wallchoice;
                         break;
                 }
-                rest(100);  
+                rest(100);
+            }
+            if (key[KEY_ENTER] || key[KEY_G])
+            {
+                switch(menuselected) 
+                {
+                    case 0:
+                        startgame = true;
+                        break;
+                    case 1:
+                        playerschoice++;
+                        if(playerschoice > NB_MAX_PLAYERS) playerschoice = 2;
+                        break;
+                    case 2:
+                        levelchoice++;
+                        if (levelchoice == NB_LEVELS) levelchoice = 0;
+                        break;
+                    case 3:
+                        liveschoice++;
+                        if (liveschoice == NB_MAXLIVES) liveschoice = 0;
+                        break;
+                    case 4:
+                        dcachoice = !dcachoice;
+                        break;
+                    case 5:
+                        wallchoice = !wallchoice;
+                        break;
+                }
+                rest(100);
             }
 
-            textout_centre(screen, font, "Press ENTER to play or (F2/F3/F4 for 2/3/4 players) or ESC to leave", INTRO_SCREEN_WIDTH/2, maxi+5, currentcolor);
+            textout_centre(screen, font, "Press F2/F3/F4 to play for 2/3/4 players or ESC to leave", INTRO_SCREEN_WIDTH/2, maxi+5, currentcolor);
             
-            textout(screen, font, "Menu - Use arrow keys to change options:", INTRO_SCREEN_WIDTH/3, maxi+15, currentcolor);
+            textout(screen, font, "Use arrow keys and enter:", INTRO_SCREEN_WIDTH/3, maxi+15, currentcolor);
+
+            textout(screen, font, "Start game", INTRO_SCREEN_WIDTH/3, maxi+25, ((menuselected == 0) ? lightred : red));
             
-            snprintf(menutext, sizeof(menutext), "   Level - %d   ", levelchoice + 1);
-            textout(screen, font, menutext, INTRO_SCREEN_WIDTH/3, maxi+25, ((menuselected == 0) ? lightred : red));
-            
-            snprintf(menutext, sizeof(menutext), "   Lives - %d   ", liveschoice);
+            snprintf(menutext, sizeof(menutext), "   Players - %d   ", playerschoice);
             textout(screen, font, menutext, INTRO_SCREEN_WIDTH/3, maxi+35, ((menuselected == 1) ? lightred : red));
             
-            snprintf(menutext, sizeof(menutext), "   Use DCA - %s   ", ((dcachoice) ? "yes" : "no" ));
+            snprintf(menutext, sizeof(menutext), "   Level - %d   ", levelchoice + 1);
             textout(screen, font, menutext, INTRO_SCREEN_WIDTH/3, maxi+45, ((menuselected == 2) ? lightred : red));
             
-            snprintf(menutext, sizeof(menutext), "   Wall Collision - %s   ", ((wallchoice) ? "yes" : "no" ));
+            snprintf(menutext, sizeof(menutext), "   Lives - %d   ", liveschoice);
             textout(screen, font, menutext, INTRO_SCREEN_WIDTH/3, maxi+55, ((menuselected == 3) ? lightred : red));
             
+            snprintf(menutext, sizeof(menutext), "   Use DCA - %s   ", ((dcachoice) ? "yes" : "no" ));
+            textout(screen, font, menutext, INTRO_SCREEN_WIDTH/3, maxi+65, ((menuselected == 4) ? lightred : red));
+            
+            snprintf(menutext, sizeof(menutext), "   Wall Collision - %s   ", ((wallchoice) ? "yes" : "no" ));
+            textout(screen, font, menutext, INTRO_SCREEN_WIDTH/3, maxi+75, ((menuselected == 5) ? lightred : red));
+            
             vsync();
-        } while (1);
+        } 
 	}
 	clear_bitmap(screen);
 
 	GameSequence * seq;
-	if (choice)
+	if (startgame)
 		{
 		iZoom=iZoomMax;
-		seq=new BattleSequence(this, choice, choice, liveschoice, levelchoice, dcachoice, wallchoice, width, height);
+		seq=new BattleSequence(this, playerschoice, playerschoice, liveschoice, levelchoice, dcachoice, wallchoice, width, height);
 		}
 	else
 		seq=ReturnScreen();

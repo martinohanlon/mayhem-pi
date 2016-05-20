@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "platform_data.h"
 #include "physics.h"
+#include "option.h"
 
 PALETTE bar_palette;
 
@@ -99,6 +100,12 @@ void draw_basic_player_view(struct player_view *v,int nbviews, BITMAP *src_map,P
     vline(v->back_map_buffer,v->bordersize/2,v->h+v->bordersize,v->bordersize+(v->h-barheight_fuel),fuel_col);
     vline(v->back_map_buffer,v->w+v->bordersize+v->bordersize/2,v->h+v->bordersize,v->bordersize+(v->h-barheight_shield),shield_col);
     vline(v->back_map_buffer,v->w+v->bordersize+(v->bordersize/2)-1,v->h+v->bordersize,v->bordersize+(v->h-barheight_shield),shield_col);
+    // thicker shield line
+    if (ship->option_type == OPT_SLOWSHIELD)
+    {
+        vline(v->back_map_buffer,v->w+v->bordersize+(v->bordersize/2)-2,v->h+v->bordersize,v->bordersize+(v->h-barheight_shield),shield_col);
+        vline(v->back_map_buffer,v->w+v->bordersize+(v->bordersize/2)-3,v->h+v->bordersize,v->bordersize+(v->h-barheight_shield),shield_col);
+    }
 	// reset clip after
 	set_clip(v->back_map_buffer, v->bordersize, v->bordersize, v->w,v->h);
     v++;
@@ -141,28 +148,44 @@ void init_tir(struct vaisseau_data *v)
 
      if(v->fire && (test_place_tir(v)!=-1) && v->fire_delay)
      {
-        int place_free_tir=test_place_tir(v);
-        if (place_free_tir == -1)
-            return; // only do something IF THERE IS A FREE SHOOT !
-        shoot = &v->tir[test_place_tir(v)];
         int cx;
         int cy;
-        cx = v->xpos+15;
-        cy = v->ypos+16;
-        shoot->x = cx+fixtoi(fixmul(itofix(18),fixsin(itofix(v->angle))));
-        shoot->y = cy+fixtoi(fixmul(itofix(18),-fixcos(itofix(v->angle))));
-        shoot->xposprecise = itofix(shoot->x);
-        shoot->yposprecise = itofix(shoot->y);
-        shoot->dx = fixmul(ftofix(5.1),fixsin(itofix(v->angle)));
-        shoot->dy = fixmul(ftofix(5.1),-fixcos(itofix(v->angle)));
+        int place_free_tir;
+        int angle;
+        
+        int num_of_tir;
+        //triple shot option?
+        num_of_tir = v->option_type == OPT_DOUBLESHOT ? 3 : 1;
+        
+        for (int i=0; i<num_of_tir; i++) 
+        {
+            place_free_tir=test_place_tir(v);
+            if (place_free_tir == -1)
+                return; // only do something IF THERE IS A FREE SHOOT !
+            shoot = &v->tir[test_place_tir(v)];
+            
+            cx = v->xpos+15;
+            cy = v->ypos+16;
+            
+            if (i==0) angle = v->angle;
+            //triple shot
+            if (i==1) angle = v->angle - 2;
+            if (i==2) angle = v->angle + 2;
+            
+            shoot->x = cx+fixtoi(fixmul(itofix(18),fixsin(itofix(angle))));
+            shoot->y = cy+fixtoi(fixmul(itofix(18),-fixcos(itofix(angle))));
+            shoot->xposprecise = itofix(shoot->x);
+            shoot->yposprecise = itofix(shoot->y);
+            
+            shoot->dx = fixmul(ftofix(5.1),fixsin(itofix(angle)));
+            shoot->dy = fixmul(ftofix(5.1),-fixcos(itofix(angle)));
+            shoot->dx = fixadd(shoot->dx, fixdiv(v->vx, ftofix(3.5)));
+            shoot->dy = fixadd(shoot->dy, fixdiv(v->vy, ftofix(3.5)));
 
-        shoot->dx = fixadd(shoot->dx, fixdiv(v->vx, ftofix(3.5)));
-        shoot->dy = fixadd(shoot->dy, fixdiv(v->vy, ftofix(3.5)));
+            shoot->free=false;
+        }
 
-        shoot->free=false;
-
-
-        if(v->option_type==5)
+        if(v->option_type == OPT_BACKSHOT)
         {
             struct tir_data *backshoot;
             place_free_tir=test_place_backtir(v);
@@ -224,7 +247,7 @@ void plot_tir(struct vaisseau_data *v, struct level_data *currentlevel)
         }
      }
 
-     if(v->option_type==5)
+     if(v->option_type == OPT_BACKSHOT)
      {
         struct tir_data *backshoot;
 
