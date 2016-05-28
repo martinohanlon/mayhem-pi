@@ -155,7 +155,7 @@ void init_tir(struct vaisseau_data *v)
         
         int num_of_tir;
         //triple shot option?
-        num_of_tir = v->option_type == OPT_DOUBLESHOT ? 3 : 1;
+        num_of_tir = v->option_type == OPT_TRIPLESHOT ? 3 : 1;
         
         for (int i=0; i<num_of_tir; i++) 
         {

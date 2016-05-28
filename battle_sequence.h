@@ -23,7 +23,9 @@
 #endif
 
 
-#define CHECKFPS 1
+#define CHECKFPS
+//vsync creates some really erratic results on modern windows systems
+//#define USE_VSYNC
 
 #define NB_MAX_VAISSEAU 4
 #define NB_MAX_PLAYERS (NB_MAX_VAISSEAU)

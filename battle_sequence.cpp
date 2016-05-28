@@ -207,8 +207,8 @@ void BattleSequence::InitAllSpriteGfx()
 
   for(int i=0;i<nb_players;i++)
     init_vaisseau_data(&vaisseaux[i],&gfx_vaisseaux[i],0.9,0.32,5,1284,1,8,214,2,2);
-  // time active, inactive
-  init_option_data(opt, "Option.bmp", 500, 50);
+  // time after explosion, time active, time player has
+  init_option_data(opt, "Option.bmp", 49, 150, 1500);
 }
 
 void BattleSequence::InitPlayerInfo()
@@ -267,7 +267,7 @@ GameSequence* BattleSequence::doRun()
   int i; // for everythign counter
 
 #ifdef CHECKFPS
-  int check_fps=0;
+  int check_fps=1;
   int retrace_count_init=retrace_count;
 #endif
 
@@ -310,9 +310,11 @@ GameSequence* BattleSequence::doRun()
 
         handle_command(&netpadcmd);
         #else
+        
         if(!player_gameover(&players[0]))
             handle_command(keyvaisseau[0].cmd);
         #endif
+        
         if(!player_gameover(&players[1]))
             handle_command(keyvaisseau[1].cmd);
 
@@ -411,12 +413,18 @@ GameSequence* BattleSequence::doRun()
             sprintf(reso, "%ix%i", screen_width, screen_height);
             textout(screen,font, reso ,5,17,makecol(200,200,200));
 
+            //debug interupt counter
+            /*char counter[10];
+            sprintf(counter, "%i", InterruptTimer::timing_counter);
+            textout(screen,font, counter,5,29,makecol(200,200,200));*/
+
             check_fps=0;
             retrace_count_init=retrace_count;
          }
     #endif
-        
-        vsync();                                                   // wait the raster
+    #ifdef USE_VSYNC
+        vsync();    // wait the raster
+    #endif 
     } // eof while(InterruptTimer())
   } // eof while (isRunning)
   

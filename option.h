@@ -7,12 +7,12 @@
 #include "platform_data.h"
 
 
-#define  NB_OPT_TYPE 7
-#define  OPT_MAXFUEL 0
+#define  NB_OPT_TYPE 4
+#define  OPT_NOOPTION 0
+#define  OPT_MAXFUEL 1
 #define  OPT_SLOWSHIELD 2
-#define  OPT_BACKSHOT 5
-#define  OPT_DOUBLESHOT 6
-
+#define  OPT_BACKSHOT 3
+#define  OPT_TRIPLESHOT 4
 
 struct option_data {
    int    x, y;
@@ -20,15 +20,15 @@ struct option_data {
    int    time_in;
    int    time_out;
    bool   active;
-   bool   print_it;
    int    active_time;
-   int    inactive_time;
+   int    explode_appear_time;
+   int    player_expire_time;
    BITMAP *option_sprite;
    PALETTE option_sprite_colors;
 };
 
 void unload_option(struct option_data *opt);
-int init_option_data(struct option_data *opt, char *option_sprite_name, int active_time, int inactive_time);
+int init_option_data(struct option_data *opt, char *option_sprite_name, int explode_appear_time, int active_time, int player_expire_time);
 void gestion_option(struct option_data *opt, struct level_data *currentlevel,struct vaisseau_data *allv, struct player_view *views, int nbplayers, int nbviews);
 
 #endif
