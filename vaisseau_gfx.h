@@ -6,15 +6,17 @@
   struct vaisseau_gfx {
 	BITMAP * sprite;
 	BITMAP * sprite_thrust;
+	BITMAP * sprite_thrust2;
 	BITMAP * sprite_shield;
 	PALETTE  sprite_colors;
 	PALETTE  sprite_thrust_colors;
+	PALETTE  sprite_thrust2_colors;
 	PALETTE  sprite_shield_colors; 
   };
 
 
 
-bool init_vaisseau_gfx_from_file(struct vaisseau_gfx* vaisseau,char * normal,char * thrust, char * shield);
+bool init_vaisseau_gfx_from_file(struct vaisseau_gfx* vaisseau,char * normal, char * thrust, char * thrust2, char * shield);
 void cleanup_vaisseau_gfx(struct vaisseau_gfx* vaisseau);
 int init_sprite_explosion(char *bmpname);
 BITMAP* get_sprite_explosion();

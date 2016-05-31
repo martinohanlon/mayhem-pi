@@ -190,25 +190,40 @@ void BattleSequence::InitMappingAndControls()
 
 void BattleSequence::InitAllSpriteGfx()
 {
-  // init the gfx for the first vaisseau type
-  init_vaisseau_gfx_from_file(&gfx_vaisseaux[0],"ship1_256c.bmp",
-	                                            "ship1_thrust_256c.bmp",
-										     	"ship1_shield_256c.bmp");
-  init_vaisseau_gfx_from_file(&gfx_vaisseaux[1],"ship2_256c.bmp",
-	                                            "ship2_thrust_256c.bmp",
-												"ship2_shield_256c.bmp");
-  init_vaisseau_gfx_from_file(&gfx_vaisseaux[2],"ship3_256c.bmp",
-	                                            "ship3_thrust_256c.bmp",
+    // init the gfx for the first vaisseau type
+    init_vaisseau_gfx_from_file(&gfx_vaisseaux[0],"ship1_256c.bmp",
+                                                "ship1_thrust_256c.bmp",
+                                                "ship1_thrust2_256c.bmp",
+                                                "ship1_shield_256c.bmp");
+    init_vaisseau_gfx_from_file(&gfx_vaisseaux[1],"ship2_256c.bmp",
+                                                "ship2_thrust_256c.bmp",
+                                                "ship2_thrust2_256c.bmp",
+                                                "ship2_shield_256c.bmp");
+    init_vaisseau_gfx_from_file(&gfx_vaisseaux[2],"ship3_256c.bmp",
+                                                "ship3_thrust_256c.bmp",
+                                                "ship3_thrust2_256c.bmp",
                                                 "ship3_shield_256c.bmp");
-  init_vaisseau_gfx_from_file(&gfx_vaisseaux[3],"ship4_256c.bmp",
-	                                            "ship4_thrust_256c.bmp",
-												"ship4_shield_256c.bmp");
-  init_sprite_explosion("Sprite_explosion.bmp");
+    init_vaisseau_gfx_from_file(&gfx_vaisseaux[3],"ship4_256c.bmp",
+                                                "ship4_thrust_256c.bmp",
+                                                "ship4_thrust2_256c.bmp",
+                                                "ship4_shield_256c.bmp");
+    init_sprite_explosion("Sprite_explosion.bmp");
 
-  for(int i=0;i<nb_players;i++)
-    init_vaisseau_data(&vaisseaux[i],&gfx_vaisseaux[i],0.9,0.32,5,1284,1,8,214,2,2);
-  // time after explosion, time active, time player has
-  init_option_data(opt, "Option.bmp", 49, 150, 1500);
+    for(int i=0;i<nb_players;i++)
+        //init_vaisseau_data(&vaisseaux[i],&gfx_vaisseaux[i],0.9,0.32,5,1284,1,8,214,2,2);
+        init_vaisseau_data(&vaisseaux[i], &gfx_vaisseaux[i], 
+                           VAISSEAU_MASS,
+                           VAISSEAU_THRUST_MAX,
+                           VAISSEAU_ANGLESTEP,
+                           VAISSEAU_MAX_FUEL,
+                           VAISSEAU_SPEED_FUEL_DOWN,
+                           VAISSEAU_SPEED_FUEL_UP,
+                           VAISSEAU_MAX_SHIELD_FORCE,
+                           VAISSEAU_SPEED_SHIELD_FORCE_DOWN,
+                           VAISSEAU_SPEED_SHIELD_FORCE_UP);
+        
+    // time after explosion, time active, time player has
+    init_option_data(opt, "Option.bmp", 49, 150, 1500);
 }
 
 void BattleSequence::InitPlayerInfo()

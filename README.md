@@ -73,6 +73,7 @@ make
 * 0.2 - seamless warping across map edges
 * 0.4 - menu changes + new 'option' (powerup) changes
 * 0.5 - timing and powerups are now dropped when players explode
+* 0.6 - new thrust powerup + bug fix
 
 ##Contributors
 [Anthony Prieur](https://github.com/devpack)

@@ -1,11 +1,12 @@
 #include "vaisseau_gfx.h"
 
-bool init_vaisseau_gfx_from_file(struct vaisseau_gfx* vaisseau,char * normal,char * thrust, char * shield)
+bool init_vaisseau_gfx_from_file(struct vaisseau_gfx* vaisseau,char * normal, char * thrust, char * thrust2, char * shield)
   {
 	vaisseau->sprite=load_bitmap(normal,vaisseau->sprite_colors);
 	vaisseau->sprite_shield=load_bitmap(shield,vaisseau->sprite_shield_colors);
 	vaisseau->sprite_thrust=load_bitmap(thrust,vaisseau->sprite_thrust_colors);
-	return ! (vaisseau->sprite && vaisseau->sprite_shield && vaisseau->sprite_thrust);
+  vaisseau->sprite_thrust2=load_bitmap(thrust2,vaisseau->sprite_thrust2_colors);
+	return ! (vaisseau->sprite && vaisseau->sprite_shield && vaisseau->sprite_thrust && vaisseau->sprite_thrust2);
   }
 
 
@@ -14,6 +15,7 @@ void cleanup_vaisseau_gfx(struct vaisseau_gfx* vaisseau)
 	if (vaisseau->sprite) destroy_bitmap(vaisseau->sprite);
 	if (vaisseau->sprite_shield) destroy_bitmap(vaisseau->sprite_shield);
 	if (vaisseau->sprite_thrust) destroy_bitmap(vaisseau->sprite_thrust);
+  if (vaisseau->sprite_thrust2) destroy_bitmap(vaisseau->sprite_thrust2);
   }
 
 BITMAP  *sprite_explode;

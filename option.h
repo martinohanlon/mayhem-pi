@@ -6,13 +6,18 @@
 #include "vaisseau_data.h"
 #include "platform_data.h"
 
-
-#define  NB_OPT_TYPE 4
+// types of option 
+#define  NB_OPT_TYPE 5
 #define  OPT_NOOPTION 0
 #define  OPT_MAXFUEL 1
 #define  OPT_SLOWSHIELD 2
 #define  OPT_BACKSHOT 3
 #define  OPT_TRIPLESHOT 4
+#define  OPT_THRUST 5
+
+// option values
+#define OPT_SLOWSHIELD_SPEED 1
+#define OPT_THRUST_MAX 0.47
 
 struct option_data {
    int    x, y;

@@ -1,5 +1,6 @@
 #include "vaisseau_data.h"
 #include "platform_data.h"
+#include "option.h"
 
 int init_vaisseau_data(struct vaisseau_data* v, struct vaisseau_gfx* gfx,
                               float mass, float thrust_max, int anglestep,
@@ -87,11 +88,13 @@ void init_ship_pos_from_platforms(struct vaisseau_data* v, struct platform_data 
 	v->yposprecise=itofix(ypos);
     v->fuel=v->max_fuel;
     v->shield_force=v->max_shield_force;
-
+    
     v->explode_count=0;
     v->explode=FALSE;
 
-    v->option_type=0;
+    v->option_type=OPT_NOOPTION;
+    v->speed_shield_force_down = VAISSEAU_SPEED_SHIELD_FORCE_DOWN;
+    v->thrust_max = ftofix(VAISSEAU_THRUST_MAX);
 
 	v->impactx=0;
 	v->impacty=0;

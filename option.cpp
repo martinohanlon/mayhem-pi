@@ -24,7 +24,7 @@ bool test_pos_option(struct option_data *opt, struct level_data *currentlevel, i
 
    for(ligne=0; ligne < opt->option_sprite->h; ligne++)
    {
-      address_bmp = bmp_read_line(currentlevel->bitmap, ligne + y);
+      address_bmp = bmp_read_line(currentlevel->collision_bitmap, ligne + y);
       for(int colonne=0; colonne < opt->option_sprite->w; colonne++)
       {
       pixelcolor = bmp_read8(address_bmp + colonne + x);
@@ -48,15 +48,18 @@ void init_option(struct option_data *opt, struct level_data *currentlevel, struc
             // is it at explode_count 100
 			if (allv[i].explode_count == opt->explode_appear_time)
             {
-                opt->x = allv[i].xpos + (15 - (opt->option_sprite->w / 2));
-                opt->y = allv[i].ypos + (15 - (opt->option_sprite->h / 2));
+                int x, y;
+                
+                x = allv[i].xpos + (15 - (opt->option_sprite->w / 2));
+                y = allv[i].ypos + (15 - (opt->option_sprite->h / 2));
 
                 // make sure the option isnt going to collide with the background
                 if(test_pos_option(opt, currentlevel, opt->x, opt->y))
                     opt->active=true;
-
-                opt->type = rand() % NB_OPT_TYPE + 1;
-                continue;
+                    opt->x = x;
+                    opt->y = y;
+                    opt->type = rand() % NB_OPT_TYPE + 1;
+                    continue;
             }
         }
     }
@@ -79,8 +82,12 @@ void attrib_option(struct option_data *opt, struct vaisseau_data *allv, int test
 
         if(opt->type == OPT_SLOWSHIELD) 
         {
-            v->max_shield_force = 214;
-            v->speed_shield_force_down = 1;
+            v->speed_shield_force_down = OPT_SLOWSHIELD_SPEED;
+        }
+        
+        if(opt->type == OPT_THRUST)
+        {
+            v->thrust_max = ftofix(OPT_THRUST_MAX);
         }
 
         opt->active=false;
@@ -97,11 +104,23 @@ void gestion_player_options(struct option_data *opt, struct vaisseau_data *allv,
     for(int i=0; i<nbplayers; i++)
     {
         v = &allv[i];
-        /* has the players option expired? */
+        
+        // expire the players option
         if (v->option_type != OPT_NOOPTION)
-            if (v->option_expire_time == 0) v->option_type = OPT_NOOPTION;
+        {
+            // has the players option expired?
+            if (v->option_expire_time == 0)
+            {
+                // reset the players option
+                if (v->option_type == OPT_SLOWSHIELD) v->speed_shield_force_down = VAISSEAU_SPEED_SHIELD_FORCE_DOWN;
+                if (v->option_type == OPT_THRUST) v->thrust_max = ftofix(VAISSEAU_THRUST_MAX);
+                
+                v->option_type = OPT_NOOPTION;
+            }
             else --v->option_expire_time;
-        /* has this player taken the option? */
+        }
+        
+        // has this player taken the option? 
         if (!v->explode && opt->active)
             if(abs((v->xpos+16)-(opt->x+6))<=(26+12)/2 && abs((v->ypos+16)-(opt->y+6))<=(28+12)/2)
                 attrib_option(opt, allv, i); 
