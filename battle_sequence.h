@@ -62,6 +62,7 @@ private:
         int    nb_views;
         int    nb_players;
         int    nb_lives;
+        int level_no;
         bool use_dca;
         bool wall_collision;
         struct vaisseau_data vaisseaux[NB_MAX_VAISSEAU];

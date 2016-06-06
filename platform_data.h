@@ -7,7 +7,8 @@
 #define NB_DCA 2
 #define MAX_DCA_TIR 3
 
-struct dca_data {
+struct dca_data 
+{
     int xsrc, ysrc;
     int area;
     int delayed;
@@ -17,21 +18,36 @@ struct dca_data {
 };
 
 struct platform_data
-  {
+{
 	int xmin,xmax;
 	int yflat;
-  };
+};
 
 // edges of the map, where the ships will warp to the opposite edge
 struct edge_data
-    {
+{
     int leftx, rightx;
     int topy, bottomy;
     bool wrapx, wrapy;
-    };
+};
+
+// CHANGE THESE TO BE SHIP ASSETS, which would include wavs
+struct level_ship_assets
+{
+    char * normalsprite;
+    char * thrustsprite; 
+    char * thrust2sprite;
+    char * shieldsprite;
+    char * boomwav;
+    char * refuelloopwav;
+    char * shieldloopwav;
+    char * thrustloopwav;
+    char * reboundwav;
+    char * shootwav;
+};
 
 struct level_data
-	{
+{
 	char * bmpname;
     char * mini_bmpname;
     char * collision_bmpname;
@@ -49,10 +65,12 @@ struct level_data
     bool use_dca;
     bool wall_collision;
     struct edge_data edgedata;
-	};
+    struct level_ship_assets * shipsassets;
+    char * explosion_spritename;
+};
 
 void init_level_dca(struct dca_data *dca, int xsrc, int ysrc, int area, int delay);
-void init_level_data(struct level_data* leveldat, char * bmpname, char *mini_bmpname, char *collision_bmpname, struct platform_data *platformdata, int nbplatforms, struct edge_data edgedata, bool use_dca, bool wall_collision);
+void init_level_data(struct level_data* leveldat, char * bmpname, char *mini_bmpname, char *collision_bmpname, struct platform_data *platformdata, int nbplatforms, struct edge_data edgedata, struct level_ship_assets * shipsassets, char * explosion_spritename, bool use_dca, bool wall_collision);
 int load_level(struct level_data* leveldat, int largeur, int hauteur);
 void unload_level(struct level_data* leveldat);
 #endif

@@ -9,7 +9,7 @@ const int IntroSequence::maxi=400;
 IntroSequence::IntroSequence(GameSequence* previous, float zoom, float zoomspeed, int players, int level, int lives, bool dca, bool wall)
 	: GameSequence(previous)
 {
-	iLogo=load_bitmap("intro_logo.bmp",iLogoPalette);
+	iLogo=load_bitmap("assets/intro/intro_logo.bmp",iLogoPalette);
 	iZoomMax=iZoom=ftofix(zoom);
 	iZoomSpeed=ftofix(zoomspeed);
 	iDoublebuffer=create_bitmap(INTRO_SCREEN_WIDTH,maxi-mini);

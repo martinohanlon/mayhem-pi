@@ -39,13 +39,13 @@
 
 int main()
 {
- GameManager::Init();
- // previous seq, nb views, nb players, start level
- GameSequence * seq=new IntroSequence(NULL, 10.0, 0.5, 2, 0, 10, false, true);
+    GameManager::Init();
+    // previous seq, nb views, nb players, start level
+    GameSequence * seq=new IntroSequence(NULL, 10.0, 0.5, 2, 0, 10, false, true);
 
- GameManager::Run(seq);
- GameManager::Shutdown();
- return 0;
+    GameManager::Run(seq);
+    GameManager::Shutdown();
+    return 0;
 }
 
 END_OF_MAIN();                                               // Allegro style 4 Win

@@ -7,207 +7,228 @@
 
 
 
-                                //------------------//
-                                //     VARIABLES    //
-                                //------------------//
-  struct edge_data edgedata = {0, 791, 0, 1500, false, false};
+//------------------//
+// LEVEL VARIABLES  //
+//------------------//
 
-  struct platform_data level1[] =
-  { { 504, 568, 985 }, 
+//LEVEL 1
+struct platform_data platforms1[] =
+    { { 504, 568, 985 }, 
     { 464, 513, 333 },	
     { 428, 497, 531 },	
     { 178, 241, 875 },
     { 8, 37, 187 },
-	{ 302, 351, 271 },
-	{ 434, 521, 835 },
-	{ 60, 127, 1045 },
-	{ 499, 586, 1165 },
+    { 302, 351, 271 },
+    { 434, 521, 835 },
+    { 60, 127, 1045 },
+    { 499, 586, 1165 },
     { 68, 145, 1181 } };
- 
-  struct platform_data level2[] =
-  {
-    { 552, 615, 513 },
+int numplatforms1 = 10;
+struct edge_data edgedata = {0, 791, 0, 1500, false, false};
+struct level_ship_assets shipsassets[4] = 
+    { {"assets/default/ship1_256c.bmp", "assets/default/ship1_thrust_256c.bmp", "assets/default/ship1_thrust2_256c.bmp", "assets/default/ship1_shield_256c.bmp",
+       "assets/default/sfx_boom.WAV", "assets/default/sfx_loop_refuel.WAV", "assets/default/sfx_loop_shield.WAV", "assets/default/sfx_loop_thrust.WAV", "assets/default/sfx_rebound.WAV", "assets/default/sfx_shoot.WAV"},
+      {"assets/default/ship2_256c.bmp", "assets/default/ship2_thrust_256c.bmp", "assets/default/ship2_thrust2_256c.bmp", "assets/default/ship2_shield_256c.bmp",
+       "assets/default/sfx_boom.WAV", "assets/default/sfx_loop_refuel.WAV", "assets/default/sfx_loop_shield.WAV", "assets/default/sfx_loop_thrust.WAV", "assets/default/sfx_rebound.WAV", "assets/default/sfx_shoot.WAV"},
+      {"assets/default/ship3_256c.bmp", "assets/default/ship3_thrust_256c.bmp", "assets/default/ship3_thrust2_256c.bmp", "assets/default/ship3_shield_256c.bmp",
+       "assets/default/sfx_boom.WAV", "assets/default/sfx_loop_refuel.WAV", "assets/default/sfx_loop_shield.WAV", "assets/default/sfx_loop_thrust.WAV", "assets/default/sfx_rebound.WAV", "assets/default/sfx_shoot.WAV"},
+      {"assets/default/ship4_256c.bmp", "assets/default/ship4_thrust_256c.bmp", "assets/default/ship4_thrust2_256c.bmp", "assets/default/ship4_shield_256c.bmp",
+       "assets/default/sfx_boom.WAV", "assets/default/sfx_loop_refuel.WAV", "assets/default/sfx_loop_shield.WAV", "assets/default/sfx_loop_thrust.WAV", "assets/default/sfx_rebound.WAV", "assets/default/sfx_shoot.WAV"} };
+
+//LEVEL 2
+struct platform_data platforms2[] =
+    { { 552, 615, 513 },
     { 201, 259, 175 },
-	{ 546, 599, 327 },
-	{ 660, 697, 447 },
-	{ 350, 435, 621 },
-	{ 468, 525, 915 },
-	{ 596, 697, 1141 },
-	{ 21, 92, 1087 } };
+    { 546, 599, 327 },
+    { 660, 697, 447 },
+    { 350, 435, 621 },
+    { 468, 525, 915 },
+    { 596, 697, 1141 },
+    { 21, 92, 1087 } };
+int numplatforms2 = 8;
 
-  struct platform_data level3[] =
-  { { 565, 616, 459 },
+//LEVEL 3
+struct platform_data platforms3[] =
+    { { 565, 616, 459 },
     { 14, 65, 111 },
-	{ 343, 398, 207 },
-	{ 713, 760, 231 },
-	{ 473, 540, 617 },
-	{ 316, 385, 805 },
-	{ 492, 548, 987 },
-	{ 66, 145, 1180 },
-	{ 38, 93, 1121 } };
+    { 343, 398, 207 },
+    { 713, 760, 231 },
+    { 473, 540, 617 },
+    { 316, 385, 805 },
+    { 492, 548, 987 },
+    { 66, 145, 1180 },
+    { 38, 93, 1121 } };
+int numplatforms3 = 9;
 
-  struct platform_data level4[] =
-  { { 565, 616, 459 },
+//LEVEL 4
+struct platform_data platforms4[] =
+    { { 565, 616, 459 },
     { 14, 65, 111 },
-	{ 343, 398, 207 },
-	{ 713, 760, 231 },
-	{ 473, 540, 617 },
-	{ 316, 385, 805 },
-	{ 492, 548, 987 },
-	{ 66, 145, 1180 },
-	{ 38, 93, 1121 } };
-    
-  struct platform_data level5[] =
-  { { 504, 568, 985 }, 
+    { 343, 398, 207 },
+    { 713, 760, 231 },
+    { 473, 540, 617 },
+    { 316, 385, 805 },
+    { 492, 548, 987 },
+    { 66, 145, 1180 },
+    { 38, 93, 1121 } };
+int numplatforms4 = 9;
+
+//LEVEL 5
+struct platform_data platforms5[] =
+    { { 504, 568, 985 }, 
     { 464, 513, 333 },	
     { 428, 497, 531 },	
     { 178, 241, 875 },
     { 8, 37, 187 },
-	{ 302, 351, 271 },
-	{ 434, 521, 835 },
-	{ 60, 127, 1045 },
+    { 302, 351, 271 },
+    { 434, 521, 835 },
+    { 60, 127, 1045 },
     { 348, 377, 1089 },
-	{ 499, 586, 1165 },
+    { 499, 586, 1165 },
     { 68, 145, 1181 } };
+int numplatforms5 = 11;
 struct edge_data edgedata5 = {0, 791, 0, 1500, true, false};
-  
-  struct platform_data level6[] =
-  { { 565, 616, 459 },
+
+//LEVEL 6
+struct platform_data platforms6[] =
+    { { 565, 616, 459 },
     { 14, 65, 111 },
-	{ 343, 398, 207 },
-	{ 713, 760, 231 },
-	{ 473, 540, 617 },
-	{ 316, 385, 805 },
-	{ 492, 548, 987 },
-	{ 66, 145, 1180 },
-	{ 38, 93, 1121 } };
-  struct edge_data edgedata6 = {0, 791, 0, 1500, true, false};
-     
+    { 343, 398, 207 },
+    { 713, 760, 231 },
+    { 473, 540, 617 },
+    { 316, 385, 805 },
+    { 492, 548, 987 },
+    { 66, 145, 1180 },
+    { 38, 93, 1121 } };
+int numplatforms6 = 9;
+struct edge_data edgedata6 = {0, 791, 0, 1500, true, false};
+
 // init currentlevel with level
-BattleSequence::BattleSequence(GameSequence *previous, int nbviews, int nbplayers, int nblives, int level, bool usedca, bool wallcollision, int s_width, int s_height)
+BattleSequence::BattleSequence(GameSequence *previous, int nbviews, int nbplayers, int nblives, int levelno, bool usedca, bool wallcollision, int s_width, int s_height)
   : GameSequence(previous),moon_physics(0.07,0.984,0.99,0.6,0.6,0.6,0.6,0.2)
 #ifdef __NET_SUPPORT__
      , gameclient(3000,"localhost"), gameserver(3000)
 #endif
 {
-  screen_width = s_width;
-  screen_height = s_height;
+    screen_width = s_width;
+    screen_height = s_height;
 
-  nb_views = nbviews;
-  nb_players = nbplayers;
-  nb_lives = nblives;
-  currentlevel=&levels[level];
-  use_dca = usedca;
-  wall_collision = wallcollision;
-  
-  InitLevelData();
-  InitMappingAndControls();
-  InitAllSpriteGfx();
-  InitSoundFx();
-  InitPlayerInfo();
-  InitPlayerViews();
-  
-  // TODO ASSERT?
-  load_level(currentlevel, screen_width, screen_height);
+    nb_views = nbviews;
+    nb_players = nbplayers;
+    nb_lives = nblives;
+    level_no = levelno;
+    currentlevel=&levels[level_no];
+    use_dca = usedca;
+    wall_collision = wallcollision;
+
+    InitLevelData();
+    InitMappingAndControls();
+    InitAllSpriteGfx();
+    InitSoundFx();
+    InitPlayerInfo();
+    InitPlayerViews();
+
+    // TODO ASSERT?
+    load_level(currentlevel, screen_width, screen_height);
 }
 
 BattleSequence::~BattleSequence()
 {
-  clean_sprite_buffer_screen();
-  // stop sound
-  cleanup_soundfx(&sounds[0]);
-  cleanup_soundfx(&sounds[1]);
-  if(nb_views>=3)
-    cleanup_soundfx(&sounds[2]);
-  if(nb_views>=4)
-    cleanup_soundfx(&sounds[3]);
+    clean_sprite_buffer_screen();
+    // stop sound
+    cleanup_soundfx(&sounds[0]);
+    cleanup_soundfx(&sounds[1]);
+    if(nb_views>=3)
+        cleanup_soundfx(&sounds[2]);
+    if(nb_views>=4)
+        cleanup_soundfx(&sounds[3]);
 
-  int i;
-  for(i=0;i<nb_views;i++)		// cleanup buffers for each player ship
-	clean_player_view(&views[i]);
+    int i;
+    for(i=0;i<nb_views;i++)		// cleanup buffers for each player ship
+        clean_player_view(&views[i]);
 
-  for(i=0;i<nb_players;i++)		// cleanup buffers for each player ship
-	clean_vaisseau_data(&vaisseaux[i]);
+    for(i=0;i<nb_players;i++)		// cleanup buffers for each player ship
+        clean_vaisseau_data(&vaisseaux[i]);
 
-  for(i=0;i<NB_MAX_TYPE_VAISSEAU;i++)	// cleanup the buffers for each ship type
-	cleanup_vaisseau_gfx(&gfx_vaisseaux[i]);
+    for(i=0;i<NB_MAX_TYPE_VAISSEAU;i++)	// cleanup the buffers for each ship type
+        cleanup_vaisseau_gfx(&gfx_vaisseaux[i]);
 
-  cleanup_sprite_explosion();
-  unload_option(opt);
-  unload_level(currentlevel);
+    cleanup_sprite_explosion();
+    unload_option(opt);
+    unload_level(currentlevel);
 }
 
 void BattleSequence::InitLevelData()
 {
-  init_level_data(&levels[0],"Mayhem_Level1_Map_256c.bmp", "Mini_map1.bmp", "Mayhem_Level1_Map_256c.bmp", level1, 10, edgedata, use_dca, wall_collision);
-                                       // x    y  area  delay
-  init_level_dca(&(&levels[0])->alldca[0], 766, 85, 150, 25);
-  init_level_dca(&(&levels[0])->alldca[1], 170, 481, 90, 25);
-  
-  init_level_data(&levels[1],"Mayhem_Level2_Map_256c.bmp", "Mini_map2.bmp", "Mayhem_Level2_Map_256c.bmp", level2, 8, edgedata, use_dca, wall_collision);
-  init_level_dca(&(&levels[1])->alldca[0], 647, 273, 150, 25);
-  init_level_dca(&(&levels[1])->alldca[1], 267, 947, 90, 25);
-  
-  init_level_data(&levels[2],"Mayhem_Level3_Map_256c.bmp", "Mini_map3.bmp", "Mayhem_Level3_Map_256c.bmp", level3, 9, edgedata, use_dca, wall_collision);
-  init_level_dca(&(&levels[2])->alldca[0], 180, 555, 90, 25);
-  init_level_dca(&(&levels[2])->alldca[1], 152, 1012, 90, 25);
-  
-  init_level_data(&levels[3],"Mayhem_Level4_Map_256c.bmp", "Mini_map4.bmp", "Mayhem_Level4_Map_256c.bmp", level4, 9, edgedata, use_dca, wall_collision);
-  init_level_dca(&(&levels[3])->alldca[0], 651, 747, 90, 25);
-  init_level_dca(&(&levels[3])->alldca[1], 29, 575, 150, 25);
-  
-  init_level_data(&levels[4],"Mayhem_Level5_Map_256c.bmp", "Mini_map5.bmp", "Mayhem_Level5_Map_256c.bmp", level5, 10, edgedata5, use_dca, wall_collision);
-  init_level_dca(&(&levels[4])->alldca[0], 151, 632, 90, 25);
-  init_level_dca(&(&levels[4])->alldca[1], 756, 709, 150, 25);
-  
-  init_level_data(&levels[5],"Mayhem_Level6_Map_256c.bmp", "Mini_map6.bmp", "Mayhem_Level6_Collision.bmp", level6, 9, edgedata6, use_dca, wall_collision);
-  init_level_dca(&(&levels[5])->alldca[0], 58, 429, 150, 25);
-  init_level_dca(&(&levels[5])->alldca[1], 361, 347, 90, 25);
+    //initialise level data    
+    switch(level_no) 
+    {
+        case 0:
+            init_level_data(&levels[0],"assets/level1/Mayhem_Level1_Map_256c.bmp", "assets/level1/Mini_map1.bmp", "assets/level1/Mayhem_Level1_Map_256c.bmp", platforms1, numplatforms1, edgedata, shipsassets, "assets/default/Sprite_explosion.bmp", use_dca, wall_collision);
+                                                // x    y  area  delay
+            init_level_dca(&(&levels[0])->alldca[0], 766, 85, 150, 25);
+            init_level_dca(&(&levels[0])->alldca[1], 170, 481, 90, 25);
+            break;
+        case 1:
+            init_level_data(&levels[1],"assets/level2/Mayhem_Level2_Map_256c.bmp", "assets/level2/Mini_map2.bmp", "assets/level2/Mayhem_Level2_Map_256c.bmp", platforms2, numplatforms2, edgedata, shipsassets, "assets/default/Sprite_explosion.bmp", use_dca, wall_collision);
+            init_level_dca(&(&levels[1])->alldca[0], 647, 273, 150, 25);
+            init_level_dca(&(&levels[1])->alldca[1], 267, 947, 90, 25);
+            break;
+        case 2:
+            init_level_data(&levels[2],"assets/level3/Mayhem_Level3_Map_256c.bmp", "assets/level3/Mini_map3.bmp", "assets/level3/Mayhem_Level3_Map_256c.bmp", platforms3, numplatforms3, edgedata, shipsassets, "assets/default/Sprite_explosion.bmp", use_dca, wall_collision);
+            init_level_dca(&(&levels[2])->alldca[0], 180, 555, 90, 25);
+            init_level_dca(&(&levels[2])->alldca[1], 152, 1012, 90, 25);
+            break;
+        case 3:
+            init_level_data(&levels[3],"assets/level4/Mayhem_Level4_Map_256c.bmp", "assets/level4/Mini_map4.bmp", "assets/level4/Mayhem_Level4_Map_256c.bmp", platforms4, numplatforms4, edgedata, shipsassets, "assets/default/Sprite_explosion.bmp", use_dca, wall_collision);
+            init_level_dca(&(&levels[3])->alldca[0], 651, 747, 90, 25);
+            init_level_dca(&(&levels[3])->alldca[1], 29, 575, 150, 25);
+            break;
+        case 4:
+            init_level_data(&levels[4],"assets/level5/Mayhem_Level5_Map_256c.bmp", "assets/level5/Mini_map5.bmp", "assets/level5/Mayhem_Level5_Map_256c.bmp", platforms5, numplatforms5, edgedata5, shipsassets, "assets/default/Sprite_explosion.bmp", use_dca, wall_collision);
+            init_level_dca(&(&levels[4])->alldca[0], 151, 632, 90, 25);
+            init_level_dca(&(&levels[4])->alldca[1], 756, 709, 150, 25);
+            break;
+        case 5:
+            init_level_data(&levels[5],"assets/level6/Mayhem_Level6_Map_256c.bmp", "assets/level6/Mini_map6.bmp", "assets/level6/Mayhem_Level6_Collision.bmp", platforms6, numplatforms6, edgedata6, shipsassets, "assets/default/Sprite_explosion.bmp", use_dca, wall_collision);
+            init_level_dca(&(&levels[5])->alldca[0], 58, 429, 150, 25);
+            init_level_dca(&(&levels[5])->alldca[1], 361, 347, 90, 25);
+            break;
+    }
 
 }
 
 void BattleSequence::InitMappingAndControls()
 {
-  // init command
-  // Here we have to pad the right keys
-  init_mapping_key(&keyvaisseau[1],&commands[1],KEY_LEFT,KEY_RIGHT,KEY_DEL_PAD,KEY_0_PAD,KEY_ENTER_PAD);
-  init_mapping_key(&keyvaisseau[0],&commands[0],KEY_Z,KEY_X,KEY_V,KEY_C,KEY_G);
+    // init command
+    // Here we have to pad the right keys
+    init_mapping_key(&keyvaisseau[0],&commands[0],0);
+    init_mapping_key(&keyvaisseau[1],&commands[1],1);
+    
+    if(nb_views>=3)
+        init_mapping_key(&keyvaisseau[2],&commands[2],2);
 
-  if(nb_views>=3)
-    init_mapping_key(&keyvaisseau[2],&commands[2],KEY_B,KEY_N,KEY_COMMA,KEY_M,KEY_L);
+    if(nb_views>=4)
+        init_mapping_key(&keyvaisseau[3],&commands[3],3);
 
-  if(nb_views>=4)
-    init_mapping_key(&keyvaisseau[3],&commands[3],KEY_Y,KEY_U,KEY_O,KEY_I,KEY_0);
-
-
-  commands[0].controlled_ship=&vaisseaux[0];
-  commands[1].controlled_ship=&vaisseaux[1];
-  if(nb_views>=3)
-    commands[2].controlled_ship=&vaisseaux[2];
-  if(nb_views>=4)
-    commands[3].controlled_ship=&vaisseaux[3];
+    commands[0].controlled_ship=&vaisseaux[0];
+    commands[1].controlled_ship=&vaisseaux[1];
+    if(nb_views>=3)
+        commands[2].controlled_ship=&vaisseaux[2];
+    if(nb_views>=4)
+        commands[3].controlled_ship=&vaisseaux[3];
 }
 
 void BattleSequence::InitAllSpriteGfx()
 {
+    // get the ship sprites for this level
+    struct level_ship_assets * assets = currentlevel->shipsassets;
     // init the gfx for the first vaisseau type
-    init_vaisseau_gfx_from_file(&gfx_vaisseaux[0],"ship1_256c.bmp",
-                                                "ship1_thrust_256c.bmp",
-                                                "ship1_thrust2_256c.bmp",
-                                                "ship1_shield_256c.bmp");
-    init_vaisseau_gfx_from_file(&gfx_vaisseaux[1],"ship2_256c.bmp",
-                                                "ship2_thrust_256c.bmp",
-                                                "ship2_thrust2_256c.bmp",
-                                                "ship2_shield_256c.bmp");
-    init_vaisseau_gfx_from_file(&gfx_vaisseaux[2],"ship3_256c.bmp",
-                                                "ship3_thrust_256c.bmp",
-                                                "ship3_thrust2_256c.bmp",
-                                                "ship3_shield_256c.bmp");
-    init_vaisseau_gfx_from_file(&gfx_vaisseaux[3],"ship4_256c.bmp",
-                                                "ship4_thrust_256c.bmp",
-                                                "ship4_thrust2_256c.bmp",
-                                                "ship4_shield_256c.bmp");
-    init_sprite_explosion("Sprite_explosion.bmp");
+    init_vaisseau_gfx_from_file(&gfx_vaisseaux[0], assets[0].normalsprite, assets[0].thrustsprite, assets[0].thrust2sprite, assets[0].shieldsprite);
+    init_vaisseau_gfx_from_file(&gfx_vaisseaux[1], assets[1].normalsprite, assets[1].thrustsprite, assets[1].thrust2sprite, assets[1].shieldsprite);
+    init_vaisseau_gfx_from_file(&gfx_vaisseaux[2], assets[2].normalsprite, assets[2].thrustsprite, assets[2].thrust2sprite, assets[2].shieldsprite);
+    init_vaisseau_gfx_from_file(&gfx_vaisseaux[3], assets[3].normalsprite, assets[3].thrustsprite, assets[3].thrust2sprite, assets[3].shieldsprite);
+    init_sprite_explosion(currentlevel->explosion_spritename);
 
     for(int i=0;i<nb_players;i++)
         //init_vaisseau_data(&vaisseaux[i],&gfx_vaisseaux[i],0.9,0.32,5,1284,1,8,214,2,2);
@@ -223,58 +244,60 @@ void BattleSequence::InitAllSpriteGfx()
                            VAISSEAU_SPEED_SHIELD_FORCE_UP);
         
     // time after explosion, time active, time player has
-    init_option_data(opt, "Option.bmp", 49, 150, 1500);
+    init_option_data(opt, "assets/default/Option.bmp", 49, 150, 1500);
 }
 
 void BattleSequence::InitPlayerInfo()
 {
-  // init player info
-  char *defplayername[] = { "Player 1" , "Player 2" , "Player 3" , "Player 4" };
-  for(int i=0;i<nb_players;i++)
+    // init player info
+    char *defplayername[] = { "Player 1" , "Player 2" , "Player 3" , "Player 4" };
+    for(int i=0;i<nb_players;i++)
     {
-    init_player_info(&players[i],defplayername[i],nb_lives,&vaisseaux[i]);
-	init_ship_pos_from_platforms(&vaisseaux[i],&(currentlevel->platformdata[i]));
+        init_player_info(&players[i],defplayername[i],nb_lives,&vaisseaux[i]);
+        init_ship_pos_from_platforms(&vaisseaux[i],&(currentlevel->platformdata[i]));
     }
 }
 
 
 void BattleSequence::InitPlayerViews()
 {
-
-  if (nb_views == 1)
-  {
-  init_player_view(&views[0],90,100,300,260,&players[0]);
-  }
-  else if (nb_views == 2)
-  {
-  init_player_view(&views[0], screen_width*(90.0/800.0) , screen_height*(100.0/600.0), screen_width*(300.0/800.0), screen_height*(260.0/600.0),&players[0]);
-  init_player_view(&views[1], screen_width*(410.0/800.0) , screen_height*(100.0/600.0) ,screen_width*(300.0/800.0), screen_height*(260.0/600.0),&players[1]);
-  }
-  else if (nb_views == 3)
-  {
-  init_player_view(&views[0], screen_width*(90/800.0), screen_height*(40/600.0),screen_width*(300.0/800.0),screen_height*(260.0/600.0),&players[0]);
-  init_player_view(&views[1], screen_width*(410/800.0) ,screen_height*(40/600.0),screen_width*(300.0/800.0),screen_height*(260.0/600.0),&players[1]);
-  init_player_view(&views[2], screen_width*(40/800.0) , screen_height*(310/600.0),screen_width*(300.0/800.0),screen_height*(260.0/600.0),&players[2]);
-  }
-  else if (nb_views == 4)
-  {
-  init_player_view(&views[0], screen_width*(90/800.0), screen_height*(40/600.0),screen_width*(300.0/800.0),screen_height*(260.0/600.0),&players[0]);
-  init_player_view(&views[1], screen_width*(410/800.0) ,screen_height*(40/600.0),screen_width*(300.0/800.0),screen_height*(260.0/600.0),&players[1]);
-  init_player_view(&views[2], screen_width*(40/800.0), screen_height*(310/600.0),screen_width*(300.0/800.0),screen_height*(260.0/600.0),&players[2]);
-  init_player_view(&views[3], screen_width*(460/800.0), screen_height*(310/600.0),screen_width*(300.0/800.0),screen_height*(260.0/600.0),&players[3]);
-  }
+    if (nb_views == 1)
+    {
+        init_player_view(&views[0],90,100,300,260,&players[0]);
+    }
+    else if (nb_views == 2)
+    {
+        init_player_view(&views[0], screen_width*(90.0/800.0) , screen_height*(100.0/600.0), screen_width*(300.0/800.0), screen_height*(260.0/600.0),&players[0]);
+        init_player_view(&views[1], screen_width*(410.0/800.0) , screen_height*(100.0/600.0) ,screen_width*(300.0/800.0), screen_height*(260.0/600.0),&players[1]);
+    }
+    else if (nb_views == 3)
+    {
+        init_player_view(&views[0], screen_width*(90/800.0), screen_height*(40/600.0),screen_width*(300.0/800.0),screen_height*(260.0/600.0),&players[0]);
+        init_player_view(&views[1], screen_width*(410/800.0) ,screen_height*(40/600.0),screen_width*(300.0/800.0),screen_height*(260.0/600.0),&players[1]);
+        init_player_view(&views[2], screen_width*(40/800.0) , screen_height*(310/600.0),screen_width*(300.0/800.0),screen_height*(260.0/600.0),&players[2]);
+    }
+    else if (nb_views == 4)
+    {
+        init_player_view(&views[0], screen_width*(90/800.0), screen_height*(40/600.0),screen_width*(300.0/800.0),screen_height*(260.0/600.0),&players[0]);
+        init_player_view(&views[1], screen_width*(410/800.0) ,screen_height*(40/600.0),screen_width*(300.0/800.0),screen_height*(260.0/600.0),&players[1]);
+        init_player_view(&views[2], screen_width*(40/800.0), screen_height*(310/600.0),screen_width*(300.0/800.0),screen_height*(260.0/600.0),&players[2]);
+        init_player_view(&views[3], screen_width*(460/800.0), screen_height*(310/600.0),screen_width*(300.0/800.0),screen_height*(260.0/600.0),&players[3]);
+    }
 }
 
 void BattleSequence::InitSoundFx()
 {
-init_soundfx_from_wavfile(&sounds[0],"sfx_loop_thrust.WAV","sfx_loop_shield.WAV","sfx_loop_refuel.WAV","sfx_shoot.WAV","sfx_boom.WAV","sfx_rebound.WAV");
-init_soundfx_from_wavfile(&sounds[1],"sfx_loop_thrust.WAV","sfx_loop_shield.WAV","sfx_loop_refuel.WAV","sfx_shoot.WAV","sfx_boom.WAV","sfx_rebound.WAV");
-if (nb_views >= 3)
-    init_soundfx_from_wavfile(&sounds[2],"sfx_loop_thrust.WAV","sfx_loop_shield.WAV","sfx_loop_refuel.WAV","sfx_shoot.WAV","sfx_boom.WAV","sfx_rebound.WAV");
-if (nb_views >= 4)
-    init_soundfx_from_wavfile(&sounds[3],"sfx_loop_thrust.WAV","sfx_loop_shield.WAV","sfx_loop_refuel.WAV","sfx_shoot.WAV","sfx_boom.WAV","sfx_rebound.WAV");
+    // get the ship wav's for this level
+    struct level_ship_assets * assets = currentlevel->shipsassets;
+    
+    init_soundfx_from_wavfile(&sounds[0], assets[0].thrustloopwav, assets[0].shieldloopwav, assets[0].refuelloopwav, assets[0].shootwav, assets[0].boomwav, assets[0].reboundwav);
+    init_soundfx_from_wavfile(&sounds[1], assets[1].thrustloopwav, assets[1].shieldloopwav, assets[1].refuelloopwav, assets[1].shootwav, assets[1].boomwav, assets[1].reboundwav);
+    if (nb_views >= 3)
+        init_soundfx_from_wavfile(&sounds[2], assets[2].thrustloopwav, assets[2].shieldloopwav, assets[2].refuelloopwav, assets[2].shootwav, assets[2].boomwav, assets[2].reboundwav);
+    if (nb_views >= 4)
+        init_soundfx_from_wavfile(&sounds[3], assets[3].thrustloopwav, assets[3].shieldloopwav, assets[3].refuelloopwav, assets[3].shootwav, assets[3].boomwav, assets[3].reboundwav);
 
-create_sprite_buffer_screen();
+    create_sprite_buffer_screen();
 }
 
 GameSequence* BattleSequence::doRun()

@@ -8,7 +8,6 @@ struct mapping_key {
 	struct command *cmd;
 };
 
-void init_mapping_key(struct mapping_key* keymap, struct command *cmd,
-	                    int left,int right,int thrust, int shield, int fire);
+void init_mapping_key(struct mapping_key* keymap, struct command *cmd, int keysetno);
 
 #endif

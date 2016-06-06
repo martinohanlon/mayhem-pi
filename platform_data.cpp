@@ -1,6 +1,7 @@
 #include "platform_data.h"
 #include "utils.h"
 
+
 void init_level_dca(struct dca_data *dca, int xsrc, int ysrc, int area, int delay)
 {
    dca->xsrc=xsrc;
@@ -23,9 +24,7 @@ void init_level_dca(struct dca_data *dca, int xsrc, int ysrc, int area, int dela
       dca_tir->free=true;
       }
 }
-
-
-void init_level_data(struct level_data* leveldat, char * bmpname, char *mini_bmpname, char *collision_bmpname, struct platform_data *platformdata, int nbplatforms, struct edge_data edgedata, bool use_dca, bool wall_collision)
+void init_level_data(struct level_data* leveldat, char * bmpname, char *mini_bmpname, char *collision_bmpname, struct platform_data *platformdata, int nbplatforms, struct edge_data edgedata, struct level_ship_assets * shipsassets, char * explosion_spritename, bool use_dca, bool wall_collision)
 {
 	leveldat->bmpname=bmpname;
     leveldat->mini_bmpname=mini_bmpname;
@@ -35,6 +34,8 @@ void init_level_data(struct level_data* leveldat, char * bmpname, char *mini_bmp
     leveldat->use_dca=use_dca;
     leveldat->wall_collision=wall_collision;
     leveldat->edgedata=edgedata;
+    leveldat->shipsassets=shipsassets;
+    leveldat->explosion_spritename=explosion_spritename;
 }
 
 int load_level(struct level_data * leveldat, int largeur, int hauteur)
