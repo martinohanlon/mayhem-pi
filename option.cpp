@@ -54,7 +54,7 @@ void init_option(struct option_data *opt, struct level_data *currentlevel, struc
                 y = allv[i].ypos + (15 - (opt->option_sprite->h / 2));
 
                 // make sure the option isnt going to collide with the background
-                if(test_pos_option(opt, currentlevel, opt->x, opt->y))
+                if(test_pos_option(opt, currentlevel, x, y))
                     opt->active=true;
                     opt->x = x;
                     opt->y = y;

@@ -104,7 +104,7 @@ int numplatforms6 = 9;
 struct edge_data edgedata6 = {0, 791, 0, 1500, true, false};
 
 // init currentlevel with level
-BattleSequence::BattleSequence(GameSequence *previous, int nbviews, int nbplayers, int nblives, int levelno, bool usedca, bool wallcollision, int s_width, int s_height)
+BattleSequence::BattleSequence(GameSequence *previous, int nbviews, int nbplayers, int nblives, int levelno, bool usedca, bool wallcollision, int s_width, int s_height, int player_controls[], int *joy_sets[][5])
   : GameSequence(previous),moon_physics(0.07,0.984,0.99,0.6,0.6,0.6,0.6,0.2)
 #ifdef __NET_SUPPORT__
      , gameclient(3000,"localhost"), gameserver(3000)
@@ -122,7 +122,7 @@ BattleSequence::BattleSequence(GameSequence *previous, int nbviews, int nbplayer
     wall_collision = wallcollision;
 
     InitLevelData();
-    InitMappingAndControls();
+    InitMappingAndControls(player_controls, joy_sets);
     InitAllSpriteGfx();
     InitSoundFx();
     InitPlayerInfo();
@@ -198,25 +198,28 @@ void BattleSequence::InitLevelData()
 
 }
 
-void BattleSequence::InitMappingAndControls()
+void BattleSequence::InitMappingAndControls(int player_controls[], int *joy_sets[][5])
 {
-    // init command
-    // Here we have to pad the right keys
-    init_mapping_key(&keyvaisseau[0],&commands[0],0);
-    init_mapping_key(&keyvaisseau[1],&commands[1],1);
-    
-    if(nb_views>=3)
-        init_mapping_key(&keyvaisseau[2],&commands[2],2);
-
-    if(nb_views>=4)
-        init_mapping_key(&keyvaisseau[3],&commands[3],3);
-
-    commands[0].controlled_ship=&vaisseaux[0];
-    commands[1].controlled_ship=&vaisseaux[1];
-    if(nb_views>=3)
-        commands[2].controlled_ship=&vaisseaux[2];
-    if(nb_views>=4)
-        commands[3].controlled_ship=&vaisseaux[3];
+    // init commands assigning either keyboard or joystick control mappings
+    int joystickno;
+    for (int playerno=0; playerno < nb_views; playerno++) 
+    {
+        //joystick or keyboard? 0-3 = keyboard 4-7 = joystick
+        if (player_controls[playerno] > 3)
+        {
+            joystickno = player_controls[playerno] - 4;
+            init_mapping_joy(&joyvaisseau[playerno], joy_sets, joystickno);
+            commands[playerno].joymap = &joyvaisseau[playerno];
+            commands[playerno].control_type = CONTROL_JOY;
+        } 
+        else
+        {
+            init_mapping_key(&keyvaisseau[playerno], player_controls[playerno]);
+            commands[playerno].keymap = &keyvaisseau[playerno];
+            commands[playerno].control_type = CONTROL_KEY;
+        }
+        commands[playerno].controlled_ship=&vaisseaux[playerno];
+    }
 }
 
 void BattleSequence::InitAllSpriteGfx()
@@ -231,7 +234,6 @@ void BattleSequence::InitAllSpriteGfx()
     init_sprite_explosion(currentlevel->explosion_spritename);
 
     for(int i=0;i<nb_players;i++)
-        //init_vaisseau_data(&vaisseaux[i],&gfx_vaisseaux[i],0.9,0.32,5,1284,1,8,214,2,2);
         init_vaisseau_data(&vaisseaux[i], &gfx_vaisseaux[i], 
                            VAISSEAU_MASS,
                            VAISSEAU_THRUST_MAX,
@@ -314,13 +316,14 @@ GameSequence* BattleSequence::doRun()
   while(isRunning)
   {
     while(InterruptTimer::wasTriggered()) {
-        if(key[KEY_ESC] || Gameover())
+        // TODO - refactor - bit of a hack button 6 is back on an xbox 360 controller!
+        if(key[KEY_ESC]  || joy[0].button[6].b || Gameover())
         {
             isRunning=false;
             break;
         }
         
-        get_input_clavier(nb_views,keyvaisseau);   // Clavier (only one... the other comes from .net)
+        get_control_input(nb_players, commands);
 
         #ifdef __NETSUPPORT__
         struct command  *cmdptr=keyvaisseau[0].cmd;
@@ -350,19 +353,19 @@ GameSequence* BattleSequence::doRun()
         #else
         
         if(!player_gameover(&players[0]))
-            handle_command(keyvaisseau[0].cmd);
+            handle_command(&commands[0]);
         #endif
         
         if(!player_gameover(&players[1]))
-            handle_command(keyvaisseau[1].cmd);
+            handle_command(&commands[1]);
 
         if(nb_views>=3)
             if(!player_gameover(&players[2]))
-                handle_command(keyvaisseau[2].cmd);
+                handle_command(&commands[2]);
 
         if(nb_views>=4)
             if(!player_gameover(&players[3]))
-                handle_command(keyvaisseau[3].cmd);
+                handle_command(&commands[3]);
                 
         calcul_pos(moon_physics,nb_players,vaisseaux,currentlevel->platformdata,currentlevel->nbplatforms);  // Position
         fuel_shield_calcul(nb_players,vaisseaux);

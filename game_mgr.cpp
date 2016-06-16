@@ -18,6 +18,7 @@ void GameManager::Init()
   InterruptTimer::init();
   set_color_depth(8);                                        // Combien de bitplan
   install_keyboard();                                        // Installe le clavier
+  install_joystick(JOY_TYPE_AUTODETECT);                     // Install joystick
   // GP TODO? THROW EXCEPTION?
   install_sound(DIGI_AUTODETECT , MIDI_AUTODETECT , NULL);
   set_gfx_mode( GFXOPENARG, DEFAULT_WIDTH, DEFAULT_HEIGHT, 0, 0 );          // test ecran

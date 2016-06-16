@@ -30,6 +30,17 @@ private:
    int liveschoice;
    bool dcachoice;
    bool wallchoice;
+   
+   void update_control(int playerno, int screenpos);
+   void update_joystick(int playerno, int screenpos);
+   int *get_joystick_action(int joystickno);
+   
+   int black;
+   int red;
+   int lightred;
+   
 };
+
+
 
 #endif

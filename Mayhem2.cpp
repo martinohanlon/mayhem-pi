@@ -21,7 +21,7 @@
 #include "vaisseau_data.h"
 #include "vaisseau_gfx.h"
 #include "mapping_key.h"
-#include "keyboard_input.h"
+#include "player_input.h"
 #include "soundfx.h"
 #include "command.h"
 #include "option.h"

@@ -37,15 +37,31 @@ DCA are anti spaceship guns which will fire at the player if they get too close.
 
 Wall collision can be turned off for new players to get used to the controls and playing the game.
 
-##Keys
+##Controls
 
-Player 1 - z, x, c, v, g 
+###Joysticks
 
-Player 2 - left, right, pad del, pad 0, pad enter
+Default joystick controls, assume an "xbox / ps like" joystick:
 
-Player 3 - b, n, 'comma', m, l
+Control | Action
+--- | --- 
+Stick 1 | Left / Right
+Button 1 (A) | Thrust
+Button 2 (B) | Shield
+Button 6 (RB) | Fire
 
-Player 4 - y, u, o, i, 0
+Joystick controls can changed using the menu.
+
+###Keys
+
+If joysticks are connected, they are used as the players controls, if there are less than 4 joysticks connected, keys are used for the rest of the players in order:
+
+Key | Left | Right | Shield | Thrust | Fire
+--- | --- | --- | --- | --- | ---
+1 | z | x | c | v | g 
+2 | left | right | pad del | pad 0 | pad enter
+3 | b | n | , | m | l
+4 | y | u | o | i | 0
 
 ##Install
 
@@ -75,6 +91,7 @@ make
 * 0.5 - timing and powerups are now dropped when players explode
 * 0.6 - new thrust powerup + bug fix
 * 0.7 - level structure changes
+* 0.8 - joystick control
 
 ##Contributors
 [Anthony Prieur](https://github.com/devpack)

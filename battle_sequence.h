@@ -10,7 +10,8 @@
 #include "vaisseau_data.h"
 #include "vaisseau_gfx.h"
 #include "mapping_key.h"
-#include "keyboard_input.h"
+#include "mapping_joy.h"
+#include "player_input.h"
 #include "soundfx.h"
 #include "command.h"
 #include "option.h"
@@ -38,11 +39,11 @@
 class BattleSequence : public GameSequence
 {
 public:
-       BattleSequence(GameSequence *previous,int nbviews, int nbplayers, int nblives, int level, bool usedca, bool wall_collision, int s_width, int s_height);
+       BattleSequence(GameSequence *previous,int nbviews, int nbplayers, int nblives, int level, bool usedca, bool wall_collision, int s_width, int s_height, int player_controls[], int *joy_sets[][5]);
        ~BattleSequence();
 private:
        void InitLevelData();
-       void InitMappingAndControls();
+       void InitMappingAndControls(int player_controls[], int *joy_sets[][5]);
        void InitAllSpriteGfx();
        void InitPlayerInfo();
        void InitPlayerViews();
@@ -67,6 +68,7 @@ private:
         bool wall_collision;
         struct vaisseau_data vaisseaux[NB_MAX_VAISSEAU];
         struct mapping_key keyvaisseau[NB_MAX_VAISSEAU];
+        struct mapping_joy joyvaisseau[NB_MAX_VAISSEAU];
         struct command commands[NB_MAX_VAISSEAU];
   // for each player we will need one of this structure initialization is made just after
   // allegro is actually started so that the bitmap can get created.

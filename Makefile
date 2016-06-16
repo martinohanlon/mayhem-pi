@@ -1,8 +1,8 @@
 CPP = g++
 CC = gcc
 RES  = 
-OBJ  = battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o keyboard_input.o mapping_key.o Mayhem2.o option.o physics.o platform_data.o player_info.o player_view.o soundfx.o utils.o vaisseau_data.o vaisseau_gfx.o $(RES)
-LINKOBJ  = battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o keyboard_input.o mapping_key.o Mayhem2.o option.o physics.o platform_data.o player_info.o player_view.o soundfx.o utils.o vaisseau_data.o vaisseau_gfx.o $(RES)
+OBJ  = battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o player_input.o mapping_key.o mapping_joy.o Mayhem2.o option.o physics.o platform_data.o player_info.o player_view.o soundfx.o utils.o vaisseau_data.o vaisseau_gfx.o $(RES)
+LINKOBJ  = battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o player_input.o mapping_key.o mapping_joy.o Mayhem2.o option.o physics.o platform_data.o player_info.o player_view.o soundfx.o utils.o vaisseau_data.o vaisseau_gfx.o $(RES)
 LIBS = -lalleg
 INCS = 
 BIN  = "mayhem2-pi"
@@ -36,11 +36,14 @@ game_mgr.o: game_mgr.cpp
 intro_sequence.o: intro_sequence.cpp
 	$(CPP) -c intro_sequence.cpp -o intro_sequence.o $(CXXFLAGS)
 
-keyboard_input.o: keyboard_input.cpp
-	$(CPP) -c keyboard_input.cpp -o keyboard_input.o $(CXXFLAGS)
+player_input.o: player_input.cpp
+	$(CPP) -c player_input.cpp -o player_input.o $(CXXFLAGS)
 
 mapping_key.o: mapping_key.cpp
 	$(CPP) -c mapping_key.cpp -o mapping_key.o $(CXXFLAGS)
+
+mapping_joy.o: mapping_joy.cpp
+	$(CPP) -c mapping_joy.cpp -o mapping_joy.o $(CXXFLAGS)
 
 Mayhem2.o: Mayhem2.cpp
 	$(CPP) -c Mayhem2.cpp -o Mayhem2.o $(CXXFLAGS)
