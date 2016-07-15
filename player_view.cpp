@@ -210,7 +210,7 @@ void init_tir(struct vaisseau_data *v)
 void plot_tir(struct vaisseau_data *v, struct level_data *currentlevel)
 {
      struct tir_data *shoot;
-
+     
      for (int i=0; i<MAX_TIR; i++)
      {
         shoot = &v->tir[i];
@@ -224,7 +224,7 @@ void plot_tir(struct vaisseau_data *v, struct level_data *currentlevel)
             continue;
             }
 
-        put_big_pixel(currentlevel->level_buffer, shoot->x, shoot->y, makecol(255,255,255));
+        put_big_pixel(currentlevel->level_buffer, shoot->x, shoot->y, currentlevel->particle_color);
 
         shoot->xposprecise = fixadd(shoot->xposprecise, shoot->dx);
         shoot->yposprecise = fixadd(shoot->yposprecise, shoot->dy);
@@ -264,7 +264,7 @@ void plot_tir(struct vaisseau_data *v, struct level_data *currentlevel)
                 continue;
                 }
 
-            put_big_pixel(currentlevel->level_buffer, backshoot->x, backshoot->y, makecol(255,255,255));
+            put_big_pixel(currentlevel->level_buffer, backshoot->x, backshoot->y, currentlevel->particle_color);
 
             backshoot->xposprecise = fixadd(backshoot->xposprecise, backshoot->dx);
             backshoot->yposprecise = fixadd(backshoot->yposprecise, backshoot->dy);
@@ -459,7 +459,7 @@ void plot_debris(struct vaisseau_data *v, const physics_constants& physics, stru
     {
         if(v->debris[j].active)
         {
-            put_big_pixel(currentlevel->level_buffer, v->debris[j].x, v->debris[j].y, makecol(255,255,255));
+            put_big_pixel(currentlevel->level_buffer, v->debris[j].x, v->debris[j].y, currentlevel->particle_color);
         }
     }
 
@@ -615,7 +615,7 @@ void plot_dca_tir(struct dca_data *dca, struct level_data *currentlevel)
 		   continue;
 		   }
 
-        put_big_pixel(currentlevel->level_buffer, dca_tir->x, dca_tir->y, makecol(255,255,255));
+        put_big_pixel(currentlevel->level_buffer, dca_tir->x, dca_tir->y, currentlevel->particle_color);
 
         dca_tir->xposprecise = fixadd(dca_tir->xposprecise, dca_tir->dx);
         dca_tir->yposprecise = fixadd(dca_tir->yposprecise, dca_tir->dy);

@@ -67,10 +67,12 @@ struct level_data
     struct edge_data edgedata;
     struct level_ship_assets * shipsassets;
     char * explosion_spritename;
+    int * particle_color_rgb;
+    int particle_color;
 };
 
 void init_level_dca(struct dca_data *dca, int xsrc, int ysrc, int area, int delay);
-void init_level_data(struct level_data* leveldat, char * bmpname, char *mini_bmpname, char *collision_bmpname, struct platform_data *platformdata, int nbplatforms, struct edge_data edgedata, struct level_ship_assets * shipsassets, char * explosion_spritename, bool use_dca, bool wall_collision);
+void init_level_data(struct level_data* leveldat, char * bmpname, char *mini_bmpname, char *collision_bmpname, struct platform_data *platformdata, int nbplatforms, struct edge_data edgedata, struct level_ship_assets * shipsassets, char * explosion_spritename, bool use_dca, bool wall_collision, int * particle_color_rgb);
 int load_level(struct level_data* leveldat, int largeur, int hauteur);
 void unload_level(struct level_data* leveldat);
 #endif

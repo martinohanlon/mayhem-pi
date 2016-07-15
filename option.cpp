@@ -15,17 +15,17 @@ void option_time(struct option_data *opt)
     }
 }
 
-bool test_pos_option(struct option_data *opt, struct level_data *currentlevel, int x, int y)
+bool test_pos_option(struct option_data *opt, int opt_type, struct level_data *currentlevel, int x, int y)
 {
    unsigned long address_bmp;
    unsigned char pixelcolor;
-   bmp_select(currentlevel->bitmap);
+   bmp_select(currentlevel->collision_bitmap);
    int ligne;
 
-   for(ligne=0; ligne < opt->option_sprite->h; ligne++)
+   for(ligne=0; ligne < opt->option_sprites[opt_type - 1].sprite->h; ligne++)
    {
       address_bmp = bmp_read_line(currentlevel->collision_bitmap, ligne + y);
-      for(int colonne=0; colonne < opt->option_sprite->w; colonne++)
+      for(int colonne=0; colonne < opt->option_sprites[opt_type - 1].sprite->w; colonne++)
       {
       pixelcolor = bmp_read8(address_bmp + colonne + x);
       if ((currentlevel->colormap[pixelcolor].r !=0) ||
@@ -49,16 +49,16 @@ void init_option(struct option_data *opt, struct level_data *currentlevel, struc
 			if (allv[i].explode_count == opt->explode_appear_time)
             {
                 int x, y;
-                
-                x = allv[i].xpos + (15 - (opt->option_sprite->w / 2));
-                y = allv[i].ypos + (15 - (opt->option_sprite->h / 2));
+                int opt_type = rand() % NB_OPT_TYPE + 1;
+                x = allv[i].xpos + (15 - (opt->option_sprites[opt_type - 1].sprite->w / 2));
+                y = allv[i].ypos + (15 - (opt->option_sprites[opt_type - 1].sprite->h / 2));
 
                 // make sure the option isnt going to collide with the background
-                if(test_pos_option(opt, currentlevel, x, y))
+                if(test_pos_option(opt, opt_type, currentlevel, x, y))
                     opt->active=true;
                     opt->x = x;
                     opt->y = y;
-                    opt->type = rand() % NB_OPT_TYPE + 1;
+                    opt->type = opt_type;
                     continue;
             }
         }
@@ -134,7 +134,7 @@ void draw_option(struct option_data *opt, struct level_data *currentlevel)
 {
     if(opt->active)
     {
-        draw_sprite(currentlevel->level_buffer, opt->option_sprite, opt->x, opt->y);
+        draw_sprite(currentlevel->level_buffer, opt->option_sprites[opt->type - 1].sprite, opt->x, opt->y);
     }
 }
 
@@ -149,7 +149,7 @@ void gestion_option(struct option_data *opt, struct level_data *currentlevel, st
 
 }
 
-int init_option_data(struct option_data *opt, char *option_sprite_name, int explode_appear_time, int active_time, int player_expire_time)
+int init_option_data(struct option_data *opt, struct option_sprite *option_sprites, int explode_appear_time, int active_time, int player_expire_time)
 {
     srand(time(NULL));
 
@@ -163,16 +163,21 @@ int init_option_data(struct option_data *opt, char *option_sprite_name, int expl
     opt->explode_appear_time = explode_appear_time;
     opt->player_expire_time = player_expire_time;
 
-    opt->option_sprite = load_bitmap(option_sprite_name,opt->option_sprite_colors);
-    if(opt->option_sprite) 
-        return(0);
-    else 
-        return(-1);
+    // load the sprites    
+    opt->option_sprites = option_sprites;
+    for (int optioncount = 0; optioncount < NB_OPT_TYPE; optioncount++)
+    {
+        opt->option_sprites[optioncount].sprite = load_bitmap(opt->option_sprites[optioncount].sprite_name, opt->option_sprites[optioncount].sprite_colors);
+    }
 
+    return(0);
 }
 
 void unload_option(struct option_data *opt)
 {
-    if (opt->option_sprite) destroy_bitmap(opt->option_sprite);
+    for (int optioncount = 0; optioncount < NB_OPT_TYPE; optioncount++)
+    {
+        destroy_bitmap(opt->option_sprites[optioncount].sprite);
+    }
 }
 

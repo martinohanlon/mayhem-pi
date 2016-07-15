@@ -92,6 +92,7 @@ make
 * 0.6 - new thrust powerup + bug fix
 * 0.7 - level structure changes
 * 0.8 - joystick control
+* 0.9 - new powerup icons
 
 ##Contributors
 [Anthony Prieur](https://github.com/devpack)

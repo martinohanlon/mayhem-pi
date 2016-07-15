@@ -19,21 +19,26 @@
 #define OPT_SLOWSHIELD_SPEED 1
 #define OPT_THRUST_MAX 0.47
 
+struct option_sprite {
+    char * sprite_name;
+    BITMAP *sprite;
+    PALETTE sprite_colors;    
+};
+
 struct option_data {
-   int    x, y;
-   int    type;
-   int    time_in;
-   int    time_out;
-   bool   active;
-   int    active_time;
-   int    explode_appear_time;
-   int    player_expire_time;
-   BITMAP *option_sprite;
-   PALETTE option_sprite_colors;
+    int    x, y;
+    int    type;
+    int    time_in;
+    int    time_out;
+    bool   active;
+    int    active_time;
+    int    explode_appear_time;
+    int    player_expire_time;
+    struct option_sprite *option_sprites;
 };
 
 void unload_option(struct option_data *opt);
-int init_option_data(struct option_data *opt, char *option_sprite_name, int explode_appear_time, int active_time, int player_expire_time);
+int init_option_data(struct option_data *opt, struct option_sprite *option_sprites, int explode_appear_time, int active_time, int player_expire_time);
 void gestion_option(struct option_data *opt, struct level_data *currentlevel,struct vaisseau_data *allv, struct player_view *views, int nbplayers, int nbviews);
 
 #endif
