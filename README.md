@@ -74,13 +74,27 @@ git clone https://github.com/martinohanlon/mayhem-pi
 
 ```
 cd mayhem-pi
-./start
+./start.sh
 ```
 
 ##Compile
 ```
 cd mayhem-pi
 make
+```
+
+## RetroPie 
+
+To run Mayhem on RetroPie, X to be installed.
+
+Install it from RetroPie Config > Update > Raspbian Tools > Install Desktop.
+
+To install Mayhem to the 'ports' section of RetroPie:
+
+```
+sudo apt-get install liballegro4.4 liballegro4-dev
+cd /home/pi/RetroPie/roms/ports
+git clone https://github.com/martinohanlon/mayhem-pi
 ```
 
 ##Version history
