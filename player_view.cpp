@@ -45,26 +45,27 @@ void draw_basic_player_view(struct player_view *v,int nbviews, BITMAP *src_map,P
 	vline(v->back_map_buffer,v->w+2*v->bordersize-1,0,v->h+2*v->bordersize,color);
 
 	char buffer[20];
-    char bufferx[20];
+    
+    //debug x,y data  
+    /*char bufferx[20];
     char buffery[20];
     char buffervx[20];
     char buffervy[20];
+      
+	sprintf(bufferx,"x=%d",ship->xpos);
+	sprintf(buffery,"y=%d",ship->ypos);
+	sprintf(buffervx,"vx=%d",fixtoi(ship->vx));
+	sprintf(buffervy,"vy=%d",-fixtoi(ship->vy));
+
+    textout(v->back_map_buffer, font, bufferx, 3 , v->h+v->bordersize+1, color);
+    textout(v->back_map_buffer, font, buffery, 55 , v->h+v->bordersize+1, color);
+    textout(v->back_map_buffer, font, buffervx, 195 , v->h+v->bordersize+1, color);
+    textout(v->back_map_buffer, font, buffervy, 250 , v->h+v->bordersize+1, color);*/
 
     if (player_gameover(v->player))
         sprintf(buffer,"Game over");
     else 
         sprintf(buffer,"Live(s): %d",v->player->nblives);
-
-    //debug x,y data    
-	/*sprintf(bufferx,"x=%d",ship->xpos);
-	sprintf(buffery,"y=%d",ship->ypos);
-	sprintf(buffervx,"vx=%d",fixtoi(ship->vx));
-	sprintf(buffervy,"vy=%d",-fixtoi(ship->vy));*/
-
-    /*textout(v->back_map_buffer, font, bufferx, 3 , v->h+v->bordersize+1, color);
-    textout(v->back_map_buffer, font, buffery, 55 , v->h+v->bordersize+1, color);
-    textout(v->back_map_buffer, font, buffervx, 195 , v->h+v->bordersize+1, color);
-    textout(v->back_map_buffer, font, buffervy, 250 , v->h+v->bordersize+1, color);*/
 
 	textout(v->back_map_buffer, font, v->player->name, 3, 2, color);
 	textout(v->back_map_buffer, font, buffer, v->bordersize+195 , 2, color);
@@ -537,8 +538,8 @@ void draw_debris(struct player_info *allpi, const physics_constants& physics, in
 
 void gestion_minimap(struct vaisseau_data *vaisseaux, struct level_data *currentlevel, int nbplayers, int largeur, int hauteur)
 {
-    //blit(currentlevel->mini_bitmap, currentlevel->mini_bitmap_buffer, 0, 0, 0, 0, 99, 150);
-    stretch_blit(currentlevel->mini_bitmap, currentlevel->mini_bitmap_buffer, 0, 0, 99, 150, 0, 0, largeur*(99/800.0), hauteur*(150/600.0));
+    //stretch_blit(currentlevel->mini_bitmap, currentlevel->mini_bitmap_buffer, 0, 0, 99, 150, 0, 0, largeur*(99/800.0), hauteur*(150/600.0));
+    stretch_blit(currentlevel->mini_bitmap, currentlevel->mini_bitmap_buffer, 0, 0, 99, 150, 0, 0, 10.0*(largeur/100.0), 15.0*(largeur/100.0));
 
     int x,y;
     struct vaisseau_data *v;
@@ -547,13 +548,10 @@ void gestion_minimap(struct vaisseau_data *vaisseaux, struct level_data *current
         v=&vaisseaux[i];
         x=(v->xpos>>3)+1;
         y=(v->ypos>>3)+3;
-        put_big_pixel(currentlevel->mini_bitmap_buffer, x*(largeur*(99/800.0)/99.0), y*(hauteur*(150/600.0)/150.0), makecol(255, 255, 255));
+        //put_big_pixel(currentlevel->mini_bitmap_buffer, x*(largeur*(99/800.0)/99.0), y*(hauteur*(150/600.0)/150.0), makecol(255, 255, 255));
+        put_big_pixel(currentlevel->mini_bitmap_buffer, x*((10.0*(largeur/100.0))/99.0), y*((15.0*(largeur/100.0))/150.0), makecol(255, 255, 255));
     }
 
-    blit(currentlevel->mini_bitmap_buffer, screen, 0, 0, largeur*(350.0/800.0), hauteur*(370.0/600.0), largeur*(99/800.0), hauteur*(150/600.0));
-    //stretch_blit(currentlevel->mini_bitmap_buffer, screen, 0, 0, 99, 150,largeur*(350.0/800.0), hauteur*(370.0/600.0), largeur*(99/800.0), hauteur*(150/600.0));
-
-    clear_bitmap(currentlevel->mini_bitmap_buffer);
 }
 
 //----------------------------------------------------------------------------//

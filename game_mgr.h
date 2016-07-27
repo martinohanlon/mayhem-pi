@@ -6,6 +6,9 @@
 #define  DEFAULT_WIDTH  1024
 #define  DEFAULT_HEIGHT 768
 
+//vsync creates some really erratic results on modern windows systems
+//#define USE_VSYNC
+
 class GameSequence
 {
 public:
@@ -26,11 +29,15 @@ private:
 class GameManager
 {
 public:
-   static void Init();
-   static void Shutdown();
-   static void Run(GameSequence *aSeq);
+    static void Init();
+    static void Shutdown();
+    static void Run(GameSequence *aSeq);
+    static void ChangeScreenRes(int width, int height);
+    static int display_width;
+    static int display_height;
+    static int native_width;
+    static int native_height;
 };
-
 
 class InterruptTimer
 {
