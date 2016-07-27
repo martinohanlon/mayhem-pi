@@ -85,7 +85,7 @@ make
 
 ## RetroPie 
 
-To run Mayhem on RetroPie, X needs to be installed - Install it from using the RetroPie menus - `RetroPie Config > Update > Raspbian Tools > Install Desktop`.
+To run Mayhem on RetroPie, X needs to be installed - Install it using the RetroPie menu - `RetroPie Config > Update > Raspbian Tools > Install Desktop`.
 
 To install Mayhem to the 'ports' section of RetroPie:
 
