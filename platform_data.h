@@ -1,6 +1,6 @@
 #ifndef __PLATFORM_DATA__
 #define __PLATFORM_DATA__
-#include <allegro.h>
+#include <allegro5/allegro.h>
 #include "vaisseau_data.h"
 
 #define USE_DCA 0
@@ -51,14 +51,14 @@ struct level_data
 	char * bmpname;
     char * mini_bmpname;
     char * collision_bmpname;
-	BITMAP * bitmap;
-	PALETTE colormap;
-    BITMAP * level_buffer;
-	BITMAP * mini_bitmap;
-	PALETTE mini_colormap;
-    BITMAP * collision_bitmap;
-	PALETTE collision_colormap;
-    BITMAP * mini_bitmap_buffer;
+    ALLEGRO_BITMAP *  bitmap;
+    //PALETTE colormap;
+    ALLEGRO_BITMAP * level_buffer;
+    ALLEGRO_BITMAP * mini_bitmap;
+    //PALETTE mini_colormap;
+    ALLEGRO_BITMAP * collision_bitmap;
+    //PALETTE collision_colormap;
+    ALLEGRO_BITMAP * mini_bitmap_buffer;
 	struct platform_data * platformdata;
 	int nbplatforms;
     struct dca_data alldca[NB_DCA];
@@ -68,7 +68,7 @@ struct level_data
     struct level_ship_assets * shipsassets;
     char * explosion_spritename;
     int * particle_color_rgb;
-    int particle_color;
+    ALLEGRO_COLOR particle_color;
 };
 
 void init_level_dca(struct dca_data *dca, int xsrc, int ysrc, int area, int delay);

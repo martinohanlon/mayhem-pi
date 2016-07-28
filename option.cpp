@@ -1,4 +1,6 @@
 #include "option.h"
+#include "allegro_compatibility.h"
+
 #include <stdio.h>
 
 void option_time(struct option_data *opt)
@@ -19,12 +21,13 @@ bool test_pos_option(struct option_data *opt, int opt_type, struct level_data *c
 {
    unsigned long address_bmp;
    unsigned char pixelcolor;
-   bmp_select(currentlevel->collision_bitmap);
+#if 0
+   bmp_select(currentlevel->collision_ALLEGRO_BITMAP);
    int ligne;
 
    for(ligne=0; ligne < opt->option_sprites[opt_type - 1].sprite->h; ligne++)
    {
-      address_bmp = bmp_read_line(currentlevel->collision_bitmap, ligne + y);
+      address_bmp = bmp_read_line(currentlevel->collision_ALLEGRO_BITMAP, ligne + y);
       for(int colonne=0; colonne < opt->option_sprites[opt_type - 1].sprite->w; colonne++)
       {
       pixelcolor = bmp_read8(address_bmp + colonne + x);
@@ -34,6 +37,8 @@ bool test_pos_option(struct option_data *opt, int opt_type, struct level_data *c
       return(false);
       }
    }
+
+#endif
    return(true);
 }
 
@@ -50,8 +55,8 @@ void init_option(struct option_data *opt, struct level_data *currentlevel, struc
             {
                 int x, y;
                 int opt_type = rand() % NB_OPT_TYPE + 1;
-                x = allv[i].xpos + (15 - (opt->option_sprites[opt_type - 1].sprite->w / 2));
-                y = allv[i].ypos + (15 - (opt->option_sprites[opt_type - 1].sprite->h / 2));
+                x = allv[i].xpos + (15 - (al_get_bitmap_width( opt->option_sprites[opt_type - 1].sprite) / 2));
+                y = allv[i].ypos + (15 - (al_get_bitmap_height(opt->option_sprites[opt_type - 1].sprite) / 2));
 
                 // make sure the option isnt going to collide with the background
                 if(test_pos_option(opt, opt_type, currentlevel, x, y))
@@ -134,7 +139,7 @@ void draw_option(struct option_data *opt, struct level_data *currentlevel)
 {
     if(opt->active)
     {
-        draw_sprite(currentlevel->level_buffer, opt->option_sprites[opt->type - 1].sprite, opt->x, opt->y);
+     //#FIXME   al_draw_bitmap(currentlevel->level_buffer, opt->option_sprites[opt->type - 1].sprite, opt->x, opt->y);
     }
 }
 
@@ -167,7 +172,7 @@ int init_option_data(struct option_data *opt, struct option_sprite *option_sprit
     opt->option_sprites = option_sprites;
     for (int optioncount = 0; optioncount < NB_OPT_TYPE; optioncount++)
     {
-        opt->option_sprites[optioncount].sprite = load_bitmap(opt->option_sprites[optioncount].sprite_name, opt->option_sprites[optioncount].sprite_colors);
+        opt->option_sprites[optioncount].sprite = al_load_bitmap(opt->option_sprites[optioncount].sprite_name);
     }
 
     return(0);
@@ -177,7 +182,7 @@ void unload_option(struct option_data *opt)
 {
     for (int optioncount = 0; optioncount < NB_OPT_TYPE; optioncount++)
     {
-        destroy_bitmap(opt->option_sprites[optioncount].sprite);
+        //#FIXME destroy_bitmap(opt->option_sprites[optioncount].sprite);
     }
 }
 

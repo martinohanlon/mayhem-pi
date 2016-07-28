@@ -1,6 +1,7 @@
 #include "vaisseau_data.h"
 #include "platform_data.h"
 #include "option.h"
+#include "allegro_compatibility.h"
 
 int init_vaisseau_data(struct vaisseau_data* v, struct vaisseau_gfx* gfx,
                               float mass, float thrust_max, int anglestep,
@@ -52,28 +53,30 @@ int init_vaisseau_data(struct vaisseau_data* v, struct vaisseau_gfx* gfx,
        v->debris[i].vy=itofix(0);
        v->debris[i].impultion=itofix(0);
        v->debris[i].angle=0;
-       v->debris[i].active=FALSE;
+       v->debris[i].active=false;
        }
 
 
 	v->gfx=gfx;
-	v->sprite_buffer = create_bitmap(32, 32);                     // create bitmap pour le sprite
+    v->sprite_buffer = al_create_bitmap(32, 32);                     // create ALLEGRO_BITMAP pour le sprite
 	if (! v->sprite_buffer)
 		return -1;
-	clear_bitmap(v->sprite_buffer);                               // On nettoye
+#if 0
+    clear_bitmap(v->sprite_buffer);                               // On nettoye
 	blit(gfx->sprite, v->sprite_buffer, 0, 0, 0, 0, 32, 32); // blit le sprite dans son buffer
 
-	v->sprite_buffer_rota = create_bitmap(32, 32);                     // create bitmap pour le sprite
+    v->sprite_buffer_rota = al_create_bitmap(32, 32);                     // create ALLEGRO_BITMAP pour le sprite
 	if (! v->sprite_buffer_rota)
 		return -1;
 	clear_bitmap(v->sprite_buffer_rota);                               // On nettoye
+#endif
 	return 0;
   }
 
 void clean_vaisseau_data(struct vaisseau_data* v)
   {
-	if (v->sprite_buffer) destroy_bitmap(v->sprite_buffer);                               // On nettoye
-	if (v->sprite_buffer_rota) destroy_bitmap(v->sprite_buffer_rota);                          // On nettoye
+    if (v->sprite_buffer) al_destroy_bitmap(v->sprite_buffer);                               // On nettoye
+    if (v->sprite_buffer_rota) al_destroy_bitmap(v->sprite_buffer_rota);                          // On nettoye
   }
 
 void init_ship_pos_from_platforms(struct vaisseau_data* v, struct platform_data * plats)
@@ -90,7 +93,7 @@ void init_ship_pos_from_platforms(struct vaisseau_data* v, struct platform_data 
     v->shield_force=v->max_shield_force;
     
     v->explode_count=0;
-    v->explode=FALSE;
+    v->explode=false;
 
     v->option_type=OPT_NOOPTION;
     v->speed_shield_force_down = VAISSEAU_SPEED_SHIELD_FORCE_DOWN;
@@ -103,11 +106,11 @@ void init_ship_pos_from_platforms(struct vaisseau_data* v, struct platform_data 
 	v->vx=itofix(0);
 	v->vy=itofix(0);
 	v->thrust=itofix(0);
-	v->shield=FALSE;
-    v->fire=FALSE;
-    v->fire_delay=FALSE;
-	v->landed=TRUE;
-	v->rebound=FALSE;
+	v->shield=false;
+    v->fire=false;
+    v->fire_delay=false;
+	v->landed=true;
+	v->rebound=false;
 	v->angle=0;
 	v->refueling=false;
 }

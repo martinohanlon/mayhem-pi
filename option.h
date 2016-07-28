@@ -1,7 +1,7 @@
 #ifndef __OPTION_H__
 #define __OPTION_H__
 
-#include <allegro.h>
+#include <allegro5/allegro.h>
 #include "player_view.h"
 #include "vaisseau_data.h"
 #include "platform_data.h"
@@ -21,8 +21,8 @@
 
 struct option_sprite {
     char * sprite_name;
-    BITMAP *sprite;
-    PALETTE sprite_colors;    
+    ALLEGRO_BITMAP *sprite;
+//    PALETTE sprite_colors;
 };
 
 struct option_data {

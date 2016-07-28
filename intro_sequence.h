@@ -12,12 +12,14 @@ public:
 private:
    static const int mini, maxi;
    GameSequence* doRun();
-   fixed iZoom;
-   fixed iZoomMax;
-   fixed iZoomSpeed;
-   BITMAP* iLogo;
+   double iZoom;
+   double iZoomMax;
+   double iZoomSpeed;
+   ALLEGRO_BITMAP* iLogo;
+#if 0
    PALETTE iLogoPalette;
-   BITMAP* iDoublebuffer;
+#endif
+   ALLEGRO_BITMAP* iDoublebuffer;
 
    int width;
    int height;
@@ -32,9 +34,9 @@ private:
    void update_joystick(int playerno, int screenpos);
    int *get_joystick_action(int joystickno);
    
-   int black;
-   int red;
-   int lightred;
+   ALLEGRO_COLOR black;
+   ALLEGRO_COLOR red;
+   ALLEGRO_COLOR lightred;
    
 };
 

@@ -1,7 +1,7 @@
 #ifndef __GAMEMANAGER_H_
 #define __GAMEMANAGER_H_
 
-#include <allegro.h>
+#include <allegro5/allegro.h>
 
 #define  DEFAULT_WIDTH  1024
 #define  DEFAULT_HEIGHT 768
@@ -42,15 +42,22 @@ public:
 class InterruptTimer
 {
 public:
+#if 0
     static void init() { reset(); install_timer(); LOCK_VARIABLE(timing_counter); LOCK_FUNCTION(&InterruptTimer::irq); install_int_ex(&InterruptTimer::irq, BPS_TO_TIMER(40)); };
     static void shutdown() { remove_timer(); };
-	static volatile int timing_counter;
+#else
+    static void init() {  };
+    static void shutdown() { };
+#endif
+    static volatile int timing_counter;
 	inline static void start() { timing_counter = 0; };
 	inline static void reset() { timing_counter = -1; };
 	static void irq() { if (timing_counter>=0) ++timing_counter;	};
     // change to stop triggers building up and game suddenly processing lots of triggers all in 1 go
 	static bool wasTriggered() { if (timing_counter>0) { timing_counter--; if (timing_counter > 2) timing_counter = 0; return true; } return false; };
+#if 0
     END_OF_FUNCTION(wasTriggered);
+#endif
     //Something wierd is going on here... Under windows 10 you dont get 40 fps, and with the above code you end up with a LOT more..  Something isn't pegging the interupt properly.
     //sstatic bool wasTriggered() { if (timing_counter>0) { timing_counter=0; return true; } return false; };
 };

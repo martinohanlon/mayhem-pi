@@ -3,9 +3,34 @@
 #include "player_view.h"
 #include "platform_data.h"
 
-bool collision_testonepixel_separate(int x1,int y1, BITMAP * bmp1, int x2, int y2, BITMAP * bmp2,PALETTEPTR commonpalette)
+struct allegro_pixel
 {
-	bool collided = FALSE;
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+};
+
+allegro_pixel get_pixel(ALLEGRO_BITMAP* bmp, int x, int y)
+{
+    unsigned char r,g,b;
+    al_unmap_rgb(al_get_pixel(bmp,x,y), &r, &g, &b);
+    allegro_pixel pixel;
+    pixel.r = r;
+    pixel.g = g;
+    pixel.b = b;
+    return pixel;
+}
+
+bool is_nonblack_pixel(allegro_pixel p)
+{
+    return p.r != 0 || p.g != 0 || p.b != 0;
+}
+
+bool collision_testonepixel_separate(int x1,int y1, ALLEGRO_BITMAP * bmp1, int x2, int y2, ALLEGRO_BITMAP * bmp2)
+{
+#if 0
+
+    bool collided = false;
 	unsigned long address_bmp;              // pour le sprite
 	unsigned char pixelcolor;
 
@@ -22,16 +47,19 @@ bool collision_testonepixel_separate(int x1,int y1, BITMAP * bmp1, int x2, int y
 	    if ( (commonpalette[pixelcolor].r !=0) ||
 			 (commonpalette[pixelcolor].g !=0) ||
 			 (commonpalette[pixelcolor].b !=0))
-			 collided=TRUE;
+             collided=true;
 		}
-
-	return collided;
+#endif
+    unsigned char r0,g0,b0,r1,g1,b1;
+    al_unmap_rgb(al_get_pixel(bmp2,x2,y2), &r0, &g0, &b0);
+    al_unmap_rgb(al_get_pixel(bmp1,x1,y1), &r1, &g1, &b1);
+    return  (r0 != 0 || g0 != 0 || b0 != 0) && (r1 != 0 || g1 != 0 || b1 != 0);
 }
 
 
-bool collision_testonepixel(int x,int y, BITMAP * bmp1, BITMAP * bmp2,PALETTEPTR commonpalette)
+bool collision_testonepixel(int x,int y, ALLEGRO_BITMAP * bmp1, ALLEGRO_BITMAP * bmp2)
 {
-	return collision_testonepixel_separate(x,y,bmp1,x,y,bmp2,commonpalette);
+    return collision_testonepixel_separate(x,y,bmp1,x,y,bmp2);
 }
 
 
@@ -61,10 +89,11 @@ bool test_collision(struct player_view * pv, struct level_data *currentlevel)
 
     if (!test_it) return test_it;
 
-	BITMAP * little_screen = sprite_buffer_screen();
+	ALLEGRO_BITMAP * little_screen = sprite_buffer_screen();
     // 32*32 de back_map_buffer2 ou sera blitt� le sprite -> little_screen
+#if 0
     blit(currentlevel->collision_bitmap, little_screen, vaisseau->xpos, vaisseau->ypos, 0, 0, 32, 32);
-
+#endif
     // debug
     //blit(little_screen, screen, 0, 0, 0, 150, 32, 32);
     
@@ -80,42 +109,42 @@ bool test_collision(struct player_view * pv, struct level_data *currentlevel)
 	{
 	for(x=xorig;x<xorig+size;x++)
 		{
-		if (collision_testonepixel(x,yorig,vaisseau->sprite_buffer_rota,little_screen,vaisseau->gfx->sprite_colors))
-			if (currentlevel->wall_collision) return TRUE;
+        if (collision_testonepixel(x,yorig,vaisseau->sprite_buffer_rota,little_screen))
+            if (currentlevel->wall_collision) return true;
             else
             {
                 bounce_vaisseau(vaisseau);
-                return FALSE;
+                return false;
             }
 		}
 	for(y=yorig;y<yorig+size;y++)
 		{
-		if (collision_testonepixel(xorig+size,y,vaisseau->sprite_buffer_rota,little_screen,vaisseau->gfx->sprite_colors))
-			if (currentlevel->wall_collision) return TRUE;
+        if (collision_testonepixel(xorig+size,y,vaisseau->sprite_buffer_rota,little_screen))
+            if (currentlevel->wall_collision) return true;
             else
             {
                 bounce_vaisseau(vaisseau);
-                return FALSE;
+                return false;
             }
 		}
 	for(x=xorig+size;x>=xorig+1;x--)
 		{
-		if (collision_testonepixel(x,yorig+size,vaisseau->sprite_buffer_rota,little_screen,vaisseau->gfx->sprite_colors))
-			if (currentlevel->wall_collision) return TRUE;
+        if (collision_testonepixel(x,yorig+size,vaisseau->sprite_buffer_rota,little_screen))
+            if (currentlevel->wall_collision) return true;
             else
             {
                 bounce_vaisseau(vaisseau);
-                return FALSE;
+                return false;
             }
 		}
 	for(y=yorig+size;y>=yorig+1;y--)
 		{
-		if (collision_testonepixel(xorig,y,vaisseau->sprite_buffer_rota,little_screen,vaisseau->gfx->sprite_colors))
-			if (currentlevel->wall_collision) return TRUE;
+        if (collision_testonepixel(xorig,y,vaisseau->sprite_buffer_rota,little_screen))
+            if (currentlevel->wall_collision) return true;
             else
             {
                 bounce_vaisseau(vaisseau);
-                return FALSE;
+                return false;
             }
 		}
 	xorig+=1;
@@ -123,26 +152,26 @@ bool test_collision(struct player_view * pv, struct level_data *currentlevel)
 	size-=2;
 	}
 
-	return FALSE;
+    return false;
 
 }
 
 void bounce_vaisseau(struct vaisseau_data *vaisseau) 
 {
-    vaisseau->ax = itofix(0);
-    vaisseau->ay = itofix(0);
+    vaisseau->ax = (0);
+    vaisseau->ay = (0);
     vaisseau->vx = -vaisseau->vx/2;
     vaisseau->vy = -vaisseau->vy/2;
 }
 
-bool pixel_collision_detect_inbox(BITMAP *bmp1,int xl1, int yt1,BITMAP *bmp2,int xl2, int yt2,int w, int h,PALETTEPTR commonpalette)
+bool pixel_collision_detect_inbox(ALLEGRO_BITMAP *bmp1,int xl1, int yt1,ALLEGRO_BITMAP *bmp2,int xl2, int yt2,int w, int h)
 {
 	int x,y;
 	for (x=0;x<w;x++)
 		for(y=0;y<h;y++)
-			if (collision_testonepixel_separate(xl1+x,yt1+y,bmp1,xl2+x,yt2+y,bmp2,commonpalette))
-				return TRUE;
-	return FALSE;
+            if (collision_testonepixel_separate(xl1+x,yt1+y,bmp1,xl2+x,yt2+y,bmp2))
+                return true;
+    return false;
 }
 
 //
@@ -152,7 +181,7 @@ bool pixel_collision_detect_inbox(BITMAP *bmp1,int xl1, int yt1,BITMAP *bmp2,int
 //  we pixel iterate through it...
 //
 
-bool test_collision_ship2ship(struct vaisseau_data * vaisseau1,struct vaisseau_data *vaisseau2,PALETTEPTR commonpalette)
+bool test_collision_ship2ship(struct vaisseau_data * vaisseau1,struct vaisseau_data *vaisseau2)
 {
 	// first find the bouding box
 	int xl1,xl2,yt1,yt2;
@@ -170,7 +199,7 @@ bool test_collision_ship2ship(struct vaisseau_data * vaisseau1,struct vaisseau_d
 		xl2=vaisseau1->xpos - vaisseau2->xpos;
 		w=vaisseau2->xpos+32-vaisseau1->xpos;
 	}
-	else return FALSE;
+    else return false;
 
 	if (vaisseau1->ypos+32>=vaisseau2->ypos &&  vaisseau1->ypos<=vaisseau2->ypos)
 	{
@@ -184,23 +213,24 @@ bool test_collision_ship2ship(struct vaisseau_data * vaisseau1,struct vaisseau_d
 		yt2=vaisseau1->ypos - vaisseau2->ypos;
 		h=vaisseau2->ypos+32-vaisseau1->ypos;
 	}
-	else return FALSE;
+    else return false;
 
 	// if we arrive here we might have a bounding box
 	// with collision
 
 	return 	pixel_collision_detect_inbox(vaisseau1->sprite_buffer_rota,xl1,yt1,
 										 vaisseau2->sprite_buffer_rota,xl2,yt2,
-										 w,h,commonpalette);
+                                         w,h);
 }
 
-bool testcollision_bullet4pix(BITMAP *bmp,int x,int y)
+bool testcollision_bullet4pix(ALLEGRO_BITMAP *bmp,int x,int y)
 {
 
-    if(x<0 || x>=bmp->w || y<0 || y>=bmp->h) return TRUE;
+    if(x<0 || x>=al_get_bitmap_width(bmp) || y<0 || y>=al_get_bitmap_height(bmp)) return true;
     else
     {
-	unsigned long address_bmp;              // pour le sprite
+#if 0
+        unsigned long address_bmp;              // pour le sprite
 	unsigned char pixelcolor;
 
 	bmp_select(bmp);
@@ -215,15 +245,14 @@ bool testcollision_bullet4pix(BITMAP *bmp,int x,int y)
 		if (pixelcolor != 0)
 			return true;
 		}
-   }
+   #endif
+    }
 	return false;
 }
 
-bool testcollision_bullet1pix(BITMAP *bmp,int x,int y,PALETTEPTR palette)
+bool testcollision_bullet1pix(ALLEGRO_BITMAP *bmp,int x,int y)
 {
-	bmp_select(bmp);
-	int pixel=bmp_read8(bmp_read_line(bmp, y)+x);      // lit l'octet x dans ligne y
-	return palette[pixel].r!=0 || palette[pixel].g!=0 || palette[pixel].b!=0 ;
+    return is_nonblack_pixel(get_pixel(bmp,x,y));
 }
 
 bool collision_tir_ship(struct vaisseau_data * v,struct vaisseau_data *allv, int nombre_vaisseau)
@@ -245,19 +274,19 @@ bool collision_tir_ship(struct vaisseau_data * v,struct vaisseau_data *allv, int
 			if (xtrans<0 || xtrans>=32 || ytrans<0 || ytrans>=32)
 				continue;
 
-			bool b=testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans,v->gfx->sprite_colors);
+            bool b=testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans);
 			if (xtrans+1 < 32)
 			{
 				if (ytrans-1>=0)
 					{
-					b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans+1,ytrans-1,v->gfx->sprite_colors);
-					b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans-1,v->gfx->sprite_colors);
+                    b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans+1,ytrans-1);
+                    b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans-1);
 					}
-				b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans+1,ytrans,v->gfx->sprite_colors);
+                b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans+1,ytrans);
 			}
 			else if (ytrans-1>=0)
 				{
-				b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans-1,v->gfx->sprite_colors);
+                b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans-1);
 				}
 			if (b)
 				{
@@ -265,8 +294,8 @@ bool collision_tir_ship(struct vaisseau_data * v,struct vaisseau_data *allv, int
 				bool isProtecting=(v->shield && v->shield_force>0);
 				if (isProtecting && !v->landed)
 					{
-					v->impactx=fixtoi(shoot->dx);
-					v->impacty=fixtoi(shoot->dy);
+                    v->impactx=shoot->dx;
+                    v->impacty=shoot->dy;
 					}
 				return !isProtecting;
 				}
@@ -295,19 +324,19 @@ bool collision_backtir_ship(struct vaisseau_data * v,struct vaisseau_data *allv,
 			if (xtrans<0 || xtrans>=32 || ytrans<0 || ytrans>=32)
 				continue;
 
-			bool b=testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans,v->gfx->sprite_colors);
+            bool b=testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans);
 			if (xtrans+1 < 32)
 			{
 				if (ytrans-1>=0)
 					{
-					b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans+1,ytrans-1,v->gfx->sprite_colors);
-					b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans-1,v->gfx->sprite_colors);
+                    b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans+1,ytrans-1);
+                    b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans-1);
 					}
-				b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans+1,ytrans,v->gfx->sprite_colors);
+                b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans+1,ytrans);
 			}
 			else if (ytrans-1>=0)
 				{
-				b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans-1,v->gfx->sprite_colors);
+                b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans-1);
 				}
 			if (b)
 				{
@@ -315,8 +344,8 @@ bool collision_backtir_ship(struct vaisseau_data * v,struct vaisseau_data *allv,
 				bool isProtecting=(v->shield && v->shield_force>0);
 				if (isProtecting && !v->landed)
 					{
-					v->impactx=fixtoi(backshoot->dx);
-					v->impacty=fixtoi(backshoot->dy);
+                    v->impactx=backshoot->dx;
+                    v->impacty=backshoot->dy;
 					}
 				return !isProtecting;
 				}
@@ -349,19 +378,19 @@ bool collision_debris_ship(struct vaisseau_data * v,struct vaisseau_data *allv, 
 			if (xtrans<0 || xtrans>=32 || ytrans<0 || ytrans>=32)
 				continue;
 
-			bool b=testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans,v->gfx->sprite_colors);
+            bool b=testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans);
 			if (xtrans+1 < 32)
 			{
 				if (ytrans-1>=0)
 					{
-					b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans+1,ytrans-1,v->gfx->sprite_colors);
-					b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans-1,v->gfx->sprite_colors);
+                    b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans+1,ytrans-1);
+                    b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans-1);
 					}
-				b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans+1,ytrans,v->gfx->sprite_colors);
+                b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans+1,ytrans);
 			}
 			else if (ytrans-1>=0)
 				{
-				b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans-1,v->gfx->sprite_colors);
+                b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans-1);
 				}
 			if (b)
 				{
@@ -369,8 +398,8 @@ bool collision_debris_ship(struct vaisseau_data * v,struct vaisseau_data *allv, 
 				bool isProtecting=(v->shield && v->shield_force>0);
 				if (isProtecting && !v->landed)
 					{
-					v->impactx=fixtoi(debris->vx);
-					v->impacty=fixtoi(debris->vy);
+                    v->impactx=(debris->vx);
+                    v->impacty=(debris->vy);
 					}
 				return !isProtecting;
 				}
@@ -401,19 +430,19 @@ bool collision_dca_ship(struct vaisseau_data * v,struct dca_data *alldca, int nb
 			if (xtrans<0 || xtrans>=32 || ytrans<0 || ytrans>=32)
 				continue;
 
-			bool b=testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans,v->gfx->sprite_colors);
+            bool b=testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans);
 			if (xtrans+1 < 32)
 			{
 				if (ytrans-1>=0)
 					{
-					b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans+1,ytrans-1,v->gfx->sprite_colors);
-					b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans-1,v->gfx->sprite_colors);
+                    b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans+1,ytrans-1);
+                    b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans-1);
 					}
-				b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans+1,ytrans,v->gfx->sprite_colors);
+                b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans+1,ytrans);
 			}
 			else if (ytrans-1>=0)
 				{
-				b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans-1,v->gfx->sprite_colors);
+                b |= testcollision_bullet1pix(v->sprite_buffer_rota,xtrans,ytrans-1);
 				}
 			if (b)
 				{
@@ -421,8 +450,8 @@ bool collision_dca_ship(struct vaisseau_data * v,struct dca_data *alldca, int nb
 				bool isProtecting=(v->shield && v->shield_force>0);
 				if (isProtecting && !v->landed)
 					{
-					v->impactx=fixtoi(dca_tir->dx);
-					v->impacty=fixtoi(dca_tir->dy);
+                    v->impactx=(dca_tir->dx);
+                    v->impacty=(dca_tir->dy);
 					}
 				return !isProtecting;
 				}

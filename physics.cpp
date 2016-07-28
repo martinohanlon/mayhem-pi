@@ -1,5 +1,5 @@
 #include "physics.h"
-
+#include "allegro_compatibility.h"
 
 physics_constants::physics_constants(float g, float xfrott, float yfrott,
 							float coeffax,float coeffvx,float coeffay,float coeffvy,float coeffimpact)
@@ -19,7 +19,7 @@ void calcul_pos(const physics_constants& physics,int nbvaisseau,struct vaisseau_
 {
 	while(nbvaisseau--)
 	{
-	  vaisseau->rebound = FALSE;
+      vaisseau->rebound = false;
       if (!vaisseau->explode)
       if (!vaisseau->landed)
       {
@@ -92,10 +92,10 @@ bool test_landed(struct vaisseau_data* vaisseau, struct platform_data *plt)
 		float vvy=fixtof(vaisseau->vy);
 		if ( (-1.0<=vvx) && (vvx<1.0) && (-1.0<vvy) && (vvy<1.0) )
 			{
-			vaisseau->landed = TRUE; 
+            vaisseau->landed = true;
 			}
-		return TRUE;	
+        return true;
 		}
-	return FALSE;
+    return false;
 }		   
 

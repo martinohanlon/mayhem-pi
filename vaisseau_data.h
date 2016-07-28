@@ -1,6 +1,6 @@
 #ifndef __VAISSEAU_DATA_H__
 #define __VAISSEAU_DATA_H__
-#include <allegro.h>
+#include <allegro5/allegro.h>
 
 #include "vaisseau_gfx.h"
 
@@ -18,25 +18,25 @@
 
 struct debris_data {
     int   x, y;
-    fixed xposprecise,yposprecise;
-    fixed ax, ay;
-    fixed vx, vy;
-    fixed impultion;
+    double xposprecise,yposprecise;
+    double ax, ay;
+    double vx, vy;
+    double impultion;
     int   angle;
     bool  active;
 };
 
 struct tir_data {
 	int x, y;
-    fixed xposprecise, yposprecise;
-	fixed dx, dy;
+    double xposprecise, yposprecise;
+    double dx, dy;
 	bool free;
 };
 
 struct vaisseau_data {
 	// special for each ship
-	fixed mass;
-	fixed thrust_max;
+    double mass;
+    double thrust_max;
 	int anglestep;
 
     int fuel;
@@ -56,19 +56,19 @@ struct vaisseau_data {
 	int option_expire_time;
 
 	int impactx,impacty;
-	fixed ax,ay;
-	fixed vx,vy;
-	fixed xposprecise,yposprecise;
+    double ax,ay;
+    double vx,vy;
+    double xposprecise,yposprecise;
 	int xpos,ypos;
 	int angle;
-	fixed thrust;
+    double thrust;
 	bool shield;
     bool fire;
     bool fire_delay;
 	bool landed;
 	bool rebound;
-	BITMAP   *sprite_buffer;   // Image du vaisseau  
-	BITMAP	 *sprite_buffer_rota;
+    ALLEGRO_BITMAP   *sprite_buffer;   // Image du vaisseau
+    ALLEGRO_BITMAP	 *sprite_buffer_rota;
 	struct vaisseau_gfx * gfx;
     struct tir_data tir[MAX_TIR];
     struct tir_data backtir[MAX_TIR];

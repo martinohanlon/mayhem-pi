@@ -1,5 +1,5 @@
-#ifndef __MAPPING_KEY_H_
-#define __MAPPING_KEY_H_
+#ifndef __MAPPING_ALLEGRO_KEY_H_
+#define __MAPPING_ALLEGRO_KEY_H_
 
 #include "vaisseau_data.h"
 

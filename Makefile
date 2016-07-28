@@ -1,9 +1,9 @@
 CPP = g++
 CC = gcc
 RES  = 
-OBJ  = battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o player_input.o mapping_key.o mapping_joy.o Mayhem2.o option.o physics.o platform_data.o player_info.o player_view.o soundfx.o utils.o vaisseau_data.o vaisseau_gfx.o $(RES)
-LINKOBJ  = battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o player_input.o mapping_key.o mapping_joy.o Mayhem2.o option.o physics.o platform_data.o player_info.o player_view.o soundfx.o utils.o vaisseau_data.o vaisseau_gfx.o $(RES)
-LIBS = -lalleg
+OBJ  = allegro_compatibility.o battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o player_input.o mapping_key.o mapping_joy.o Mayhem2.o option.o physics.o platform_data.o player_info.o player_view.o soundfx.o utils.o vaisseau_data.o vaisseau_gfx.o $(RES)
+LINKOBJ  = allegro_compatibility.o battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o player_input.o mapping_key.o mapping_joy.o Mayhem2.o option.o physics.o platform_data.o player_info.o player_view.o soundfx.o utils.o vaisseau_data.o vaisseau_gfx.o $(RES)
+LIBS = -lallegro -lallegro_audio
 INCS = 
 BIN  = "mayhem2-pi"
 CXXINCS= -O0 -g -Werror -Wno-write-strings -Wno-deprecated-declarations
@@ -20,6 +20,9 @@ clean: clean-custom
 
 $(BIN): $(OBJ)
 	$(CPP) $(LINKOBJ) -o "mayhem2-pi" $(LIBS)
+
+allegro_compatibility.o: allegro_compatibility.cpp
+	$(CPP) -c allegro_compatibility.cpp -o allegro_compatibility.o $(CXXFLAGS)
 
 battle_sequence.o: battle_sequence.cpp
 	$(CPP) -c battle_sequence.cpp -o battle_sequence.o $(CXXFLAGS)

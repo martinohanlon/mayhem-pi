@@ -1,15 +1,16 @@
-#include <allegro.h>
+#include <allegro5/allegro.h>
 
 #include "game_mgr.h"
 
 #define FULLSCREEN 1
 
+#if 0
 #ifdef FULLSCREEN
 #define GFXOPENARG GFX_AUTODETECT
 #else
 #define GFXOPENARG GFX_AUTODETECT_WINDOWED
 #endif
-
+#endif
 volatile int InterruptTimer::timing_counter;
 
 // initialise static members
@@ -20,6 +21,7 @@ int GameManager::native_width;
 
 void GameManager::Init()
 {
+#if 0
   allegro_init();                                            // Initialise Allegro
   InterruptTimer::init();
   set_color_depth(8);                                        // Combien de bitplan
@@ -38,20 +40,27 @@ void GameManager::Init()
   native_height = display_height;
   set_gfx_mode( GFXOPENARG, display_width, display_height, 0, 0 );
   //set_gfx_mode( GFX_AUTODETECT_WINDOWED, DEFAULT_WIDTH, DEFAULT_HEIGHT, 0, 0 );          // windowed
+#endif
 }
 
 void GameManager::ChangeScreenRes(int width, int height)
 {
     display_width = width;
     display_height = height;
+#if 0
     set_gfx_mode( GFXOPENARG, display_width, display_height, 0, 0 );
+#endif
 }
 
 void GameManager::Shutdown()
 {
+#if 0
   remove_sound();
+#endif
   InterruptTimer::shutdown();
+#if 0
   allegro_exit();
+#endif
 }
 
 void GameManager::Run(GameSequence *aSeq)

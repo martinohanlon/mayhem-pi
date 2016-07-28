@@ -69,7 +69,7 @@ private:
         struct mapping_joy joyvaisseau[NB_MAX_VAISSEAU];
         struct command commands[NB_MAX_VAISSEAU];
   // for each player we will need one of this structure initialization is made just after
-  // allegro is actually started so that the bitmap can get created.
+  // allegro is actually started so that the ALLEGRO_BITMAP can get created.
 
        struct level_data levels[NB_LEVELS];
        struct level_data * currentlevel;

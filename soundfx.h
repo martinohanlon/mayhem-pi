@@ -1,12 +1,13 @@
 #ifndef __SOUNDFX_H__
 #define __SOUNDFX_H__
 
-#include <allegro.h>
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_audio.h>
 #include "vaisseau_data.h"
 
 struct loopedsfx
 {
-  SAMPLE *sfx;
+  ALLEGRO_SAMPLE *sfx;
   bool playingFlag;
   int freqStep;
   int startFreq;
@@ -17,9 +18,9 @@ struct soundfx
  struct loopedsfx thrust;  // loop
  struct loopedsfx shield;  // loop
  struct loopedsfx refuel;  // loop with a freq twist ;)
- SAMPLE *shoot;  // one shot
- SAMPLE *boom; // one shot
- SAMPLE *rebound; // one shot
+ ALLEGRO_SAMPLE *shoot;  // one shot
+ ALLEGRO_SAMPLE *boom; // one shot
+ ALLEGRO_SAMPLE *rebound; // one shot
 };
 
 int init_soundfx_from_wavfile(struct soundfx* sfx,

@@ -8,7 +8,7 @@
 ///////////////////////////
 
 
-#include <allegro.h>
+#include <allegro5/allegro.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -48,6 +48,6 @@ int main()
     return 0;
 }
 
-END_OF_MAIN();                                               // Allegro style 4 Win
+//#FIXME END_OF_MAIN();                                               // Allegro style 4 Win
 
 

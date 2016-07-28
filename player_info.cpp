@@ -1,4 +1,6 @@
 #include "player_info.h"
+#include "allegro_compatibility.h"
+
 #include <string.h>
 
 void init_player_info(struct player_info* player, char *name,int nblives, struct vaisseau_data * ship)

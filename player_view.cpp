@@ -7,7 +7,9 @@
 #include "physics.h"
 #include "option.h"
 
-PALETTE bar_palette;
+#include "allegro_compatibility.h"
+
+//#FIXME PALETTE bar_palette;
 
 int init_player_view(struct player_view *pv, int x, int y, int w, int h,struct player_info *player)
   {
@@ -26,24 +28,25 @@ int init_player_view(struct player_view *pv, int x, int y, int w, int h,struct p
 
 void clean_player_view(struct player_view *pv)
   {
-  if (pv->back_map_buffer) destroy_bitmap(pv->back_map_buffer);
+  if (pv->back_map_buffer) al_destroy_bitmap(pv->back_map_buffer);
   }
 
-void draw_basic_player_view(struct player_view *v,int nbviews, BITMAP *src_map,PALETTE commonpalette)
+void draw_basic_player_view(struct player_view *v,int nbviews, ALLEGRO_BITMAP *src_map)
 {
 
     for(int i=0; i<nbviews; i++)
     {
 
-	int color=makecol(255,255,255);
+    ALLEGRO_COLOR color=al_map_rgb(255,255,255);
 	struct vaisseau_data *ship = v->player->ship;
+#if 0
 	set_clip(v->back_map_buffer, 0, 0, v->w+2*v->bordersize,v->h+2*v->bordersize);
-	clear_bitmap(v->back_map_buffer);
+    clear_bitmap(v->back_map_buffer);
 	hline(v->back_map_buffer,0,0,v->w+2*v->bordersize,color);
 	hline(v->back_map_buffer,0,v->h+2*v->bordersize-1,v->w+2*v->bordersize,color);
 	vline(v->back_map_buffer,0,0,v->h+2*v->bordersize,color);
 	vline(v->back_map_buffer,v->w+2*v->bordersize-1,0,v->h+2*v->bordersize,color);
-
+#endif
 	char buffer[20];
     
     //debug x,y data  
@@ -67,36 +70,37 @@ void draw_basic_player_view(struct player_view *v,int nbviews, BITMAP *src_map,P
     else 
         sprintf(buffer,"Live(s): %d",v->player->nblives);
 
+#if 0
 	textout(v->back_map_buffer, font, v->player->name, 3, 2, color);
 	textout(v->back_map_buffer, font, buffer, v->bordersize+195 , 2, color);
-
+#endif
  	int barheight_fuel=v->h*ship->fuel/ship->max_fuel;
 	int barheight_shield=v->h*ship->shield_force/ship->max_shield_force;
-    int fuel_col;
-    int shield_col;
+    ALLEGRO_COLOR fuel_col;
+    ALLEGRO_COLOR shield_col;
 
     if(ship->fuel>=ship->max_fuel/2)
     {
-        fuel_col=255-fixtoi(fixmul(itofix(255), fixsub(fixmul(itofix(2), fixdiv(itofix(ship->fuel), itofix(ship->max_fuel)) ), itofix(1)))) ;
-        fuel_col=makecol(fuel_col,255,0);
+        auto fuel_col_r=255-fixtoi(fixmul(itofix(255), fixsub(fixmul(itofix(2), fixdiv(itofix(ship->fuel), itofix(ship->max_fuel)) ), itofix(1)))) ;
+        fuel_col=al_map_rgb(fuel_col_r,255,0);
     }
     else
     {
-        fuel_col=255*2*ship->fuel/ship->max_fuel;
-        fuel_col=makecol(255, fuel_col, 0);
+        auto fuel_col_g =255*2*ship->fuel/ship->max_fuel;
+        fuel_col=al_map_rgb(255, fuel_col_g, 0);
     }
 
     if(ship->shield_force>=ship->max_shield_force/2)
     {
-        shield_col=255-fixtoi(fixmul(itofix(255), fixsub(fixmul(itofix(2), fixdiv(itofix(ship->shield_force), itofix(ship->max_shield_force)) ), itofix(1)))) ;
-        shield_col=makecol(shield_col, 255, 0);
+        auto shield_col_r=255-fixtoi(fixmul(itofix(255), fixsub(fixmul(itofix(2), fixdiv(itofix(ship->shield_force), itofix(ship->max_shield_force)) ), itofix(1)))) ;
+        shield_col=al_map_rgb(shield_col_r, 255, 0);
     }
     else
     {
-        shield_col=255*2*ship->shield_force/ship->max_shield_force;
-        shield_col=makecol(255, shield_col, 0);
+        auto shield_col_g=255*2*ship->shield_force/ship->max_shield_force;
+        shield_col=al_map_rgb(255, shield_col_g, 0);
     }
-
+#if 0
     vline(v->back_map_buffer,(v->bordersize/2)+1,v->h+v->bordersize,v->bordersize+(v->h-barheight_fuel),fuel_col);
     vline(v->back_map_buffer,v->bordersize/2,v->h+v->bordersize,v->bordersize+(v->h-barheight_fuel),fuel_col);
     vline(v->back_map_buffer,v->w+v->bordersize+v->bordersize/2,v->h+v->bordersize,v->bordersize+(v->h-barheight_shield),shield_col);
@@ -108,7 +112,8 @@ void draw_basic_player_view(struct player_view *v,int nbviews, BITMAP *src_map,P
         vline(v->back_map_buffer,v->w+v->bordersize+(v->bordersize/2)-3,v->h+v->bordersize,v->bordersize+(v->h-barheight_shield),shield_col);
     }
 	// reset clip after
-	set_clip(v->back_map_buffer, v->bordersize, v->bordersize, v->w + v->bordersize ,v->h + v->bordersize);
+    set_clip(v->back_map_buffer, v->bordersize, v->bordersize, v->w,v->h);
+#endif
     v++;
    }
 }
@@ -118,8 +123,8 @@ void rotate_sprite(struct player_view * v)
 	{
 	struct vaisseau_data *ship = v->player->ship;
 
-	clear_bitmap(ship->sprite_buffer_rota);
-	rotate_sprite(ship->sprite_buffer_rota, ship->sprite_buffer, 0,0, itofix(ship->angle));
+    //#FIXME clear_bitmap(ship->sprite_buffer_rota);
+    //#FIXME rotate_sprite(ship->sprite_buffer_rota, ship->sprite_buffer, 0,0, itofix(ship->angle));
 
 	}
 
@@ -133,12 +138,14 @@ void display_rotate_sprites(struct player_view allviews[], int nbviews, struct l
         struct vaisseau_data *ship = view->player->ship;
 		if(!ship->explode)
 		{
-			draw_sprite(currentlevel->level_buffer, ship->sprite_buffer_rota, ship->xpos, ship->ypos);
+//#FIXME			draw_sprite(currentlevel->level_buffer, ship->sprite_buffer_rota, ship->xpos, ship->ypos);
                     
             // if the ship is halfway across the gap, draw it on the other side
             if (ship->xpos + 32 > currentlevel->edgedata.rightx)
-                draw_sprite(currentlevel->level_buffer, ship->sprite_buffer_rota, ship->xpos - currentlevel->bitmap->w, ship->ypos);
+            {
+           //#FIXME     draw_sprite(currentlevel->level_buffer, ship->sprite_buffer_rota, ship->xpos - currentlevel->ALLEGRO_BITMAP->w, ship->ypos);
 		}
+        }
 	}
 }
 
@@ -326,12 +333,14 @@ int test_place_backtir(struct vaisseau_data *v)
      return(-1);
 }
 
-void put_big_pixel(BITMAP *bmp, int x, int y, int color)
+void put_big_pixel(ALLEGRO_BITMAP *bmp, int x, int y, ALLEGRO_COLOR color)
 {
-     putpixel(bmp, x, y, color);
-     putpixel(bmp, x+1, y, color);
-     putpixel(bmp, x, y-1, color);
-     putpixel(bmp, x+1, y-1, color);
+    al_lock_bitmap(bmp, ALLEGRO_PIXEL_FORMAT_ANY, ALLEGRO_LOCK_WRITEONLY);
+     al_put_pixel(x, y, color);
+     al_put_pixel(x+1, y, color);
+     al_put_pixel(x, y-1, color);
+     al_put_pixel(x+1, y-1, color);
+     al_unlock_bitmap(bmp);
 }
 
 void draw_explosion(struct player_info *allpi, struct platform_data * plats, int nombre_vaisseau, struct level_data *currentlevel)
@@ -343,13 +352,14 @@ void draw_explosion(struct player_info *allpi, struct platform_data * plats, int
 		if(allpi[i].ship->explode)
 			if (allpi[i].ship->explode_count<48)
 				{
-                draw_sprite(currentlevel->level_buffer, get_sprite_explosion_frame(allpi[i].ship->explode_count), allpi[i].ship->xpos, allpi[i].ship->ypos);
+                //#FIXME draw_sprite(currentlevel->level_buffer, get_sprite_explosion_frame(allpi[i].ship->explode_count), allpi[i].ship->xpos, allpi[i].ship->ypos);
 
                 // if the ship has exploded across the gap, draw it on the other side
                 if (currentlevel->edgedata.wrapx)                    
                     if ((currentlevel->edgedata.wrapx) && (allpi[i].ship->xpos + 32 > currentlevel->edgedata.rightx))
-                        draw_sprite(currentlevel->level_buffer, get_sprite_explosion_frame(allpi[i].ship->explode_count), allpi[i].ship->xpos - currentlevel->bitmap->w, allpi[i].ship->ypos);
-                    
+                    {
+                     //#FIXME   draw_sprite(currentlevel->level_buffer, get_sprite_explosion_frame(allpi[i].ship->explode_count), allpi[i].ship->xpos - currentlevel->ALLEGRO_BITMAP->w, allpi[i].ship->ypos);
+                    }
                 allpi[i].ship->explode_count++; 
 				}
 			else
@@ -406,7 +416,7 @@ void mega_collision_test(struct player_info *allpi, struct player_view *views, s
 	int j;
 	for (i=0;i<nombre_vaisseau;i++)
 		for(j=nombre_vaisseau-1;j>i;j--)
-			if (!allpi[i].ship->explode&&!allpi[j].ship->explode&&test_collision_ship2ship(&vaisseaux[i],&vaisseaux[j],currentlevel->colormap))
+            if (!allpi[i].ship->explode&&!allpi[j].ship->explode&&test_collision_ship2ship(&vaisseaux[i],&vaisseaux[j]))
 				{
 				player_exploded(&allpi[i]);
 				player_exploded(&allpi[j]);
@@ -436,19 +446,19 @@ void init_debris(struct vaisseau_data *v)
    v->debris[i].impultion = ftofix(7.5);
    v->debris[i].vx = itofix(0);
    v->debris[i].vy = itofix(0);
-   v->debris[i].active = TRUE;
+   v->debris[i].active = true;
 
    angle += 32;
    }
 
 }
 
-void test_collision_debris(struct vaisseau_data *v, BITMAP *src_map)
+void test_collision_debris(struct vaisseau_data *v, ALLEGRO_BITMAP *src_map)
 {
    for(int i=0; i<8; i++)
    {
    if(testcollision_bullet4pix(src_map, v->debris[i].x, v->debris[i].y))
-   v->debris[i].active=FALSE;
+   v->debris[i].active=false;
    }
 }
 
@@ -525,7 +535,7 @@ void draw_debris(struct player_info *allpi, const physics_constants& physics, in
       if(!allpi[i].ship->explode)
       for(int j=0; j<8; j++)
       {
-        allpi[i].ship->debris[j].active=FALSE;
+        allpi[i].ship->debris[j].active=false;
       }
 
    }
@@ -538,8 +548,8 @@ void draw_debris(struct player_info *allpi, const physics_constants& physics, in
 
 void gestion_minimap(struct vaisseau_data *vaisseaux, struct level_data *currentlevel, int nbplayers, int largeur, int hauteur)
 {
-    //stretch_blit(currentlevel->mini_bitmap, currentlevel->mini_bitmap_buffer, 0, 0, 99, 150, 0, 0, largeur*(99/800.0), hauteur*(150/600.0));
-    stretch_blit(currentlevel->mini_bitmap, currentlevel->mini_bitmap_buffer, 0, 0, 99, 150, 0, 0, 10.0*(largeur/100.0), 15.0*(largeur/100.0));
+    //stretch_blit(currentlevel->mini_ALLEGRO_BITMAP, currentlevel->mini_ALLEGRO_BITMAP_buffer, 0, 0, 99, 150, 0, 0, largeur*(99/800.0), hauteur*(150/600.0));
+//#FIXME stretch_blit(currentlevel->mini_bitmap, currentlevel->mini_ALLEGRO_BITMAP_buffer, 0, 0, 99, 150, 0, 0, 10.0*(largeur/100.0), 15.0*(largeur/100.0));
 
     int x,y;
     struct vaisseau_data *v;
@@ -548,8 +558,8 @@ void gestion_minimap(struct vaisseau_data *vaisseaux, struct level_data *current
         v=&vaisseaux[i];
         x=(v->xpos>>3)+1;
         y=(v->ypos>>3)+3;
-        //put_big_pixel(currentlevel->mini_bitmap_buffer, x*(largeur*(99/800.0)/99.0), y*(hauteur*(150/600.0)/150.0), makecol(255, 255, 255));
-        put_big_pixel(currentlevel->mini_bitmap_buffer, x*((10.0*(largeur/100.0))/99.0), y*((15.0*(largeur/100.0))/150.0), makecol(255, 255, 255));
+        //put_big_pixel(currentlevel->mini_ALLEGRO_BITMAP_buffer, x*(largeur*(99/800.0)/99.0), y*(hauteur*(150/600.0)/150.0), makecol(255, 255, 255));
+        put_big_pixel(currentlevel->mini_bitmap_buffer, x*((10.0*(largeur/100.0))/99.0), y*((15.0*(largeur/100.0))/150.0), al_map_rgb(255, 255, 255));
     }
 
 }
@@ -560,9 +570,9 @@ void gestion_minimap(struct vaisseau_data *vaisseaux, struct level_data *current
 
 void init_dca_tir(struct dca_data *dca, struct vaisseau_data *v)
 {
-      fixed distance;
-      fixed deltax, deltay;
-      fixed angle;
+      double distance;
+      double deltax, deltay;
+      double angle;
 
       deltax = fixsub(v->xposprecise+itofix(16), itofix(dca->xsrc));
       deltay = fixsub(v->yposprecise+itofix(16), itofix(dca->ysrc));
@@ -607,7 +617,7 @@ void plot_dca_tir(struct dca_data *dca, struct level_data *currentlevel)
         dca_tir = &(dca->dca_tir[i]);
 	    if (dca_tir->free)
         continue;
-	       if (testcollision_bullet4pix(currentlevel->collision_bitmap, dca_tir->x, dca_tir->y))
+           if (testcollision_bullet4pix(currentlevel->collision_bitmap, dca_tir->x, dca_tir->y))
            {
 	       dca_tir->free=true;
 		   continue;

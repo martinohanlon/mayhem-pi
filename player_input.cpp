@@ -1,8 +1,10 @@
 #include "player_input.h"
 
+#include "allegro_compatibility.h"
+
 void get_control_input(int nbplayers, struct command* cmds)
 {
-	if (num_joysticks) poll_joystick();
+//#FIXME	if (num_joysticks) poll_joystick();
 	
 	for (int player = 0; player < nbplayers; player++)
 	{

@@ -27,7 +27,7 @@ void handle_command(struct command *cmd)
             else
                 vaisseau->sprite_buffer = vaisseau->gfx->sprite;					   // non, normal
             
-            vaisseau->thrust = itofix(0);	  // pas de thrust
+            vaisseau->thrust = (0);	  // pas de thrust
 
         }
         else
@@ -39,25 +39,25 @@ void handle_command(struct command *cmd)
                 if (vaisseau->option_type != OPT_THRUST) vaisseau->sprite_buffer = vaisseau->gfx->sprite_thrust; 
                 else vaisseau->sprite_buffer = vaisseau->gfx->sprite_thrust2;
                 vaisseau->thrust = vaisseau->thrust_max;						   // acceleration
-                vaisseau->shield = FALSE;								   // shield desactiv
-                vaisseau->landed = FALSE;										   // pas pos
+                vaisseau->shield = false;								   // shield desactiv
+                vaisseau->landed = false;										   // pas pos
             }
             else
             {
-                vaisseau->thrust = itofix(0);	  // pas de thrust
+                vaisseau->thrust = (0);	  // pas de thrust
                 vaisseau->sprite_buffer = vaisseau->gfx->sprite;					   // non, normal
-                vaisseau->shield = FALSE;								   // shield desactiv			
+                vaisseau->shield = false;								   // shield desactiv			
             }
         }
         
         if (cmd->fire && !vaisseau->fire && !vaisseau->shield)
-            vaisseau->fire_delay=TRUE;
+            vaisseau->fire_delay=true;
         else
-            vaisseau->fire_delay=FALSE;
+            vaisseau->fire_delay=false;
         
         if (cmd->fire && !vaisseau->shield)
-            vaisseau->fire=TRUE;
+            vaisseau->fire=true;
         else
-            vaisseau->fire=FALSE;
+            vaisseau->fire=false;
     }	
 }
