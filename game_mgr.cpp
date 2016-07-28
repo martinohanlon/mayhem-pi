@@ -1,7 +1,10 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_audio.h>
 
+
 #include "game_mgr.h"
+
+#include <cstdio>
 
 #define FULLSCREEN 1
 
@@ -13,6 +16,7 @@
 #endif
 #endif
 volatile int InterruptTimer::timing_counter;
+ALLEGRO_TIMER* InterruptTimer::timer;
 
 // initialise static members
 int GameManager::display_height;
@@ -72,5 +76,40 @@ void GameManager::Run(GameSequence *aSeq)
   {
    aSeq=aSeq->run();
   }
+}
+
+
+ void InterruptTimer::init()
+{
+        reset();
+        timer = al_create_timer(1.0/40.0);
+        al_start_timer(timer);
+        //start();
+
+
+}
+
+ void InterruptTimer::sync()
+{
+    if (timing_counter >= 0)
+        timing_counter = al_get_timer_count(timer);
+    printf("timing_counter %d\n", timing_counter);
+}
+
+ void InterruptTimer::shutdown()
+{
+     al_destroy_timer(timer);
+ }
+
+ bool InterruptTimer::wasTriggered()
+{
+    if (timing_counter>0)
+    {
+        timing_counter--;
+        if (timing_counter > 2)
+            timing_counter = 0;
+        return true;
+    }
+    return false;
 }
 

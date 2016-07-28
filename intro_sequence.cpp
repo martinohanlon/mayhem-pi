@@ -89,6 +89,7 @@ GameSequence* IntroSequence::doRun()
 
 	do
 	{
+        InterruptTimer::sync();
 		while(InterruptTimer::wasTriggered()) {
             iZoom=(iZoom - iZoomSpeed);
             if (iZoom<1.0)
