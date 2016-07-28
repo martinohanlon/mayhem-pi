@@ -1,5 +1,6 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_image.h>
 
 
 #include "game_mgr.h"
@@ -15,8 +16,8 @@
 #define GFXOPENARG GFX_AUTODETECT_WINDOWED
 #endif
 #endif
-volatile int InterruptTimer::timing_counter;
-ALLEGRO_TIMER* InterruptTimer::timer;
+volatile int InterruptTimer::timing_counter = -1;
+ALLEGRO_TIMER* InterruptTimer::timer = nullptr;
 
 // initialise static members
 int GameManager::display_height;
@@ -28,6 +29,7 @@ void GameManager::Init()
 {
 
   al_init();                                            // Initialise Allegro
+  al_init_image_addon();
   InterruptTimer::init();
 //#FIXME  set_color_depth(8);                                        // Combien de bitplan
   al_install_keyboard();                                        // Installe le clavier

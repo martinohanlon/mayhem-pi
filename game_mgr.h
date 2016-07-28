@@ -53,7 +53,7 @@ public:
     static ALLEGRO_TIMER* timer;
 
     inline static void start() { timing_counter = 0; al_start_timer(timer); };
-    inline static void reset() { timing_counter = -1; };
+    inline static void reset() { timing_counter = -1; if(timer != nullptr) al_set_timer_count(timer,0); };
     static void irq() { if (timing_counter>=0) ++timing_counter;	};
     static void sync();
     // change to stop triggers building up and game suddenly processing lots of triggers all in 1 go
