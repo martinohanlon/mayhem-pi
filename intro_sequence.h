@@ -31,8 +31,8 @@ private:
    bool dcachoice;
    bool wallchoice;
    
-   void update_control(int playerno, int screenpos);
-   void update_joystick(int playerno, int screenpos);
+   void update_control(int playerno, int screenpos, ALLEGRO_BITMAP* screen);
+   void update_joystick(int playerno, int screenpos, ALLEGRO_BITMAP* screen);
    int *get_joystick_action(int joystickno);
    
    ALLEGRO_COLOR black;

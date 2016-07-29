@@ -218,16 +218,16 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
                             wallchoice = !wallchoice;
                             break;
                         case 6:
-                            update_control(0, maxi+120);
+                            update_control(0, maxi+120, screen_buffer);
                             break;
                         case 7:
-                            update_control(1, maxi+130);
+                            update_control(1, maxi+130, screen_buffer);
                             break;
                         case 8:
-                            update_control(2, maxi+140);
+                            update_control(2, maxi+140, screen_buffer);
                             break;
                         case 9:
-                            update_control(3, maxi+150);
+                            update_control(3, maxi+150, screen_buffer);
                             break;
                         case 10:
                             if (width == GameManager::native_width && height == GameManager::native_height)
@@ -364,19 +364,19 @@ void IntroSequence::DrawZoomedLogoInCenter(int y1,int y2)
 }
 
 // this all feels a bit dirty! refactoring is required.
-void IntroSequence::update_control(int playerno, int screenpos)
+void IntroSequence::update_control(int playerno, int screenpos, ALLEGRO_BITMAP* screen)
 {
     //joystick or keyboard
-    if (playercontrols[playerno] > 3) update_joystick(playerno, screenpos);
+    if (playercontrols[playerno] > 3) update_joystick(playerno, screenpos, screen);
     else
     {
-        //#FIXME textout(screen, font, "not supported ", width/3 + 200, screenpos, lightred);
+        textout(screen, GameManager::font, "not supported ", width/3 + 200, screenpos, lightred);
         al_rest(ALLEGRO_MSECS_TO_SECS(200));
-        //#FIXME textout(screen, font, "              ", width/3 + 200, screenpos, lightred);
+        textout(screen, GameManager::font, "              ", width/3 + 200, screenpos, lightred);
     }
 } 
 
-void IntroSequence::update_joystick(int playerno, int screenpos)
+void IntroSequence::update_joystick(int playerno, int screenpos, ALLEGRO_BITMAP* screen)
 {
     char menutext[50];
     char controltext[][10] = {"Left", "Right", "Thrust", "Shield", "Fire"};
@@ -386,12 +386,12 @@ void IntroSequence::update_joystick(int playerno, int screenpos)
     {
         // get joystick input
         snprintf(menutext, sizeof(menutext), "   %s   ", controltext[control]);
-        //#FIXME textout(screen, font, menutext, width/3 + 200, screenpos, lightred);
+        textout(screen, GameManager::font, menutext, width/3 + 200, screenpos, lightred);
         joy_sets[joystickno][control] = get_joystick_action(joystickno);
-        //#FIXME textout(screen, font, "   ok       ", width/3 + 200, screenpos, lightred);
+        textout(screen, GameManager::font, "   ok       ", width/3 + 200, screenpos, lightred);
         al_rest(ALLEGRO_MSECS_TO_SECS(200));
     }
-    //#FIXME textout(screen, font, "            ", width/3 + 200, screenpos, lightred);
+    textout(screen, GameManager::font, "            ", width/3 + 200, screenpos, lightred);
 }
 
 int *IntroSequence::get_joystick_action(int joystickno)
