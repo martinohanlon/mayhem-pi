@@ -334,13 +334,11 @@ int test_place_backtir(struct vaisseau_data *v)
 
 void put_big_pixel(ALLEGRO_BITMAP *bmp, int x, int y, ALLEGRO_COLOR color)
 {
-    al_lock_bitmap(bmp, ALLEGRO_PIXEL_FORMAT_ANY, ALLEGRO_LOCK_WRITEONLY);
     al_set_target_bitmap(bmp);
      al_put_pixel(x, y, color);
      al_put_pixel(x+1, y, color);
      al_put_pixel(x, y-1, color);
      al_put_pixel(x+1, y-1, color);
-     al_unlock_bitmap(bmp);
 }
 
 void draw_explosion(struct player_info *allpi, struct platform_data * plats, int nombre_vaisseau, struct level_data *currentlevel)
