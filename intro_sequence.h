@@ -11,7 +11,8 @@ public:
    void DrawZoomedLogoInCenter(int y1,int y2);
 private:
    static const int mini, maxi;
-   GameSequence* doRun();
+   GameSequence* doRun() override;
+   GameSequence* doTick(ALLEGRO_BITMAP* screen_buffer, bool key[]) override;
    double iZoom;
    double iZoomMax;
    double iZoomSpeed;
@@ -37,6 +38,15 @@ private:
    ALLEGRO_COLOR black;
    ALLEGRO_COLOR red;
    ALLEGRO_COLOR lightred;
+
+   bool isRunning=true;
+   bool quickExit=false;
+   bool canQuickExit=false;
+
+   int menuitems = 12;
+   int menuselected = 0;
+   char menutext[50];
+
    
 };
 

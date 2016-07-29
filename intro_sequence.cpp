@@ -43,6 +43,7 @@ IntroSequence::IntroSequence(GameSequence* previous, float zoom, float zoomspeed
     liveschoice = lives;
     dcachoice = dca;
     wallchoice = wall;
+
     
 }
 
@@ -52,46 +53,10 @@ IntroSequence::~IntroSequence()
        al_destroy_bitmap(iLogo);
 }
 
-GameSequence* IntroSequence::doRun()
+GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pressed[])
 {
-	bool isRunning=true;
-	bool quickExit=false;
-	bool canQuickExit=false;
-    
-    int menuitems = 12;
-    int menuselected = 0;
-    char menutext[50];
-#if 0
-    set_palette(iLogoPalette);
-    al_clear_bitmap(screen);
-#endif
-    //create an in memory screen buffer, the 'real' screen is only blitted once a frame
-    ALLEGRO_BITMAP * screen_buffer;
-    screen_buffer = create_clear_bitmap(width, height);
-
-#if 0
-    //setup joysticks    
-    if (num_joysticks) 
+    if (isRunning)
     {
-        // setup player_controls based on number of joysticks, if there are joysticks use them first, otherwise use keyboard
-        int playercontrol;
-        for (playercontrol = 0; playercontrol < num_joysticks; playercontrol++)
-        {
-            playercontrols[playercontrol] = 4 + playercontrol;
-        }
-        for (playercontrol = num_joysticks; playercontrol < NB_MAX_PLAYERS; playercontrol++)
-        {
-            playercontrols[playercontrol] = playercontrol - num_joysticks;
-        }
-    }
-#endif
-
-    InterruptTimer::start();
-
-	do
-	{
-        InterruptTimer::sync();
-		while(InterruptTimer::wasTriggered()) {
             iZoom=(iZoom - iZoomSpeed);
             if (iZoom<1.0)
                 {
@@ -108,48 +73,29 @@ GameSequence* IntroSequence::doRun()
             // blit to the screen
             blit(iDoublebuffer,screen_buffer,0,0,0,mini,width,maxi-mini);
 
-            if (key[ALLEGRO_KEY_ESCAPE]&&canQuickExit)
+            if (key_pressed[ALLEGRO_KEY_ESCAPE]&&canQuickExit)
             {
                 quickExit=true;
                 isRunning=false;
             }
-            // blit the screen buffer to the 'actual' screen
-            al_set_target_bitmap(al_get_backbuffer(GameManager::display));
 
-            al_draw_bitmap(screen_buffer, 0, 0,0);
+            return nullptr;
+     }
 
-            al_flip_display();
-
-            #ifdef USE_VSYNC
-            vsync();    // wait the raster
-            #endif
-		}
-	} while(isRunning); 
-
-	InterruptTimer::reset();
-
-	bool startgame = false;
-    bool exit = false;    
+    bool startgame = false;
+    bool exit = false;
     bool reload = false;
 
-	if (!quickExit)
-	{
+    if (!quickExit)
+    {
         black=al_map_rgb(0,0,0);
         red=al_map_rgb(255,0,0);
         lightred=al_map_rgb(255, 75, 75);
-                
-        InterruptTimer::start();
-        
-        while(!startgame && !exit && !reload)
-        {
-            InterruptTimer::sync();
-
-            while(InterruptTimer::wasTriggered()) {
 #if 0
                 if (num_joysticks) poll_joystick();
 #endif
                 // joystick debug
-                /*if (num_joysticks) 
+                /*if (num_joysticks)
                 {
                     char debugtext[20];
                     sprintf(debugtext, "   %i %i %i ", joy[0].num_sticks, joy[0].num_buttons, joy[0].stick[0].num_axis);
@@ -162,25 +108,25 @@ GameSequence* IntroSequence::doRun()
                     textout(screen_buffer,font, debugtext,5,59,makecol(200,200,200));
                     sprintf(debugtext, "   %s             ", joy[0].stick[1].axis[0].name);
                     textout(screen_buffer,font, debugtext,5,69,makecol(200,200,200));
-                    
+
                 }*/
 
                 // TODO - refactor - bit of a hack button 6 is back on an xbox 360 controller!
-                if (key[ALLEGRO_KEY_ESCAPE] /*|| joy[0].button[6].b #FIXME*/)
+                if (key_pressed[ALLEGRO_KEY_ESCAPE] /*|| joy[0].button[6].b #FIXME*/)
                 {
                     exit = true;
                 }
-                if (key[ALLEGRO_KEY_F2])
+                if (key_pressed[ALLEGRO_KEY_F2])
                 {
                     playerschoice=2;
                     startgame = true;
                 }
-                if (key[ALLEGRO_KEY_F3])
+                if (key_pressed[ALLEGRO_KEY_F3])
                 {
                     playerschoice=3;
                     startgame = true;
                 }
-                if (key[ALLEGRO_KEY_F4])
+                if (key_pressed[ALLEGRO_KEY_F4])
                 {
                     playerschoice=4;
                     startgame = true;
@@ -188,25 +134,23 @@ GameSequence* IntroSequence::doRun()
                 // get out of the interupt loop
                 if (startgame || exit || reload)
                 {
-                    break;
+                    //break;
                 }
-                    
+
                 //menu control
-                if (key[ALLEGRO_KEY_DOWN] /*|| joy[0].stick[0].axis[1].d2 #FIXME */)
+                if (key_pressed[ALLEGRO_KEY_DOWN] /*|| joy[0].stick[0].axis[1].d2 #FIXME */)
                 {
                     if (menuselected < menuitems - 1) menuselected++;
                     else menuselected = 0;
-                    al_rest(150);
                 }
-                if (key[ALLEGRO_KEY_UP] /*|| joy[0].stick[0].axis[1].d1 #FIXME */)
+                if (key_pressed[ALLEGRO_KEY_UP] /*|| joy[0].stick[0].axis[1].d1 #FIXME */)
                 {
                     if (menuselected > 0) menuselected--;
                     else menuselected = menuitems - 1;
-                    al_rest(150);
                 }
-                if (key[ALLEGRO_KEY_LEFT] /*|| joy[0].stick[0].axis[0].d1 #FIXME */)
+                if (key_pressed[ALLEGRO_KEY_LEFT] /*|| joy[0].stick[0].axis[0].d1 #FIXME */)
                 {
-                    switch(menuselected) 
+                    switch(menuselected)
                     {
                         case 1:
                             if(playerschoice > 2) playerschoice--;
@@ -224,11 +168,11 @@ GameSequence* IntroSequence::doRun()
                             wallchoice = !wallchoice;
                             break;
                     }
-                    al_rest(150);
+                    al_rest(ALLEGRO_MSECS_TO_SECS(150));
                 }
-                if (key[ALLEGRO_KEY_RIGHT] /*|| joy[0].stick[0].axis[0].d2 #FIXME */)
+                if (key_pressed[ALLEGRO_KEY_RIGHT] /*|| joy[0].stick[0].axis[0].d2 #FIXME */)
                 {
-                    switch(menuselected) 
+                    switch(menuselected)
                     {
                         case 1:
                             if(playerschoice < NB_MAX_PLAYERS) playerschoice++;
@@ -246,11 +190,11 @@ GameSequence* IntroSequence::doRun()
                             wallchoice = !wallchoice;
                             break;
                     }
-                    al_rest(150);
+                    al_rest(ALLEGRO_MSECS_TO_SECS(150));
                 }
-                if (key[ALLEGRO_KEY_ENTER] /*|| joy[0].button[0].b #FIXME */)
+                if (key_pressed[ALLEGRO_KEY_ENTER] /*|| joy[0].button[0].b #FIXME */)
                 {
-                    switch(menuselected) 
+                    switch(menuselected)
                     {
                         case 0:
                             startgame = true;
@@ -275,29 +219,29 @@ GameSequence* IntroSequence::doRun()
                             break;
                         case 6:
                             update_control(0, maxi+120);
-                            break;  
+                            break;
                         case 7:
                             update_control(1, maxi+130);
-                            break;  
+                            break;
                         case 8:
                             update_control(2, maxi+140);
-                            break;  
+                            break;
                         case 9:
                             update_control(3, maxi+150);
-                            break;  
+                            break;
                         case 10:
                             if (width == GameManager::native_width && height == GameManager::native_height)
                                 GameManager::ChangeScreenRes(1024, 768);
-                            else 
+                            else
                                 GameManager::ChangeScreenRes(GameManager::native_width, GameManager::native_height);
                             reload = true;
                             break;
                         case 11:
                             exit = true;
                             break;
-                            
+
                     }
-                    al_rest(150);
+                    al_rest(ALLEGRO_MSECS_TO_SECS(150));
                 }
 
                 auto font = GameManager::font;
@@ -306,23 +250,23 @@ GameSequence* IntroSequence::doRun()
                 textout(screen_buffer, font, "Use arrow keys and enter:", width/4, maxi+15, red);
 
                 textout(screen_buffer, font, "Start game", width/3, maxi+30, ((menuselected == 0) ? lightred : red));
-                
+
                 textout(screen_buffer, font, "Options:", width/3, maxi+45, red);
                 snprintf(menutext, sizeof(menutext), "   Players - %d   ", playerschoice);
                 textout(screen_buffer, font, menutext, width/3, maxi+55, ((menuselected == 1) ? lightred : red));
-                
+
                 snprintf(menutext, sizeof(menutext), "   Level - %d   ", levelchoice + 1);
                 textout(screen_buffer, font, menutext, width/3, maxi+65, ((menuselected == 2) ? lightred : red));
-                
+
                 snprintf(menutext, sizeof(menutext), "   Lives - %d   ", liveschoice);
                 textout(screen_buffer, font, menutext, width/3, maxi+75, ((menuselected == 3) ? lightred : red));
-                
+
                 snprintf(menutext, sizeof(menutext), "   Use DCA - %s   ", ((dcachoice) ? "yes" : "no" ));
                 textout(screen_buffer, font, menutext, width/3, maxi+85, ((menuselected == 4) ? lightred : red));
-                
+
                 snprintf(menutext, sizeof(menutext), "   Wall Collision - %s   ", ((wallchoice) ? "yes" : "no" ));
                 textout(screen_buffer, font, menutext, width/3, maxi+95, ((menuselected == 5) ? lightred : red));
-                
+
                 textout(screen_buffer, font, "Controls:", width/3, maxi+110, red);
                 snprintf(menutext, sizeof(menutext), "   Player 1 - %s   ", (playercontrols[0] > 3 ? "Joystick" : "Keyboard"));
                 textout(screen_buffer, font, menutext, width/3, maxi+120, ((menuselected == 6) ? lightred : red));
@@ -332,48 +276,48 @@ GameSequence* IntroSequence::doRun()
                 textout(screen_buffer, font, menutext, width/3, maxi+140, ((menuselected == 8) ? lightred : red));
                 snprintf(menutext, sizeof(menutext), "   Player 4 - %s   ", (playercontrols[3] > 3 ? "Joystick" : "Keyboard"));
                 textout(screen_buffer, font, menutext, width/3, maxi+150, ((menuselected == 9) ? lightred : red));
-                
+
                 snprintf(menutext, sizeof(menutext), "Resolution (%ix%i)   ", width, height);
                 textout(screen_buffer, font, menutext, width/3, maxi+165, red);
-                
+
                 if (width == GameManager::native_width && height == GameManager::native_height)
                     snprintf(menutext, sizeof(menutext), "   Switch to Low - 1024x768   ");
                 else
                     snprintf(menutext, sizeof(menutext), "   Switch to Native - %ix%i   ", GameManager::native_width, GameManager::native_height);
                 textout(screen_buffer, font, menutext, width/3, maxi+175, ((menuselected == 10) ? lightred : red));
-                
+
                 textout(screen_buffer, font, "Exit", width/3, maxi+190, ((menuselected == 11) ? lightred : red));
-                
+
                 // blit the screen buffer to the 'actual' screen
                 //blit(screen_buffer, screen, 0, 0, 0, 0, width, height);
+        return nullptr;
+    }
 
-                al_set_target_bitmap(al_get_backbuffer(GameManager::display));
-                al_draw_bitmap(screen_buffer, 0, 0,0);
-                al_flip_display();
 
-                #ifdef USE_VSYNC
-                vsync();    // wait the raster
-                #endif 
-            }
-        }
-        InterruptTimer::reset();
-	}
 #if 0
     clear_bitmap(screen);
     destroy_bitmap(screen_buffer);
 #endif
-	GameSequence * seq;
-	if (startgame)
-		{
-		iZoom=iZoomMax;
-		seq=new BattleSequence(this, playerschoice, playerschoice, liveschoice, levelchoice, dcachoice, wallchoice, width, height, playercontrols, joy_sets);
-		}
-	else if (reload)
+
+    GameSequence * seq = nullptr;
+    if (startgame)
+        {
+        iZoom=iZoomMax;
+        seq=new BattleSequence(this, playerschoice, playerschoice, liveschoice, levelchoice, dcachoice, wallchoice, width, height, playercontrols, joy_sets);
+        }
+    else if (reload)
         seq=new IntroSequence(NULL, 10.0, 0.5, playerschoice, levelchoice, liveschoice, dcachoice, wallchoice);
     else
-		seq=ReturnScreen();
+        seq=ReturnScreen();
 
-	return seq;
+    return seq;
+
+}
+
+
+GameSequence* IntroSequence::doRun()
+{
+    return nullptr;
 }
 
 void IntroSequence::DrawZoomedLogoInCenter(int y1,int y2)
@@ -429,7 +373,7 @@ void IntroSequence::update_control(int playerno, int screenpos)
     else
     {
         //#FIXME textout(screen, font, "not supported ", width/3 + 200, screenpos, lightred);
-        al_rest(200);
+        al_rest(ALLEGRO_MSECS_TO_SECS(200));
         //#FIXME textout(screen, font, "              ", width/3 + 200, screenpos, lightred);
     }
 } 
@@ -439,7 +383,7 @@ void IntroSequence::update_joystick(int playerno, int screenpos)
     char menutext[50];
     char controltext[][10] = {"Left", "Right", "Thrust", "Shield", "Fire"};
     int joystickno = playercontrols[playerno] - 4;
-    al_rest(200);
+    al_rest(ALLEGRO_MSECS_TO_SECS(200));
     for (int control = 0; control < 5; control++)
     {
         // get joystick input
@@ -447,7 +391,7 @@ void IntroSequence::update_joystick(int playerno, int screenpos)
         //#FIXME textout(screen, font, menutext, width/3 + 200, screenpos, lightred);
         joy_sets[joystickno][control] = get_joystick_action(joystickno);
         //#FIXME textout(screen, font, "   ok       ", width/3 + 200, screenpos, lightred);
-        al_rest(200);
+        al_rest(ALLEGRO_MSECS_TO_SECS(200));
     }
     //#FIXME textout(screen, font, "            ", width/3 + 200, screenpos, lightred);
 }

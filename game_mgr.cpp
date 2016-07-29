@@ -4,8 +4,9 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 
-
 #include "game_mgr.h"
+
+#include "allegro_compatibility.h"
 
 #include <cstdio>
 
@@ -28,17 +29,31 @@ int GameManager::native_height;
 int GameManager::native_width;
 ALLEGRO_DISPLAY* GameManager::display = nullptr;
 ALLEGRO_FONT* GameManager::font = nullptr;
+ALLEGRO_TIMER* GameManager::timer = nullptr;
 
 void GameManager::Init()
-{
+{  
+  if(!al_init()) {
+     fprintf(stderr, "failed to initialize allegro!\n");
+     return;
+  }
 
-  al_init();                                            // Initialise Allegro
+  if(!al_install_keyboard()) {
+     fprintf(stderr, "failed to initialize the keyboard!\n");
+     return;
+  }
+
   al_init_image_addon();
 
   al_init_font_addon(); // initialize the font addon
   al_init_ttf_addon();// initialize the ttf (True Type Font) addon
 
   GameManager::font = al_load_font("font.ttf", 12, 0);
+  GameManager::timer = al_create_timer(ALLEGRO_BPS_TO_SECS(40));
+
+  if(!GameManager::timer) {
+     fprintf(stderr, "failed to create timer!\n");
+  }
 
   InterruptTimer::init();
 //#FIXME  set_color_depth(8);                                        // Combien de bitplan
@@ -90,6 +105,70 @@ void GameManager::Run(GameSequence *aSeq)
    aSeq=aSeq->run();
   }
 }
+
+GameSequence* GameSequence::run()
+{
+    auto event_queue = al_create_event_queue();
+      if(!event_queue) {
+         fprintf(stderr, "failed to create event_queue!\n");
+         return nullptr;
+      }
+
+      al_register_event_source(event_queue, al_get_display_event_source(GameManager::display));
+
+      al_register_event_source(event_queue, al_get_timer_event_source(GameManager::timer));
+
+      al_register_event_source(event_queue, al_get_keyboard_event_source());
+
+      al_start_timer(GameManager::timer);
+
+      ALLEGRO_BITMAP * screen_buffer;
+      screen_buffer = al_create_bitmap(GameManager::display_width, GameManager::display_height);
+      al_set_target_bitmap(screen_buffer);
+      al_clear_to_color(al_map_rgb(0,0,0));
+
+      bool key_pressed[ALLEGRO_KEY_MAX] = {0};
+      bool key_down[ALLEGRO_KEY_MAX] = {0};
+
+      bool doexit = false;
+      bool redraw =true;
+       while(!doexit)
+       {
+               ALLEGRO_EVENT ev;
+               al_wait_for_event(event_queue, &ev);
+
+               if(ev.type == ALLEGRO_EVENT_TIMER) {
+                  doTick(screen_buffer, key_pressed);
+                  for (auto& pressed : key_pressed)
+                      pressed = false;
+                  redraw = true;
+               }
+               else if(ev.type == ALLEGRO_EVENT_KEY_DOWN) {
+                   key_pressed[ev.keyboard.keycode] = true;
+                   key_down[ev.keyboard.keycode] = true;
+               }
+               else if(ev.type == ALLEGRO_EVENT_KEY_UP) {
+                  key_pressed[ev.keyboard.keycode] = false;
+                  key_down[ev.keyboard.keycode] = false;
+               }
+
+               if (redraw && al_is_event_queue_empty(event_queue)) {
+                    redraw = false;
+                    al_set_target_bitmap(al_get_backbuffer(GameManager::display));
+                    al_draw_bitmap(screen_buffer,0,0,0);
+                    al_flip_display();
+                 }
+       }
+
+/*
+    GameSequence* s=doRun();
+
+    if (s!=iReturnScreen && iReturnScreen)
+        delete iReturnScreen;
+    return s;
+*/
+}
+
 
 
  void InterruptTimer::init()

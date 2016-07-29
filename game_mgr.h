@@ -16,11 +16,11 @@ public:
    GameSequence(GameSequence *returnScreen)
                       : iReturnScreen(returnScreen) {}
    virtual ~GameSequence(){};
-   GameSequence* run() { GameSequence* s=doRun(); if (s!=iReturnScreen && iReturnScreen) delete iReturnScreen; return s; };
-
+   GameSequence* run();
 
 protected:
    virtual GameSequence* doRun() = 0 ;
+   virtual GameSequence* doTick(ALLEGRO_BITMAP* screen_buffer, bool key[ALLEGRO_KEY_MAX]) {} ;
    GameSequence *ReturnScreen() const { return iReturnScreen; };
 private:
    GameSequence *iReturnScreen;
@@ -40,6 +40,7 @@ public:
     static int native_height;
     static ALLEGRO_DISPLAY* display;
     static ALLEGRO_FONT* font;
+    static ALLEGRO_TIMER* timer;
 };
 
 class InterruptTimer
