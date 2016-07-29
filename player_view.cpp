@@ -6,6 +6,7 @@
 #include "platform_data.h"
 #include "physics.h"
 #include "option.h"
+#include "game_mgr.h"
 
 #include "allegro_compatibility.h"
 
@@ -39,15 +40,15 @@ void draw_basic_player_view(struct player_view *v,int nbviews, ALLEGRO_BITMAP *s
 
     ALLEGRO_COLOR color=al_map_rgb(255,255,255);
 	struct vaisseau_data *ship = v->player->ship;
-#if 0
-	set_clip(v->back_map_buffer, 0, 0, v->w+2*v->bordersize,v->h+2*v->bordersize);
+
+    set_clip(v->back_map_buffer, 0, 0, v->w+2*v->bordersize,v->h+2*v->bordersize);
     clear_bitmap(v->back_map_buffer);
 	hline(v->back_map_buffer,0,0,v->w+2*v->bordersize,color);
 	hline(v->back_map_buffer,0,v->h+2*v->bordersize-1,v->w+2*v->bordersize,color);
 	vline(v->back_map_buffer,0,0,v->h+2*v->bordersize,color);
 	vline(v->back_map_buffer,v->w+2*v->bordersize-1,0,v->h+2*v->bordersize,color);
-#endif
-	char buffer[20];
+
+    char buffer[20];
     
     //debug x,y data  
     /*char bufferx[20];
@@ -70,10 +71,9 @@ void draw_basic_player_view(struct player_view *v,int nbviews, ALLEGRO_BITMAP *s
     else 
         sprintf(buffer,"Live(s): %d",v->player->nblives);
 
-#if 0
-	textout(v->back_map_buffer, font, v->player->name, 3, 2, color);
-	textout(v->back_map_buffer, font, buffer, v->bordersize+195 , 2, color);
-#endif
+    textout(v->back_map_buffer, GameManager::font, v->player->name, 3, 2, color);
+    textout(v->back_map_buffer, GameManager::font, buffer, v->bordersize+195 , 2, color);
+
  	int barheight_fuel=v->h*ship->fuel/ship->max_fuel;
 	int barheight_shield=v->h*ship->shield_force/ship->max_shield_force;
     ALLEGRO_COLOR fuel_col;
@@ -100,7 +100,7 @@ void draw_basic_player_view(struct player_view *v,int nbviews, ALLEGRO_BITMAP *s
         auto shield_col_g=255*2*ship->shield_force/ship->max_shield_force;
         shield_col=al_map_rgb(255, shield_col_g, 0);
     }
-#if 0
+
     vline(v->back_map_buffer,(v->bordersize/2)+1,v->h+v->bordersize,v->bordersize+(v->h-barheight_fuel),fuel_col);
     vline(v->back_map_buffer,v->bordersize/2,v->h+v->bordersize,v->bordersize+(v->h-barheight_fuel),fuel_col);
     vline(v->back_map_buffer,v->w+v->bordersize+v->bordersize/2,v->h+v->bordersize,v->bordersize+(v->h-barheight_shield),shield_col);
@@ -113,7 +113,6 @@ void draw_basic_player_view(struct player_view *v,int nbviews, ALLEGRO_BITMAP *s
     }
 	// reset clip after
     set_clip(v->back_map_buffer, v->bordersize, v->bordersize, v->w,v->h);
-#endif
     v++;
    }
 }
@@ -123,8 +122,8 @@ void rotate_sprite(struct player_view * v)
 	{
 	struct vaisseau_data *ship = v->player->ship;
 
-    //#FIXME clear_bitmap(ship->sprite_buffer_rota);
-    //#FIXME rotate_sprite(ship->sprite_buffer_rota, ship->sprite_buffer, 0,0, itofix(ship->angle));
+    clear_bitmap(ship->sprite_buffer_rota);
+    rotate_sprite(ship->sprite_buffer_rota, ship->sprite_buffer, 0,0, itofix(ship->angle));
 
 	}
 
@@ -138,7 +137,7 @@ void display_rotate_sprites(struct player_view allviews[], int nbviews, struct l
         struct vaisseau_data *ship = view->player->ship;
 		if(!ship->explode)
 		{
-//#FIXME			draw_sprite(currentlevel->level_buffer, ship->sprite_buffer_rota, ship->xpos, ship->ypos);
+            draw_sprite(currentlevel->level_buffer, ship->sprite_buffer_rota, ship->xpos, ship->ypos);
                     
             // if the ship is halfway across the gap, draw it on the other side
             if (ship->xpos + 32 > currentlevel->edgedata.rightx)

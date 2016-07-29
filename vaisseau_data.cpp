@@ -61,7 +61,6 @@ int init_vaisseau_data(struct vaisseau_data* v, struct vaisseau_gfx* gfx,
     v->sprite_buffer = al_create_bitmap(32, 32);                     // create ALLEGRO_BITMAP pour le sprite
 	if (! v->sprite_buffer)
 		return -1;
-#if 0
     clear_bitmap(v->sprite_buffer);                               // On nettoye
 	blit(gfx->sprite, v->sprite_buffer, 0, 0, 0, 0, 32, 32); // blit le sprite dans son buffer
 
@@ -69,7 +68,6 @@ int init_vaisseau_data(struct vaisseau_data* v, struct vaisseau_gfx* gfx,
 	if (! v->sprite_buffer_rota)
 		return -1;
 	clear_bitmap(v->sprite_buffer_rota);                               // On nettoye
-#endif
 	return 0;
   }
 

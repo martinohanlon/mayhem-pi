@@ -45,7 +45,7 @@ int load_level(struct level_data * leveldat, int largeur, int hauteur)
     leveldat->mini_bitmap=al_load_bitmap(leveldat->mini_bmpname);
     leveldat->collision_bitmap=al_load_bitmap(leveldat->collision_bmpname);
     leveldat->mini_bitmap_buffer=al_create_bitmap(10.0*(largeur/100.0), 15.0*(largeur/100.0));
-    //#fixme leveldat->level_buffer=al_create_clear_bitmap(al_get_bitmap_width(leveldat->bitmap), al_get_bitmap_height(leveldat->bitmap));
+    leveldat->level_buffer=create_clear_bitmap(al_get_bitmap_width(leveldat->bitmap), al_get_bitmap_height(leveldat->bitmap));
  
     if (leveldat->bitmap && leveldat->mini_bitmap)
 	{

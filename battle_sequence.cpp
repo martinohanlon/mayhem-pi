@@ -4,7 +4,7 @@
 #include "battle_sequence.h"
 #include "platform_data.h"
 
-
+#include "allegro_compatibility.h"
 
 
 //------------------//
@@ -375,11 +375,9 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key[ALL
               play_soundfx_from_shipdata(&sounds[3],&vaisseaux[3]);
 
           // create level buffer
-  #if 0
-          blit(currentlevel->bitmap, currentlevel->level_buffer, 0, 0, 0, 0, currentlevel->ALLEGRO_BITMAP->w, currentlevel->ALLEGRO_BITMAP->h);
+          blit(currentlevel->bitmap, currentlevel->level_buffer, 0, 0, 0, 0, al_get_bitmap_width(currentlevel->bitmap), al_get_bitmap_height(currentlevel->bitmap));
 
-          draw_basic_player_view(views, nb_views, currentlevel->ALLEGRO_BITMAP, currentlevel->colormap);
-  #endif
+          draw_basic_player_view(views, nb_views, currentlevel->bitmap);
           // first we rotate the sprite then display the shooting
           for(i=0;i<nb_players;i++)
               rotate_sprite(&views[i]);
@@ -402,9 +400,7 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key[ALL
           draw_debris(players, moon_physics, nb_players, currentlevel);
 
           gestion_minimap(vaisseaux, currentlevel, nb_players, screen_width, screen_height);
-  #if 0
-          blit(currentlevel->mini_ALLEGRO_BITMAP_buffer, screen_buffer, 0, 0, (screen_width / 2) - (5*(screen_width/100.0)), (screen_height / 2) - (currentlevel->mini_ALLEGRO_BITMAP_buffer->h / 2) , currentlevel->mini_ALLEGRO_BITMAP_buffer->w, currentlevel->mini_ALLEGRO_BITMAP_buffer->h);
-  #endif
+          blit(currentlevel->mini_bitmap_buffer, screen_buffer, 0, 0, (screen_width / 2) - (5*(screen_width/100.0)), (screen_height / 2) - (al_get_bitmap_height(currentlevel->mini_bitmap_buffer) / 2) , al_get_bitmap_width(currentlevel->mini_bitmap_buffer), al_get_bitmap_height(currentlevel->mini_bitmap_buffer));
           if(currentlevel==&levels[0]) warp_zone(vaisseaux, nb_players);
           gestion_warps(vaisseaux, currentlevel, nb_players);
 
@@ -415,36 +411,28 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key[ALL
           {
               struct player_view* v = &views[i];
               struct vaisseau_data *ship = v->player->ship;
-  #if 0
               blit(currentlevel->level_buffer, v->back_map_buffer,
                   ship->xpos - (v->w/2), ship->ypos - (v->h/2),
                   v->bordersize, v->bordersize, v->w, v->h);
-  #endif
               // does the level wrap in x
               if (currentlevel->edgedata.wrapx)
               {
 
                   if (ship->xpos - (v->w/2) < 0)
                   {
-  #if 0
                       blit(currentlevel->level_buffer, v->back_map_buffer,
                           al_get_bitmap_width(currentlevel->bitmap) + (ship->xpos - (v->w/2)), ship->ypos - (v->h/2),
                           v->bordersize, v->bordersize, v->w - (ship->xpos - (v->w/2)), v->h);
-  #endif
                   }
                   else if (ship->xpos + (v->w/2) > al_get_bitmap_width(currentlevel->bitmap))
                   {
-  #if 0
                       blit(currentlevel->level_buffer, v->back_map_buffer,
                           0, ship->ypos - (v->h/2),
-                          v->bordersize + (v->w - (ship->xpos + (v->w/2) - currentlevel->bitmap->w)) - 1, v->bordersize,
-                          ship->xpos + (v->w/2) - currentlevel->bitmap->w, v->h);
-  #endif
+                          v->bordersize + (v->w - (ship->xpos + (v->w/2) - al_get_bitmap_width(currentlevel->bitmap))) - 1, v->bordersize,
+                          ship->xpos + (v->w/2) - al_get_bitmap_width(currentlevel->bitmap), v->h);
                   }
               }
-  #if 0
               blit(v->back_map_buffer, screen_buffer, 0, 0, v->x, v->y, v->w+2*v->bordersize, v->h+2*v->bordersize);
-      #endif
           }
 
       #ifdef CHECKFPS
@@ -473,10 +461,6 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key[ALL
            }
       #endif
 
-          // blit the screen buffer to the 'actual' screen
-  #if 0
-          blit(screen_buffer, screen, 0, 0, 0, 0, screen_width, screen_height);
-  #endif
 
       #ifdef USE_VSYNC
           vsync();    // wait the raster
@@ -499,10 +483,8 @@ else
           }
         if(winner == 0) sprintf(gameovermsg, "     Game over. Draw!");
         else sprintf(gameovermsg, "Game over. Player %i wins!", winner);
-  #if 0
-        textout(screen,font, gameovermsg, (screen_width / 2) - 100, 5, makecol(255,0,0));
-  #endif
-        al_rest(2000);
+        textout(screen_buffer,GameManager::font, gameovermsg, (screen_width / 2) - 100, 5, makecol(255,0,0));
+        al_rest(ALLEGRO_USECS_TO_SECS(2000));
     }
 
     return  ReturnScreen();
@@ -756,7 +738,7 @@ GameSequence* BattleSequence::doRun()
 #if 0
       textout(screen,font, gameovermsg, (screen_width / 2) - 100, 5, makecol(255,0,0));
 #endif
-      al_rest(2000);
+      al_rest(ALLEGRO_USECS_TO_SECS(2000));
   }
   InterruptTimer::reset();
   al_destroy_bitmap(screen_buffer);
