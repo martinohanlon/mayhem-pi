@@ -49,6 +49,7 @@ private:
        bool Gameover();
 private:
        GameSequence* doRun();
+       GameSequence* doTick(ALLEGRO_BITMAP* screen_buffer, bool key[ALLEGRO_KEY_MAX]) override;
 
 private:
 #ifdef __NET_SUPPORT__
@@ -79,4 +80,5 @@ private:
        struct soundfx sounds[NB_MAX_PLAYERS];
        struct option_data opt[NB_OPTIONS];
        physics_constants moon_physics;
+       bool isRunning;
 };

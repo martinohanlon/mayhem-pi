@@ -290,7 +290,6 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
 
                 // blit the screen buffer to the 'actual' screen
                 //blit(screen_buffer, screen, 0, 0, 0, 0, width, height);
-        return nullptr;
     }
 
 

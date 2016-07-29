@@ -132,6 +132,7 @@ BattleSequence::BattleSequence(GameSequence *previous, int nbviews, int nbplayer
 
     // TODO ASSERT?
     load_level(currentlevel, screen_width, screen_height);
+    isRunning = true;
 }
 
 BattleSequence::~BattleSequence()
@@ -306,6 +307,208 @@ void BattleSequence::InitSoundFx()
     create_sprite_buffer_screen();
 }
 
+GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key[ALLEGRO_KEY_MAX])
+{
+    int i; // for everythign counter
+
+  #ifdef CHECKFPS
+    int check_fps=1;
+    //int retrace_count_init=retrace_count;
+  #endif
+
+
+    if (isRunning)
+    {
+          get_control_input(nb_players, commands);
+
+          #ifdef __NETSUPPORT__
+          struct command  *cmdptr=keyvaisseau[0].cmd;
+          if (memcmp(&netpadcmd,cmdptr,sizeof(struct command)))
+              {
+              static int count=0;
+              static int miss=0;
+              char bf[20];
+              sprintf(bf,"net send:%d",count++);
+              textout(screen_buffer,font,bf,700,50,makecol(255,255,255));
+              if (!gameclient.send(keyvaisseau[0].cmd))
+                  {
+                  sprintf(bf,"send miss:%d",miss++);
+                  textout(screen_buffer,font,bf,700,60,makecol(255,255,255));
+                  }
+              }
+          if (gameserver.recv(netpadcmd))
+              {
+              static int count=0;
+              char bf[20];
+              sprintf(bf,"net recv:%d",count++);
+              textout(screen_buffer,font,bf,700,80,makecol(255,255,255));
+              netpadcmd.controlled_ship=&vaisseaux[0];
+              }
+
+          handle_command(&netpadcmd);
+          #else
+
+          if(!player_gameover(&players[0]))
+              handle_command(&commands[0]);
+          #endif
+
+          if(!player_gameover(&players[1]))
+              handle_command(&commands[1]);
+
+          if(nb_views>=3)
+              if(!player_gameover(&players[2]))
+                  handle_command(&commands[2]);
+
+          if(nb_views>=4)
+              if(!player_gameover(&players[3]))
+                  handle_command(&commands[3]);
+
+          calcul_pos(moon_physics,nb_players,vaisseaux,currentlevel->platformdata,currentlevel->nbplatforms);  // Position
+          fuel_shield_calcul(nb_players,vaisseaux);
+
+          // sound both player
+          play_soundfx_from_shipdata(&sounds[0],&vaisseaux[0]);
+          play_soundfx_from_shipdata(&sounds[1],&vaisseaux[1]);
+          if(nb_views>=3)
+              play_soundfx_from_shipdata(&sounds[2],&vaisseaux[2]);
+          if(nb_views>=4)
+              play_soundfx_from_shipdata(&sounds[3],&vaisseaux[3]);
+
+          // create level buffer
+  #if 0
+          blit(currentlevel->bitmap, currentlevel->level_buffer, 0, 0, 0, 0, currentlevel->ALLEGRO_BITMAP->w, currentlevel->ALLEGRO_BITMAP->h);
+
+          draw_basic_player_view(views, nb_views, currentlevel->ALLEGRO_BITMAP, currentlevel->colormap);
+  #endif
+          // first we rotate the sprite then display the shooting
+          for(i=0;i<nb_players;i++)
+              rotate_sprite(&views[i]);
+
+          mega_collision_test(players, views, vaisseaux, currentlevel, nb_views, nb_players);
+
+          gestion_option(opt, currentlevel,vaisseaux, views, nb_players,nb_views);
+
+          for(i=0;i<nb_players;i++)
+              gestion_tir(&vaisseaux[i], currentlevel);
+
+          if(use_dca)
+          {
+              for(i=0;i<nb_players;i++)
+                  gestion_dca(&currentlevel->alldca[0], &vaisseaux[i], currentlevel);
+          }
+
+          draw_explosion(players, currentlevel->platformdata, nb_players, currentlevel);
+
+          draw_debris(players, moon_physics, nb_players, currentlevel);
+
+          gestion_minimap(vaisseaux, currentlevel, nb_players, screen_width, screen_height);
+  #if 0
+          blit(currentlevel->mini_ALLEGRO_BITMAP_buffer, screen_buffer, 0, 0, (screen_width / 2) - (5*(screen_width/100.0)), (screen_height / 2) - (currentlevel->mini_ALLEGRO_BITMAP_buffer->h / 2) , currentlevel->mini_ALLEGRO_BITMAP_buffer->w, currentlevel->mini_ALLEGRO_BITMAP_buffer->h);
+  #endif
+          if(currentlevel==&levels[0]) warp_zone(vaisseaux, nb_players);
+          gestion_warps(vaisseaux, currentlevel, nb_players);
+
+          display_rotate_sprites(views, nb_views, currentlevel);
+
+          // back_map_buffer dans screen
+          for(i=0;i<nb_views;i++)
+          {
+              struct player_view* v = &views[i];
+              struct vaisseau_data *ship = v->player->ship;
+  #if 0
+              blit(currentlevel->level_buffer, v->back_map_buffer,
+                  ship->xpos - (v->w/2), ship->ypos - (v->h/2),
+                  v->bordersize, v->bordersize, v->w, v->h);
+  #endif
+              // does the level wrap in x
+              if (currentlevel->edgedata.wrapx)
+              {
+
+                  if (ship->xpos - (v->w/2) < 0)
+                  {
+  #if 0
+                      blit(currentlevel->level_buffer, v->back_map_buffer,
+                          al_get_bitmap_width(currentlevel->bitmap) + (ship->xpos - (v->w/2)), ship->ypos - (v->h/2),
+                          v->bordersize, v->bordersize, v->w - (ship->xpos - (v->w/2)), v->h);
+  #endif
+                  }
+                  else if (ship->xpos + (v->w/2) > al_get_bitmap_width(currentlevel->bitmap))
+                  {
+  #if 0
+                      blit(currentlevel->level_buffer, v->back_map_buffer,
+                          0, ship->ypos - (v->h/2),
+                          v->bordersize + (v->w - (ship->xpos + (v->w/2) - currentlevel->bitmap->w)) - 1, v->bordersize,
+                          ship->xpos + (v->w/2) - currentlevel->bitmap->w, v->h);
+  #endif
+                  }
+              }
+  #if 0
+              blit(v->back_map_buffer, screen_buffer, 0, 0, v->x, v->y, v->w+2*v->bordersize, v->h+2*v->bordersize);
+      #endif
+          }
+
+      #ifdef CHECKFPS
+          check_fps++;
+          if (check_fps == 100)
+          {
+              char fps[10];
+  #if 0
+              sprintf(fps,"fps=%.1f",check_fps*70.0/(retrace_count-retrace_count_init));
+              textout(screen_buffer, font, fps, 105, 5, makecol(200,200,200));
+  #endif
+              char reso[10];
+              sprintf(reso, "%ix%i", screen_width, screen_height);
+  #if 0
+              textout(screen_buffer, font, reso, 5, 5, makecol(200,200,200));
+  #endif
+              //debug interupt counter
+              /*char counter[10];
+              sprintf(counter, "%i", InterruptTimer::timing_counter);
+              textout(screen_buffer,font, counter, 205, 5, makecol(200,200,200));*/
+
+              check_fps=0;
+  #if 0
+              retrace_count_init=retrace_count;
+  #endif
+           }
+      #endif
+
+          // blit the screen buffer to the 'actual' screen
+  #if 0
+          blit(screen_buffer, screen, 0, 0, 0, 0, screen_width, screen_height);
+  #endif
+
+      #ifdef USE_VSYNC
+          vsync();    // wait the raster
+      #endif
+    return nullptr;
+    }
+else
+    {
+    if (Gameover())
+    {
+        char gameovermsg[10];
+        //who won?
+        int winner = 0;
+        int winnerlives = -1;
+        for(i=0;i<nb_players;i++)
+          if(players[i].nblives > winnerlives)
+          {
+              winnerlives = players[i].nblives;
+              winner = i + 1;
+          }
+        if(winner == 0) sprintf(gameovermsg, "     Game over. Draw!");
+        else sprintf(gameovermsg, "Game over. Player %i wins!", winner);
+  #if 0
+        textout(screen,font, gameovermsg, (screen_width / 2) - 100, 5, makecol(255,0,0));
+  #endif
+        al_rest(2000);
+    }
+
+    return  ReturnScreen();
+}
+}
+
 GameSequence* BattleSequence::doRun()
 {
   int i; // for everythign counter
@@ -319,7 +522,6 @@ GameSequence* BattleSequence::doRun()
   //int retrace_count_init=retrace_count;
 #endif
 
-  bool isRunning=true;
   InterruptTimer::start();
   while(isRunning)
   {
