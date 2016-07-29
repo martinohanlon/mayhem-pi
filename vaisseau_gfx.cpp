@@ -32,7 +32,10 @@ int init_sprite_explosion(char *bmpname)
   {
     sprite_explosion_frames[i]=al_create_bitmap(32,32);
     blit(sprite_explode,sprite_explosion_frames[i],32*i, 0,0,0,32,32);
+
+    al_convert_mask_to_alpha(sprite_explosion_frames[i], al_map_rgb(0,0,0));
   }
+
   return (!sprite_explode);
 }
 
