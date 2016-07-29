@@ -2,6 +2,7 @@
 #define __GAMEMANAGER_H_
 
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_font.h>
 
 #define  DEFAULT_WIDTH  1024
 #define  DEFAULT_HEIGHT 768
@@ -37,6 +38,8 @@ public:
     static int display_height;
     static int native_width;
     static int native_height;
+    static ALLEGRO_DISPLAY* display;
+    static ALLEGRO_FONT* font;
 };
 
 class InterruptTimer
@@ -52,7 +55,7 @@ public:
     static volatile int timing_counter;
     static ALLEGRO_TIMER* timer;
 
-    inline static void start() { timing_counter = 0; al_start_timer(timer); };
+    inline static void start() { timing_counter = 0; al_set_timer_count(timer,0); al_start_timer(timer); };
     inline static void reset() { timing_counter = -1; if(timer != nullptr) al_set_timer_count(timer,0); };
     static void irq() { if (timing_counter>=0) ++timing_counter;	};
     static void sync();

@@ -1,6 +1,8 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_image.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 
 
 #include "game_mgr.h"
@@ -24,12 +26,20 @@ int GameManager::display_height;
 int GameManager::display_width;
 int GameManager::native_height;
 int GameManager::native_width;
+ALLEGRO_DISPLAY* GameManager::display = nullptr;
+ALLEGRO_FONT* GameManager::font = nullptr;
 
 void GameManager::Init()
 {
 
   al_init();                                            // Initialise Allegro
   al_init_image_addon();
+
+  al_init_font_addon(); // initialize the font addon
+  al_init_ttf_addon();// initialize the ttf (True Type Font) addon
+
+  GameManager::font = al_load_font("font.ttf", 12, 0);
+
   InterruptTimer::init();
 //#FIXME  set_color_depth(8);                                        // Combien de bitplan
   al_install_keyboard();                                        // Installe le clavier
@@ -46,7 +56,8 @@ void GameManager::Init()
   native_width = display_width;
   native_height = display_height;
 
-  auto display = al_create_display(display_width, display_height);
+  GameManager::display = al_create_display(display_width, display_height);
+  al_set_target_bitmap(al_get_backbuffer(display));
 
   //set_gfx_mode( GFXOPENARG, display_width, display_height, 0, 0 );
   //set_gfx_mode( GFX_AUTODETECT_WINDOWED, DEFAULT_WIDTH, DEFAULT_HEIGHT, 0, 0 );          // windowed
@@ -95,7 +106,7 @@ void GameManager::Run(GameSequence *aSeq)
 {
     if (timing_counter >= 0)
         timing_counter = al_get_timer_count(timer);
-    printf("timing_counter %d\n", timing_counter);
+
 }
 
  void InterruptTimer::shutdown()

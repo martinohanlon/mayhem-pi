@@ -3,6 +3,7 @@
 #include "intro_sequence.h"
 #include "battle_sequence.h"
 #include "allegro_compatibility.h"
+#include <allegro5/allegro_primitives.h>
 
 const int IntroSequence::mini=150;
 const int IntroSequence::maxi=400;
@@ -61,7 +62,7 @@ GameSequence* IntroSequence::doRun()
     int menuselected = 0;
     char menutext[50];
 #if 0
-	set_palette(iLogoPalette);
+    set_palette(iLogoPalette);
     al_clear_bitmap(screen);
 #endif
     //create an in memory screen buffer, the 'real' screen is only blitted once a frame
@@ -97,28 +98,31 @@ GameSequence* IntroSequence::doRun()
                 iZoom=1;
                 isRunning=false;
                 }
-#if 0
+
             clear_bitmap(iDoublebuffer);
-#endif
             DrawZoomedLogoInCenter(mini,maxi);
             // draw 2 horizontal lines
-#if 0
             hline(iDoublebuffer, 0,0,width,makecol(255,255,255));
             hline(iDoublebuffer, 0,IntroSequence::maxi-IntroSequence::mini-1,width,makecol(255,255,255));
+
             // blit to the screen
             blit(iDoublebuffer,screen_buffer,0,0,0,mini,width,maxi-mini);
 
-            if (key[ALLEGRO_KEY_ESC]&&canQuickExit)
+            if (key[ALLEGRO_KEY_ESCAPE]&&canQuickExit)
             {
                 quickExit=true;
                 isRunning=false;
             }
             // blit the screen buffer to the 'actual' screen
-            blit(screen_buffer, screen, 0, 0, 0, 0, width, height);
+            al_set_target_bitmap(al_get_backbuffer(GameManager::display));
+
+            al_draw_bitmap(screen_buffer, 0, 0,0);
+
+            al_flip_display();
+
             #ifdef USE_VSYNC
             vsync();    // wait the raster
             #endif
-#endif
 		}
 	} while(isRunning); 
 
@@ -138,6 +142,8 @@ GameSequence* IntroSequence::doRun()
         
         while(!startgame && !exit && !reload)
         {
+            InterruptTimer::sync();
+
             while(InterruptTimer::wasTriggered()) {
 #if 0
                 if (num_joysticks) poll_joystick();
@@ -294,9 +300,9 @@ GameSequence* IntroSequence::doRun()
                     al_rest(150);
                 }
 
-#if 0
-                textout(screen_buffer, font, "Press F2/F3/F4 to play for 2/3/4 players or ESC to leave", width/4, maxi+5, red);
-                
+                auto font = GameManager::font;
+                textout(screen_buffer, GameManager::font, "Press F2/F3/F4 to play for 2/3/4 players or ESC to leave", width/4, maxi+5, red);
+
                 textout(screen_buffer, font, "Use arrow keys and enter:", width/4, maxi+15, red);
 
                 textout(screen_buffer, font, "Start game", width/3, maxi+30, ((menuselected == 0) ? lightred : red));
@@ -339,8 +345,12 @@ GameSequence* IntroSequence::doRun()
                 textout(screen_buffer, font, "Exit", width/3, maxi+190, ((menuselected == 11) ? lightred : red));
                 
                 // blit the screen buffer to the 'actual' screen
-                blit(screen_buffer, screen, 0, 0, 0, 0, width, height);
-     #endif
+                //blit(screen_buffer, screen, 0, 0, 0, 0, width, height);
+
+                al_set_target_bitmap(al_get_backbuffer(GameManager::display));
+                al_draw_bitmap(screen_buffer, 0, 0,0);
+                al_flip_display();
+
                 #ifdef USE_VSYNC
                 vsync();    // wait the raster
                 #endif 
@@ -405,9 +415,10 @@ void IntroSequence::DrawZoomedLogoInCenter(int y1,int y2)
 		yd=(targetheight-logoheight)/2;
 		hd=logoheight;
 		}
-   #if 0
-	stretch_blit(iLogo,iDoublebuffer,xs,ys,ws,hs,xd,yd,wd,hd);
-#endif
+
+    //#FIXME: do stretch_blo stretch_blit(iLogo,iDoublebuffer,xs,ys,ws,hs,xd,yd,wd,hd);
+    blit(iLogo,iDoublebuffer,xs,ys,ws,hs,xd,yd);
+
 }
 
 // this all feels a bit dirty! refactoring is required.
