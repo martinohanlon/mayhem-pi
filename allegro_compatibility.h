@@ -4,13 +4,6 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
 
-class allegro_compatibility
-{
-public:
-    allegro_compatibility();
-
-};
-
 int fixtoi(double v);
 double fixmul(double v0, double v1);
 double fixdiv(double v0, double v1);
@@ -23,11 +16,6 @@ double fixsin(double v);
 double fixcos(double v);
 double fixacos(double v);
 double fixhypot(double v0, double v1);
-
-static void update_pressed_keys();
-
-static bool key[ALLEGRO_KEY_MAX];
-
 
 void clear_bitmap(ALLEGRO_BITMAP* bitmap);
 void hline(ALLEGRO_BITMAP *bmp, int x1, int y, int x2, ALLEGRO_COLOR color);

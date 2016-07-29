@@ -6,17 +6,6 @@
 
 #define PI 3.14159265
 
-allegro_compatibility::allegro_compatibility()
-{
-
-}
-
-
-static void update_pressed_keys()
-{
-//#FIXME:
-}
-
 void pivot_sprite(ALLEGRO_BITMAP *bmp, ALLEGRO_BITMAP *sprite, int x, int y, int cx, int cy, double angle){
     al_draw_rotated_bitmap(sprite, cx, cy, x, y, (angle*PI/180), 0);
 }
