@@ -7,9 +7,9 @@
 
 void get_input_clavier(int nbmapping,struct mapping_key* keymap);
 
-void get_control_input(int nbplayers, struct command* cmds);
+void get_control_input(int nbplayers, struct command* cmds, bool key_down[]);
 
-void get_key_input(struct command *cmd);
+void get_key_input(struct command *cmd, bool key_down[]);
 
 void get_joy_input(struct command *cmd);
 

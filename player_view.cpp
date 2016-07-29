@@ -142,7 +142,7 @@ void display_rotate_sprites(struct player_view allviews[], int nbviews, struct l
             // if the ship is halfway across the gap, draw it on the other side
             if (ship->xpos + 32 > currentlevel->edgedata.rightx)
             {
-           //#FIXME     draw_sprite(currentlevel->level_buffer, ship->sprite_buffer_rota, ship->xpos - currentlevel->ALLEGRO_BITMAP->w, ship->ypos);
+                draw_sprite(currentlevel->level_buffer, ship->sprite_buffer_rota, ship->xpos - al_get_bitmap_width(currentlevel->bitmap), ship->ypos);
 		}
         }
 	}
@@ -351,13 +351,13 @@ void draw_explosion(struct player_info *allpi, struct platform_data * plats, int
 		if(allpi[i].ship->explode)
 			if (allpi[i].ship->explode_count<48)
 				{
-                //#FIXME draw_sprite(currentlevel->level_buffer, get_sprite_explosion_frame(allpi[i].ship->explode_count), allpi[i].ship->xpos, allpi[i].ship->ypos);
+                  draw_sprite(currentlevel->level_buffer, get_sprite_explosion_frame(allpi[i].ship->explode_count), allpi[i].ship->xpos, allpi[i].ship->ypos);
 
                 // if the ship has exploded across the gap, draw it on the other side
                 if (currentlevel->edgedata.wrapx)                    
                     if ((currentlevel->edgedata.wrapx) && (allpi[i].ship->xpos + 32 > currentlevel->edgedata.rightx))
                     {
-                     //#FIXME   draw_sprite(currentlevel->level_buffer, get_sprite_explosion_frame(allpi[i].ship->explode_count), allpi[i].ship->xpos - currentlevel->ALLEGRO_BITMAP->w, allpi[i].ship->ypos);
+                     draw_sprite(currentlevel->level_buffer, get_sprite_explosion_frame(allpi[i].ship->explode_count), allpi[i].ship->xpos - al_get_bitmap_width(currentlevel->bitmap), allpi[i].ship->ypos);
                     }
                 allpi[i].ship->explode_count++; 
 				}
