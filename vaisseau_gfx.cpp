@@ -1,5 +1,7 @@
 #include "vaisseau_gfx.h"
 
+#include "allegro_compatibility.h"
+
 bool init_vaisseau_gfx_from_file(struct vaisseau_gfx* vaisseau,char * normal, char * thrust, char * thrust2, char * shield)
   {
     vaisseau->sprite=al_load_bitmap(normal);
@@ -29,7 +31,7 @@ int init_sprite_explosion(char *bmpname)
   for(i=0;i<24;i++)
   {
     sprite_explosion_frames[i]=al_create_bitmap(32,32);
-//#FIXME	blit(sprite_explode,sprite_explosion_frames[i],32*i, 0,0,0,32,32);
+    blit(sprite_explode,sprite_explosion_frames[i],32*i, 0,0,0,32,32);
   }
   return (!sprite_explode);
 }

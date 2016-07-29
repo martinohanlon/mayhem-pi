@@ -139,7 +139,7 @@ void draw_option(struct option_data *opt, struct level_data *currentlevel)
 {
     if(opt->active)
     {
-     //#FIXME   al_draw_bitmap(currentlevel->level_buffer, opt->option_sprites[opt->type - 1].sprite, opt->x, opt->y);
+     draw_sprite(currentlevel->level_buffer, opt->option_sprites[opt->type - 1].sprite, opt->x, opt->y);
     }
 }
 
@@ -182,7 +182,7 @@ void unload_option(struct option_data *opt)
 {
     for (int optioncount = 0; optioncount < NB_OPT_TYPE; optioncount++)
     {
-        //#FIXME destroy_bitmap(opt->option_sprites[optioncount].sprite);
+        al_destroy_bitmap(opt->option_sprites[optioncount].sprite);
     }
 }
 

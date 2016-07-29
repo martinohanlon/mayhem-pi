@@ -3,6 +3,8 @@
 #include "player_view.h"
 #include "platform_data.h"
 
+#include "allegro_compatibility.h"
+
 struct allegro_pixel
 {
     unsigned char r;
@@ -28,28 +30,6 @@ bool is_nonblack_pixel(allegro_pixel p)
 
 bool collision_testonepixel_separate(int x1,int y1, ALLEGRO_BITMAP * bmp1, int x2, int y2, ALLEGRO_BITMAP * bmp2)
 {
-#if 0
-
-    bool collided = false;
-	unsigned long address_bmp;              // pour le sprite
-	unsigned char pixelcolor;
-
-	bmp_select(bmp2);
-    address_bmp = bmp_read_line(bmp2, y2);      // address ligne y du fond
-    pixelcolor = bmp_read8(address_bmp+x2);      // lit l'octet x dans ligne y
-    if ( (commonpalette[pixelcolor].r !=0) ||
-		 (commonpalette[pixelcolor].g !=0) ||
-		 (commonpalette[pixelcolor].b !=0))
-		{
-		bmp_select(bmp1);
-		address_bmp = bmp_read_line(bmp1, y1);      // address ligne y du fond
-		pixelcolor = bmp_read8(address_bmp+x1);      // lit l'octet x dans ligne y
-	    if ( (commonpalette[pixelcolor].r !=0) ||
-			 (commonpalette[pixelcolor].g !=0) ||
-			 (commonpalette[pixelcolor].b !=0))
-             collided=true;
-		}
-#endif
     unsigned char r0,g0,b0,r1,g1,b1;
     al_unmap_rgb(al_get_pixel(bmp2,x2,y2), &r0, &g0, &b0);
     al_unmap_rgb(al_get_pixel(bmp1,x1,y1), &r1, &g1, &b1);
@@ -91,9 +71,8 @@ bool test_collision(struct player_view * pv, struct level_data *currentlevel)
 
 	ALLEGRO_BITMAP * little_screen = sprite_buffer_screen();
     // 32*32 de back_map_buffer2 ou sera blitt� le sprite -> little_screen
-#if 0
     blit(currentlevel->collision_bitmap, little_screen, vaisseau->xpos, vaisseau->ypos, 0, 0, 32, 32);
-#endif
+
     // debug
     //blit(little_screen, screen, 0, 0, 0, 150, 32, 32);
     
@@ -229,23 +208,21 @@ bool testcollision_bullet4pix(ALLEGRO_BITMAP *bmp,int x,int y)
     if(x<0 || x>=al_get_bitmap_width(bmp) || y<0 || y>=al_get_bitmap_height(bmp)) return true;
     else
     {
-#if 0
         unsigned long address_bmp;              // pour le sprite
 	unsigned char pixelcolor;
 
-	bmp_select(bmp);
-	int j;
+    int j;
 	for(j=y-1;j<=y;j++)
-		{
-		address_bmp = bmp_read_line(bmp, j);      // address ligne j {y-1,y} du fond
-		pixelcolor = bmp_read8(address_bmp+x);      // lit l'octet x dans ligne y
-		if (pixelcolor != 0) // i pray that black == 0!
+        {
+        auto pixel = get_pixel(bmp,x,j);
+        if (is_nonblack_pixel(pixel)) // i pray that black == 0!
 			return true;
-		pixelcolor = bmp_read8(address_bmp+x+1);      // lit l'octet x dans ligne y
-		if (pixelcolor != 0)
+
+        pixel = get_pixel(bmp,x+1,j);
+
+        if (is_nonblack_pixel(pixel))
 			return true;
 		}
-   #endif
     }
 	return false;
 }
