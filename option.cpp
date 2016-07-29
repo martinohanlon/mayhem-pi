@@ -21,24 +21,24 @@ bool test_pos_option(struct option_data *opt, int opt_type, struct level_data *c
 {
    unsigned long address_bmp;
    unsigned char pixelcolor;
-#if 0
-   bmp_select(currentlevel->collision_ALLEGRO_BITMAP);
+
+   //bmp_select(currentlevel->collision_bitmap);
    int ligne;
 
-   for(ligne=0; ligne < opt->option_sprites[opt_type - 1].sprite->h; ligne++)
+   auto height = al_get_bitmap_height(opt->option_sprites[opt_type - 1].sprite);
+   auto width = al_get_bitmap_width(opt->option_sprites[opt_type - 1].sprite);
+
+   for(ligne=0; ligne < height; ligne++)
    {
-      address_bmp = bmp_read_line(currentlevel->collision_ALLEGRO_BITMAP, ligne + y);
-      for(int colonne=0; colonne < opt->option_sprites[opt_type - 1].sprite->w; colonne++)
+      for(int colonne=0; colonne < width; colonne++)
       {
-      pixelcolor = bmp_read8(address_bmp + colonne + x);
-      if ((currentlevel->colormap[pixelcolor].r !=0) ||
-          (currentlevel->colormap[pixelcolor].g !=0) ||
-          (currentlevel->colormap[pixelcolor].b !=0))
-      return(false);
+      auto pixel = get_pixel(currentlevel->collision_bitmap, colonne + x, ligne + y);
+
+      if(is_nonblack_pixel(pixel))
+          return false;
       }
    }
 
-#endif
    return(true);
 }
 

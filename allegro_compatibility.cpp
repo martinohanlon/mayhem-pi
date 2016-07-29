@@ -75,3 +75,20 @@ void draw_sprite(ALLEGRO_BITMAP *bmp, ALLEGRO_BITMAP *sprite, int x, int y)
 {
  blit(sprite, bmp, 0, 0, x, y, al_get_bitmap_width(sprite), al_get_bitmap_height(sprite));
 }
+
+
+allegro_pixel get_pixel(ALLEGRO_BITMAP* bmp, int x, int y)
+{
+    unsigned char r,g,b;
+    al_unmap_rgb(al_get_pixel(bmp,x,y), &r, &g, &b);
+    allegro_pixel pixel;
+    pixel.r = r;
+    pixel.g = g;
+    pixel.b = b;
+    return pixel;
+}
+
+bool is_nonblack_pixel(allegro_pixel p)
+{
+    return p.r != 0 || p.g != 0 || p.b != 0;
+}

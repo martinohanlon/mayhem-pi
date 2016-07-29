@@ -30,4 +30,14 @@ void draw_sprite(ALLEGRO_BITMAP *bmp, ALLEGRO_BITMAP *sprite, int x, int y);
 
 void rotate_sprite(ALLEGRO_BITMAP *bmp, ALLEGRO_BITMAP *sprite, int x, int y, double angle);
 
+struct allegro_pixel
+{
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+};
+
+allegro_pixel get_pixel(ALLEGRO_BITMAP* bmp, int x, int y);
+bool is_nonblack_pixel(allegro_pixel p);
+
 #endif // ALLEGRO_COMPATIBILITY_H

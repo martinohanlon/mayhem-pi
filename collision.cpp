@@ -5,28 +5,6 @@
 
 #include "allegro_compatibility.h"
 
-struct allegro_pixel
-{
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
-};
-
-allegro_pixel get_pixel(ALLEGRO_BITMAP* bmp, int x, int y)
-{
-    unsigned char r,g,b;
-    al_unmap_rgb(al_get_pixel(bmp,x,y), &r, &g, &b);
-    allegro_pixel pixel;
-    pixel.r = r;
-    pixel.g = g;
-    pixel.b = b;
-    return pixel;
-}
-
-bool is_nonblack_pixel(allegro_pixel p)
-{
-    return p.r != 0 || p.g != 0 || p.b != 0;
-}
 
 bool collision_testonepixel_separate(int x1,int y1, ALLEGRO_BITMAP * bmp1, int x2, int y2, ALLEGRO_BITMAP * bmp2)
 {

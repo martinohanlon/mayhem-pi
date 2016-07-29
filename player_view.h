@@ -15,11 +15,7 @@ struct player_view {
 
 int init_player_view(struct player_view *pv, int x, int y, int w, int h,struct player_info *player);
 void clean_player_view(struct player_view *pv);
-#if 0
-void draw_basic_player_view(struct player_view *v,int nbviews,ALLEGRO_BITMAP *src_map,PALETTE commonpalette);
-#else
 void draw_basic_player_view(struct player_view *v,int nbviews,ALLEGRO_BITMAP *src_map);
-#endif
 void rotate_sprite(struct player_view * v);
 void display_rotate_sprite_in_all_view(struct player_view * v, struct player_view allviews[], int nbviews);
 void display_rotate_sprites(struct player_view allviews[], int nbviews, struct level_data *currentlevel);
