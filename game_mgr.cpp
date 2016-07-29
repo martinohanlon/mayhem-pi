@@ -139,7 +139,7 @@ GameSequence* GameSequence::run()
                al_wait_for_event(event_queue, &ev);
 
                if(ev.type == ALLEGRO_EVENT_TIMER) {
-                  seq_next = doTick(screen_buffer, key_pressed);
+                  seq_next = doTick(screen_buffer, key_pressed, key_down);
                   for (auto& pressed : key_pressed)
                       pressed = false;
                   redraw = true;

@@ -12,7 +12,7 @@ public:
 private:
    static const int mini, maxi;
    GameSequence* doRun() override;
-   GameSequence* doTick(ALLEGRO_BITMAP* screen_buffer, bool key[]) override;
+   GameSequence* doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pressed[ALLEGRO_KEY_MAX], bool key_down[ALLEGRO_KEY_MAX]) override;
    double iZoom;
    double iZoomMax;
    double iZoomSpeed;

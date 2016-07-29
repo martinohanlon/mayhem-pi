@@ -53,7 +53,7 @@ IntroSequence::~IntroSequence()
        al_destroy_bitmap(iLogo);
 }
 
-GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pressed[])
+GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pressed[ALLEGRO_KEY_MAX], bool key_down[ALLEGRO_KEY_MAX])
 {
     if (isRunning)
     {

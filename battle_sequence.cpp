@@ -307,7 +307,7 @@ void BattleSequence::InitSoundFx()
     create_sprite_buffer_screen();
 }
 
-GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pressed[ALLEGRO_KEY_MAX])
+GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pressed[ALLEGRO_KEY_MAX], bool key_down[ALLEGRO_KEY_MAX])
 {
     int i; // for everythign counter
 
@@ -319,7 +319,7 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pre
 
     if (isRunning)
     {
-          get_control_input(nb_players, commands, key_pressed);
+          get_control_input(nb_players, commands, key_down);
 
           #ifdef __NETSUPPORT__
           struct command  *cmdptr=keyvaisseau[0].cmd;
