@@ -335,6 +335,7 @@ int test_place_backtir(struct vaisseau_data *v)
 void put_big_pixel(ALLEGRO_BITMAP *bmp, int x, int y, ALLEGRO_COLOR color)
 {
     al_lock_bitmap(bmp, ALLEGRO_PIXEL_FORMAT_ANY, ALLEGRO_LOCK_WRITEONLY);
+    al_set_target_bitmap(bmp);
      al_put_pixel(x, y, color);
      al_put_pixel(x+1, y, color);
      al_put_pixel(x, y-1, color);
@@ -547,8 +548,7 @@ void draw_debris(struct player_info *allpi, const physics_constants& physics, in
 
 void gestion_minimap(struct vaisseau_data *vaisseaux, struct level_data *currentlevel, int nbplayers, int largeur, int hauteur)
 {
-    //stretch_blit(currentlevel->mini_ALLEGRO_BITMAP, currentlevel->mini_ALLEGRO_BITMAP_buffer, 0, 0, 99, 150, 0, 0, largeur*(99/800.0), hauteur*(150/600.0));
-//#FIXME stretch_blit(currentlevel->mini_bitmap, currentlevel->mini_ALLEGRO_BITMAP_buffer, 0, 0, 99, 150, 0, 0, 10.0*(largeur/100.0), 15.0*(largeur/100.0));
+    stretch_blit(currentlevel->mini_bitmap, currentlevel->mini_bitmap_buffer, 0, 0, 99, 150, 0, 0, 10.0*(largeur/100.0), 15.0*(largeur/100.0));
 
     int x,y;
     struct vaisseau_data *v;

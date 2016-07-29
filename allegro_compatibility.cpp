@@ -92,3 +92,11 @@ bool is_nonblack_pixel(allegro_pixel p)
 {
     return p.r != 0 || p.g != 0 || p.b != 0;
 }
+
+void stretch_blit(ALLEGRO_BITMAP *source, ALLEGRO_BITMAP *dest, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int dest_width, int dest_height)
+{
+    al_set_target_bitmap(dest);
+    al_draw_scaled_bitmap(source,
+       source_x, source_y, source_width, source_height,
+       dest_x, dest_y, dest_width, dest_height, 0);
+}

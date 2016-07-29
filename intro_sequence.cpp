@@ -359,8 +359,7 @@ void IntroSequence::DrawZoomedLogoInCenter(int y1,int y2)
 		hd=logoheight;
 		}
 
-    //#FIXME: do stretch_blo stretch_blit(iLogo,iDoublebuffer,xs,ys,ws,hs,xd,yd,wd,hd);
-    blit(iLogo,iDoublebuffer,xs,ys,ws,hs,xd,yd);
+    stretch_blit(iLogo,iDoublebuffer,xs,ys,ws,hs,xd,yd,wd,hd);
 
 }
 
