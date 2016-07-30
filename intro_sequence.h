@@ -17,9 +17,6 @@ private:
    double iZoomMax;
    double iZoomSpeed;
    ALLEGRO_BITMAP* iLogo;
-#if 0
-   PALETTE iLogoPalette;
-#endif
    ALLEGRO_BITMAP* iDoublebuffer;
 
    int width;

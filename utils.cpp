@@ -7,17 +7,6 @@ ALLEGRO_BITMAP* create_clear_bitmap(int w,int h)
     return buffer;
 	}
 
-int __assert_success(int error,char *info)
-  {
-#if 0
-	if (error)                                  // 
-	{  set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);          //
-		 allegro_message(info);                     //
-	}
-#endif
-	return error;
-  }
-
 ALLEGRO_BITMAP * screen_sprite_buffer=NULL;
 
 int create_sprite_buffer_screen()

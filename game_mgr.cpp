@@ -19,8 +19,6 @@
 #define GFXOPENARG GFX_AUTODETECT_WINDOWED
 #endif
 #endif
-volatile int InterruptTimer::timing_counter = -1;
-ALLEGRO_TIMER* InterruptTimer::timer = nullptr;
 
 // initialise static members
 int GameManager::display_height;
@@ -55,7 +53,6 @@ void GameManager::Init()
      fprintf(stderr, "failed to create timer!\n");
   }
 
-  InterruptTimer::init();
   al_install_keyboard();                                        // Installe le clavier
 //#FIXME al_install_joystick(JOY_TYPE_AUTODETECT);                     // Install joystick
   // GP TODO? THROW EXCEPTION?
@@ -91,7 +88,6 @@ void GameManager::Shutdown()
 #if 0
   remove_sound();
 #endif
-  InterruptTimer::shutdown();
 #if 0
   allegro_exit();
 #endif
@@ -178,40 +174,3 @@ GameSequence* GameSequence::run()
 
     return seq_next;
 }
-
-
-
- void InterruptTimer::init()
-{
-        reset();
-        timer = al_create_timer(1.0/40.0);
-        al_start_timer(timer);
-        //start();
-
-
-}
-
- void InterruptTimer::sync()
-{
-    if (timing_counter >= 0)
-        timing_counter = al_get_timer_count(timer);
-
-}
-
- void InterruptTimer::shutdown()
-{
-     al_destroy_timer(timer);
- }
-
- bool InterruptTimer::wasTriggered()
-{
-    if (timing_counter>0)
-    {
-        timing_counter--;
-        if (timing_counter > 2)
-            timing_counter = 0;
-        return true;
-    }
-    return false;
-}
-

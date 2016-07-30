@@ -289,12 +289,6 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
                 //blit(screen_buffer, screen, 0, 0, 0, 0, width, height);
     }
 
-
-#if 0
-    clear_bitmap(screen);
-    destroy_bitmap(screen_buffer);
-#endif
-
     *exit_game = exit;
 
     GameSequence * seq = nullptr;

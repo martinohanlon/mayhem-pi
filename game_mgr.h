@@ -43,31 +43,4 @@ public:
     static ALLEGRO_TIMER* timer;
 };
 
-class InterruptTimer
-{
-public:
-#if 0
-    static void init() { reset(); install_timer(); LOCK_VARIABLE(timing_counter); LOCK_FUNCTION(&InterruptTimer::irq); install_int_ex(&InterruptTimer::irq, BPS_TO_TIMER(40)); };
-    static void shutdown() { remove_timer(); };
-#else
-    static void init();
-    static void shutdown();
-#endif
-    static volatile int timing_counter;
-    static ALLEGRO_TIMER* timer;
-
-    inline static void start() { timing_counter = 0; al_set_timer_count(timer,0); al_start_timer(timer); };
-    inline static void reset() { timing_counter = -1; if(timer != nullptr) al_set_timer_count(timer,0); };
-    static void irq() { if (timing_counter>=0) ++timing_counter;	};
-    static void sync();
-    // change to stop triggers building up and game suddenly processing lots of triggers all in 1 go
-    static bool wasTriggered();
-#if 0
-    END_OF_FUNCTION(wasTriggered);
-#endif
-    //Something wierd is going on here... Under windows 10 you dont get 40 fps, and with the above code you end up with a LOT more..  Something isn't pegging the interupt properly.
-    //sstatic bool wasTriggered() { if (timing_counter>0) { timing_counter=0; return true; } return false; };
-};
-
-
 #endif

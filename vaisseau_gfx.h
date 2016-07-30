@@ -8,12 +8,6 @@
     ALLEGRO_BITMAP * sprite_thrust;
     ALLEGRO_BITMAP * sprite_thrust2;
     ALLEGRO_BITMAP * sprite_shield;
-#if 0
-	PALETTE  sprite_colors;
-	PALETTE  sprite_thrust_colors;
-	PALETTE  sprite_thrust2_colors;
-	PALETTE  sprite_shield_colors; 
-#endif
   };
 
 
