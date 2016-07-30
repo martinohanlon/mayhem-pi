@@ -167,8 +167,7 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
                         case 5:
                             wallchoice = !wallchoice;
                             break;
-                    }
-                    al_rest(ALLEGRO_MSECS_TO_SECS(150));
+                    }                
                 }
                 if (key_pressed[ALLEGRO_KEY_RIGHT] /*|| joy[0].stick[0].axis[0].d2 #FIXME */)
                 {
@@ -190,7 +189,6 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
                             wallchoice = !wallchoice;
                             break;
                     }
-                    al_rest(ALLEGRO_MSECS_TO_SECS(150));
                 }
                 if (key_pressed[ALLEGRO_KEY_ENTER] /*|| joy[0].button[0].b #FIXME */)
                 {
@@ -241,7 +239,6 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
                             break;
 
                     }
-                    al_rest(ALLEGRO_MSECS_TO_SECS(150));
                 }
 
                 auto font = GameManager::font;
@@ -381,7 +378,7 @@ void IntroSequence::update_joystick(int playerno, int screenpos, ALLEGRO_BITMAP*
     char menutext[50];
     char controltext[][10] = {"Left", "Right", "Thrust", "Shield", "Fire"};
     int joystickno = playercontrols[playerno] - 4;
-    al_rest(ALLEGRO_MSECS_TO_SECS(200));
+
     for (int control = 0; control < 5; control++)
     {
         // get joystick input
