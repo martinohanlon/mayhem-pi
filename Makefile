@@ -1,8 +1,8 @@
 CPP = g++
 CC = gcc
 RES  = 
-OBJ  = allegro_compatibility.o battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o player_input.o mapping_key.o mapping_joy.o Mayhem2.o option.o physics.o platform_data.o player_info.o player_view.o soundfx.o utils.o vaisseau_data.o vaisseau_gfx.o $(RES)
-LINKOBJ  = allegro_compatibility.o battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o player_input.o mapping_key.o mapping_joy.o Mayhem2.o option.o physics.o platform_data.o player_info.o player_view.o soundfx.o utils.o vaisseau_data.o vaisseau_gfx.o $(RES)
+OBJ  = allegro_compatibility.o battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o player_input.o mapping_key.o mapping_joy.o Mayhem2.o option.o physics.o platform_data.o player_info.o player_view.o soundfx.o ticktimer.o utils.o vaisseau_data.o vaisseau_gfx.o $(RES)
+LINKOBJ  = allegro_compatibility.o battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o player_input.o mapping_key.o mapping_joy.o Mayhem2.o option.o physics.o platform_data.o player_info.o player_view.o soundfx.o ticktimer.o utils.o vaisseau_data.o vaisseau_gfx.o $(RES)
 LIBS = -lallegro -lallegro_audio -lallegro_image -lallegro_primitives -lallegro_font -lallegro_ttf
 INCS = 
 BIN  = "mayhem2-pi"
@@ -71,6 +71,9 @@ soundfx.o: soundfx.cpp
 
 utils.o: utils.cpp
 	$(CPP) -c utils.cpp -o utils.o $(CXXFLAGS)
+
+ticktimer.o: ticktimer.cpp
+	$(CPP) -c ticktimer.cpp -o ticktimer.o $(CXXFLAGS)
 
 vaisseau_data.o: vaisseau_data.cpp
 	$(CPP) -c vaisseau_data.cpp -o vaisseau_data.o $(CXXFLAGS)

@@ -465,12 +465,18 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pre
       #ifdef USE_VSYNC
           vsync();    // wait the raster
       #endif
-    return nullptr;
-    }
-else
-    {
+
     if (Gameover())
     {
+        if (!game_over_timer.is_running())
+        {
+            game_over_timer.start(ALLEGRO_MSECS_TO_SECS(2000), 40); // #FIXME: Set FPS global variable
+        }
+        else
+        {
+            game_over_timer.tick();
+        }
+
         char gameovermsg[10];
         //who won?
         int winner = 0;
@@ -484,11 +490,14 @@ else
         if(winner == 0) sprintf(gameovermsg, "     Game over. Draw!");
         else sprintf(gameovermsg, "Game over. Player %i wins!", winner);
         textout(screen_buffer,GameManager::font, gameovermsg, (screen_width / 2) - 100, 5, makecol(255,0,0));
-        al_rest(ALLEGRO_USECS_TO_SECS(2000));
-    }
 
-    return  ReturnScreen();
+        if (game_over_timer.is_done())
+        {
+            return ReturnScreen();
+        }
+    }
 }
+    return nullptr;
 }
 
 GameSequence* BattleSequence::doRun()

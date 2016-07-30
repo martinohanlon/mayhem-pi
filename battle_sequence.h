@@ -15,7 +15,7 @@
 #include "soundfx.h"
 #include "command.h"
 #include "option.h"
-
+#include "ticktimer.h"
 
 #ifdef __NETSUPPORT__
 #define _TYPEDEFSOCKET_ 1
@@ -81,4 +81,5 @@ private:
        struct option_data opt[NB_OPTIONS];
        physics_constants moon_physics;
        bool isRunning;
+       TickTimer game_over_timer;
 };
