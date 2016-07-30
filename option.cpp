@@ -173,6 +173,7 @@ int init_option_data(struct option_data *opt, struct option_sprite *option_sprit
     for (int optioncount = 0; optioncount < NB_OPT_TYPE; optioncount++)
     {
         opt->option_sprites[optioncount].sprite = al_load_bitmap(opt->option_sprites[optioncount].sprite_name);
+        al_convert_mask_to_alpha(opt->option_sprites[optioncount].sprite, al_map_rgb(0,0,0));
     }
 
     return(0);
