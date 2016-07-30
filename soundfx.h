@@ -8,9 +8,11 @@
 struct loopedsfx
 {
   ALLEGRO_SAMPLE *sfx;
+  ALLEGRO_SAMPLE_INSTANCE *instance;
   bool playingFlag;
-  int freqStep;
-  int startFreq;
+  double freqStep;
+  double startFreq;
+  ALLEGRO_SAMPLE_ID sample_id;
 };
 
 struct soundfx

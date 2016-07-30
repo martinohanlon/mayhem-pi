@@ -1,19 +1,20 @@
 #include "soundfx.h"
 #include "allegro5/allegro_audio.h"
 
-void init_loopedsfx(struct loopedsfx* l,char *wav,int freqStep)
+void init_loopedsfx(struct loopedsfx* l,char *wav,double freqStep)
 {
  l->sfx=al_load_sample(wav);
+ l->instance=al_create_sample_instance(l->sfx);
  l->playingFlag=false;
  l->freqStep=freqStep;
- l->startFreq=1000;
+ l->startFreq=1.0;
 }
 
 int init_soundfx_from_wavfile(struct soundfx* sfx,char * thrustwav,char *shieldwav,char *refuelwav, char *shootwav, char *boomwav,char * rebound)
 {
- init_loopedsfx(&(sfx->thrust),thrustwav,0);
- init_loopedsfx(&(sfx->shield),shieldwav,0);
- init_loopedsfx(&(sfx->refuel),refuelwav,5);
+ init_loopedsfx(&(sfx->thrust),thrustwav,0.0);
+ init_loopedsfx(&(sfx->shield),shieldwav,0.0);
+ init_loopedsfx(&(sfx->refuel),refuelwav,0.005);
  sfx->shoot = al_load_sample(shootwav);
  sfx->boom = al_load_sample(boomwav);
  sfx->rebound = al_load_sample(rebound);
@@ -44,22 +45,22 @@ void play_looped_sample(struct loopedsfx *l, bool active)
    }
    if (active && l->playingFlag)
 	   {
-		if (l->freqStep) 
+        if (l->freqStep != 0.0)
 			{
 			l->startFreq+=l->freqStep;
-//#FIXME al_adjust_sample(l->sfx, 128, 128, l->startFreq,1);
+            al_set_sample_instance_speed(l->instance, l->startFreq);
 			}
 		return;
 		}
 	
    if (active)
       {
-       //#FIXME play_sample(l->sfx,128,128, l->startFreq, 1);
+       al_play_sample(l->sfx, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, &l->sample_id);
       }
    else
       {
-       //#FIXME stop_sample(l->sfx);
-	   l->startFreq=1000;
+       al_stop_sample(&l->sample_id);
+       l->startFreq=1.0;
       }
    l->playingFlag=active;
 }
