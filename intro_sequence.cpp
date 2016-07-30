@@ -55,38 +55,34 @@ IntroSequence::~IntroSequence()
 
 GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pressed[ALLEGRO_KEY_MAX], bool key_down[ALLEGRO_KEY_MAX], bool* exit_game)
 {
-    if (isRunning)
+    iZoom=(iZoom - iZoomSpeed);
+    if (iZoom<1.0)
     {
-            iZoom=(iZoom - iZoomSpeed);
-            if (iZoom<1.0)
-                {
-                iZoom=1;
-                isRunning=false;
-                }
+        iZoom=1;
+        isRunning=false;
+    }
 
-            clear_bitmap(iDoublebuffer);
-            DrawZoomedLogoInCenter(mini,maxi);
-            // draw 2 horizontal lines
-            hline(iDoublebuffer, 0,0,width,makecol(255,255,255));
-            hline(iDoublebuffer, 0,IntroSequence::maxi-IntroSequence::mini-1,width,makecol(255,255,255));
+    clear_bitmap(iDoublebuffer);
+    DrawZoomedLogoInCenter(mini,maxi);
+    // draw 2 horizontal lines
+    hline(iDoublebuffer, 0,0,width,makecol(255,255,255));
+    hline(iDoublebuffer, 0,IntroSequence::maxi-IntroSequence::mini-1,width,makecol(255,255,255));
 
-            // blit to the screen
-            blit(iDoublebuffer,screen_buffer,0,0,0,mini,width,maxi-mini);
+    // blit to the screen
+    blit(iDoublebuffer,screen_buffer,0,0,0,mini,width,maxi-mini);
 
-            if (key_pressed[ALLEGRO_KEY_ESCAPE]&&canQuickExit)
-            {
-                quickExit=true;
-                isRunning=false;
-            }
+    if (key_pressed[ALLEGRO_KEY_ESCAPE]&&canQuickExit)
+    {
+        quickExit=true;
+        isRunning=false;
+    }
 
-            return nullptr;
-     }
 
     bool startgame = false;
     bool exit = false;
     bool reload = false;
 
-    if (!quickExit)
+    if (!quickExit && !isRunning)
     {
         black=al_map_rgb(0,0,0);
         red=al_map_rgb(255,0,0);
@@ -340,7 +336,7 @@ void IntroSequence::DrawZoomedLogoInCenter(int y1,int y2)
 	if (logoheight>targetheight)
 		{
 		hs=fixtoi(fixdiv(itofix(targetheight),iZoom));
-        ys=(al_get_bitmap_height(iLogo))/2;
+        ys=(al_get_bitmap_height(iLogo)-hs)/2;
 		yd=0;
 		hd=targetheight;
 		}
