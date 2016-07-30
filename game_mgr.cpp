@@ -48,7 +48,7 @@ void GameManager::Init()
   al_init_font_addon(); // initialize the font addon
   al_init_ttf_addon();// initialize the ttf (True Type Font) addon
 
-  GameManager::font = al_load_font("font.ttf", 12, 0);
+  GameManager::font = al_load_font("assets/default/PressStart2P.ttf", 8, 0);
   GameManager::timer = al_create_timer(ALLEGRO_BPS_TO_SECS(40));
 
   if(!GameManager::timer) {
@@ -139,6 +139,9 @@ GameSequence* GameSequence::run()
                al_wait_for_event(event_queue, &ev);
 
                if(ev.type == ALLEGRO_EVENT_TIMER) {
+                   al_set_target_bitmap(screen_buffer);
+                   al_clear_to_color(al_map_rgb(0,0,0));
+
                   seq_next = doTick(screen_buffer, key_pressed, key_down);
                   for (auto& pressed : key_pressed)
                       pressed = false;
