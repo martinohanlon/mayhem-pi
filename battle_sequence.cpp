@@ -319,6 +319,12 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pre
 
     if (isRunning)
     {
+        if (key_pressed[ALLEGRO_KEY_ESCAPE]  /*|| joy[0].button[6].b*/)
+        {
+            isRunning=false;
+            return ReturnScreen();
+        }
+
           get_control_input(nb_players, commands, key_down);
 
           #ifdef __NETSUPPORT__
