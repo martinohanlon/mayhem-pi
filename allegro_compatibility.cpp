@@ -26,7 +26,7 @@ void pivot_sprite(ALLEGRO_BITMAP *bmp, ALLEGRO_BITMAP *sprite, int x, int y, int
  void clear_bitmap(ALLEGRO_BITMAP* bitmap)
 {
      al_set_target_bitmap(bitmap);
-     al_clear_to_color(al_map_rgb(0,0,0));
+     al_clear_to_color(al_map_rgba(0,0,0,0));
  }
 
 void hline(ALLEGRO_BITMAP *bmp, int x1, int y, int x2, ALLEGRO_COLOR color)

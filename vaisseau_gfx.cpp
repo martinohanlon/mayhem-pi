@@ -5,9 +5,13 @@
 bool init_vaisseau_gfx_from_file(struct vaisseau_gfx* vaisseau,char * normal, char * thrust, char * thrust2, char * shield)
   {
     vaisseau->sprite=al_load_bitmap(normal);
+    al_convert_mask_to_alpha(vaisseau->sprite, al_map_rgb(0,0,0));
     vaisseau->sprite_shield=al_load_bitmap(shield);
+    al_convert_mask_to_alpha(vaisseau->sprite_shield, al_map_rgb(0,0,0));
     vaisseau->sprite_thrust=al_load_bitmap(thrust);
+    al_convert_mask_to_alpha(vaisseau->sprite_thrust, al_map_rgb(0,0,0));
   vaisseau->sprite_thrust2=al_load_bitmap(thrust2);
+  al_convert_mask_to_alpha(vaisseau->sprite_thrust2, al_map_rgb(0,0,0));
 	return ! (vaisseau->sprite && vaisseau->sprite_shield && vaisseau->sprite_thrust && vaisseau->sprite_thrust2);
   }
 
