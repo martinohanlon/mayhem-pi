@@ -69,14 +69,13 @@ void play_soundfx_from_shipdata(struct soundfx *sfx,struct vaisseau_data* v)
   play_looped_sample(&sfx->thrust,(v->thrust>0));
   play_looped_sample(&sfx->shield,(v->shield && v->shield_force>0));
   play_looped_sample(&sfx->refuel,(v->refueling));
-#if 0
+
   if (v->rebound)
-	play_sample(sfx->rebound,128,128,1000,0);
+    al_play_sample(sfx->rebound,1.0,0.0,1.0,ALLEGRO_PLAYMODE_ONCE,nullptr);
   if (v->fire_delay)
-	play_sample(sfx->shoot,128,128,1000,0);
+    al_play_sample(sfx->shoot,1.0,0.0,1.0,ALLEGRO_PLAYMODE_ONCE,nullptr);
   if (v->explode && v->explode_count == 1) // TODO, fix this is disgusting...
-    play_sample(sfx->boom,128,128,1000,0);
-#endif
+    al_play_sample(sfx->boom, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, nullptr);
 }
 
 

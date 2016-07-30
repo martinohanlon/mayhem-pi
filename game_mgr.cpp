@@ -1,5 +1,6 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
@@ -56,7 +57,19 @@ void GameManager::Init()
   al_install_keyboard();                                        // Installe le clavier
 //#FIXME al_install_joystick(JOY_TYPE_AUTODETECT);                     // Install joystick
   // GP TODO? THROW EXCEPTION?
-  al_install_audio();
+
+  if(!al_install_audio()){
+     fprintf(stderr, "failed to initialize audio!\n");
+  }
+
+  if(!al_init_acodec_addon()){
+     fprintf(stderr, "failed to initialize audio codecs!\n");
+  }
+
+  if (!al_reserve_samples(8)){
+     fprintf(stderr, "failed to reserve samples!\n");
+  }
+
   //get the screen resolution
   //#FIXME if (get_desktop_resolution(0, &display_width, &display_height) != 0) {
       // failed to get resolution, set to a default
