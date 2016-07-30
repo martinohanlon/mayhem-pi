@@ -10,8 +10,6 @@
 
 #include "allegro_compatibility.h"
 
-//#FIXME PALETTE bar_palette;
-
 int init_player_view(struct player_view *pv, int x, int y, int w, int h,struct player_info *player)
   {
 	pv->bordersize=10;

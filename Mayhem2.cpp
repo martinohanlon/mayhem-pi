@@ -48,6 +48,3 @@ int main()
     return 0;
 }
 
-//#FIXME END_OF_MAIN();                                               // Allegro style 4 Win
-
-

@@ -25,7 +25,6 @@ void cleanup_vaisseau_gfx(struct vaisseau_gfx* vaisseau)
   }
 
 ALLEGRO_BITMAP  *sprite_explode;
-//#FIXME PALETTE sprite_explode_color;
 ALLEGRO_BITMAP  * sprite_explosion_frames[24];
 
 int init_sprite_explosion(char *bmpname)

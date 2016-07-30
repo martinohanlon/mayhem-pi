@@ -4,8 +4,7 @@ ALLEGRO_BITMAP* create_clear_bitmap(int w,int h)
 	{
 	ALLEGRO_BITMAP *buffer;
     buffer = al_create_bitmap(w, h);     // place pour big image de fond
-    //#FIXME al_clear_bitmap(buffer);   // Nettoyage
-	return buffer;
+    return buffer;
 	}
 
 int __assert_success(int error,char *info)
@@ -34,5 +33,5 @@ ALLEGRO_BITMAP* sprite_buffer_screen()
 
 void clean_sprite_buffer_screen()
 {
-//#FIXME	if (screen_sprite_buffer) destroy_bitmap(screen_sprite_buffer);
+    if (screen_sprite_buffer) al_destroy_bitmap(screen_sprite_buffer);
 }

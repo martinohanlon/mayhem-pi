@@ -56,7 +56,6 @@ void GameManager::Init()
   }
 
   InterruptTimer::init();
-//#FIXME  set_color_depth(8);                                        // Combien de bitplan
   al_install_keyboard();                                        // Installe le clavier
 //#FIXME al_install_joystick(JOY_TYPE_AUTODETECT);                     // Install joystick
   // GP TODO? THROW EXCEPTION?
