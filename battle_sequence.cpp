@@ -307,7 +307,7 @@ void BattleSequence::InitSoundFx()
     create_sprite_buffer_screen();
 }
 
-GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pressed[ALLEGRO_KEY_MAX], bool key_down[ALLEGRO_KEY_MAX])
+GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pressed[ALLEGRO_KEY_MAX], bool key_down[ALLEGRO_KEY_MAX], bool* exit_game)
 {
     int i; // for everythign counter
 

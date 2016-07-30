@@ -132,6 +132,7 @@ GameSequence* GameSequence::run()
 
       bool doexit = false;
       bool redraw =true;
+      bool exit_game = false;
       GameSequence* seq_next = nullptr;
        while(!doexit)
        {
@@ -142,12 +143,12 @@ GameSequence* GameSequence::run()
                    al_set_target_bitmap(screen_buffer);
                    al_clear_to_color(al_map_rgb(0,0,0));
 
-                  seq_next = doTick(screen_buffer, key_pressed, key_down);
+                  seq_next = doTick(screen_buffer, key_pressed, key_down, &exit_game);
                   for (auto& pressed : key_pressed)
                       pressed = false;
                   redraw = true;
 
-                  doexit = seq_next != nullptr;
+                  doexit = exit_game || seq_next != nullptr ;
                }
                else if(ev.type == ALLEGRO_EVENT_KEY_DOWN) {
                    key_pressed[ev.keyboard.keycode] = true;
@@ -172,6 +173,10 @@ GameSequence* GameSequence::run()
 
     if (seq_next!=iReturnScreen && iReturnScreen)
         delete iReturnScreen;
+
+    if (exit_game)
+        return nullptr;
+
     return seq_next;
 }
 
