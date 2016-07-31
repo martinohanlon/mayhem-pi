@@ -311,11 +311,6 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pre
 {
     int i; // for everythign counter
 
-  #ifdef CHECKFPS
-    int check_fps=1;
-    //int retrace_count_init=retrace_count;
-  #endif
-
 
     if (isRunning)
     {
@@ -440,33 +435,6 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pre
               }
               blit(v->back_map_buffer, screen_buffer, 0, 0, v->x, v->y, v->w+2*v->bordersize, v->h+2*v->bordersize);
           }
-
-      #ifdef CHECKFPS
-          check_fps++;
-          if (check_fps == 100)
-          {
-              char fps[10];
-  #if 0
-              sprintf(fps,"fps=%.1f",check_fps*70.0/(retrace_count-retrace_count_init));
-              textout(screen_buffer, font, fps, 105, 5, makecol(200,200,200));
-  #endif
-              char reso[10];
-              sprintf(reso, "%ix%i", screen_width, screen_height);
-  #if 0
-              textout(screen_buffer, font, reso, 5, 5, makecol(200,200,200));
-  #endif
-              //debug interupt counter
-              /*char counter[10];
-              sprintf(counter, "%i", InterruptTimer::timing_counter);
-              textout(screen_buffer,font, counter, 205, 5, makecol(200,200,200));*/
-
-              check_fps=0;
-  #if 0
-              retrace_count_init=retrace_count;
-  #endif
-           }
-      #endif
-
 
       #ifdef USE_VSYNC
           vsync();    // wait the raster

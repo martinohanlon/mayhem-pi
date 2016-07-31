@@ -11,6 +11,8 @@
 
 #include <cstdio>
 
+#define CHECKFPS
+
 #define FULLSCREEN
 
 #ifdef FULLSCREEN
@@ -112,6 +114,25 @@ void GameManager::Run(GameSequence *aSeq)
   }
 }
 
+#ifdef CHECKFPS
+double old_time = 0.0;
+
+void draw_fps(ALLEGRO_BITMAP* screen_buffer)
+{
+    double new_time = al_get_time();
+
+    char fps[10];
+    sprintf(fps,"fps=%.1f", 1.0f/(new_time-old_time));
+    textout(screen_buffer, GameManager::font, fps, 105, 5, makecol(200,200,200));
+    char reso[10];
+    sprintf(reso, "%ix%i", GameManager::display_width, GameManager::display_height);
+    textout(screen_buffer, GameManager::font, reso, 5, 5, makecol(200,200,200));
+    old_time = new_time;
+}
+#else
+void draw_fps(ALLEGRO_BITMAP*){}
+#endif
+
 GameSequence* GameSequence::run()
 {
     auto event_queue = al_create_event_queue();
@@ -167,6 +188,7 @@ GameSequence* GameSequence::run()
 
                if (redraw && al_is_event_queue_empty(event_queue)) {
                     redraw = false;
+                    draw_fps(screen_buffer);
                     al_set_target_bitmap(al_get_backbuffer(GameManager::display));
                     al_draw_bitmap(screen_buffer,0,0,0);
                     al_flip_display();
