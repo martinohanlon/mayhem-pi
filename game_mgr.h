@@ -4,11 +4,15 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
 
+#include "xc.h"
+
 #define  DEFAULT_WIDTH  1024
 #define  DEFAULT_HEIGHT 768
 
 //vsync creates some really erratic results on modern windows systems
 //#define USE_VSYNC
+
+#define MAX_NUM_CONTROLLERS 4
 
 class GameSequence
 {
@@ -41,6 +45,7 @@ public:
     static ALLEGRO_FONT* font;
     static ALLEGRO_TIMER* timer;
     static int FPS;
+    static XC_STATE* joysticks[MAX_NUM_CONTROLLERS];
 };
 
 #endif

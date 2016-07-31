@@ -7,6 +7,8 @@
 
 #include "game_mgr.h"
 
+#include "xc.h"
+
 #include "allegro_compatibility.h"
 
 #include <cstdio>
@@ -30,6 +32,7 @@ ALLEGRO_DISPLAY* GameManager::display = nullptr;
 ALLEGRO_FONT* GameManager::font = nullptr;
 ALLEGRO_TIMER* GameManager::timer = nullptr;
 int GameManager::FPS = 40;
+XC_STATE* GameManager::joysticks[MAX_NUM_CONTROLLERS] = {0};
 
 void GameManager::Init()
 {  
@@ -55,9 +58,20 @@ void GameManager::Init()
      fprintf(stderr, "failed to create timer!\n");
   }
 
-  al_install_keyboard();                                        // Installe le clavier
-//#FIXME al_install_joystick(JOY_TYPE_AUTODETECT);                     // Install joystick
-  // GP TODO? THROW EXCEPTION?
+  xc_install();
+
+  int i = 0;
+  for (i = 0; i < MAX_NUM_CONTROLLERS; i++)
+  {
+      XC_STATE *controller = xc_get_state(i);
+      if (!controller) {
+        break;
+      }
+
+      GameManager::joysticks[i] = controller;
+  }
+
+  printf("Found %d joysticks\n", i);
 
   if(!al_install_audio()){
      fprintf(stderr, "failed to initialize audio!\n");
@@ -104,6 +118,9 @@ void GameManager::Shutdown()
 {
     al_destroy_timer(timer);
     al_destroy_display(display);
+
+    for (int i = 0; i < MAX_NUM_CONTROLLERS; i++)
+        delete GameManager::joysticks[i];
 }
 
 void GameManager::Run(GameSequence *aSeq)
@@ -184,6 +201,11 @@ GameSequence* GameSequence::run()
                else if(ev.type == ALLEGRO_EVENT_KEY_UP) {
                   key_pressed[ev.keyboard.keycode] = false;
                   key_down[ev.keyboard.keycode] = false;
+               }
+               else if(ev.type == XC_EVENT_AXIS
+                       || ev.type == XC_EVENT_BUTTON_DOWN
+                       || ev.type == XC_EVENT_BUTTON_UP) {
+                   xc_update(ev);
                }
 
                if (redraw && al_is_event_queue_empty(event_queue)) {
