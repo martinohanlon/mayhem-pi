@@ -25,7 +25,8 @@ int *joy_sets[4][5] = {{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0}};
 #endif
 // 0 - 3 : keyboard 
 // 4 - 7 : joysticks 
-int playercontrols[4] = {0, 1, 2, 3};
+
+enum CONTROL_ID playercontrols[4] = {KEYBOARD_0, KEYBOARD_1, KEYBOARD_2, KEYBOARD_3};
 
 IntroSequence::IntroSequence(GameSequence* previous, float zoom, float zoomspeed, int players, int level, int lives, bool dca, bool wall)
 	: GameSequence(previous)
@@ -212,16 +213,16 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
                             wallchoice = !wallchoice;
                             break;
                         case 6:
-                            update_control(0, maxi+120, screen_buffer);
+                            cycle_control(0, maxi+120, screen_buffer);
                             break;
                         case 7:
-                            update_control(1, maxi+130, screen_buffer);
+                            cycle_control(1, maxi+130, screen_buffer);
                             break;
                         case 8:
-                            update_control(2, maxi+140, screen_buffer);
+                            cycle_control(2, maxi+140, screen_buffer);
                             break;
                         case 9:
-                            update_control(3, maxi+150, screen_buffer);
+                            cycle_control(3, maxi+150, screen_buffer);
                             break;
                         case 10:
                             if (width == GameManager::native_width && height == GameManager::native_height)
@@ -261,13 +262,13 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
                 textout(screen_buffer, font, menutext, width/3, maxi+95, ((menuselected == 5) ? lightred : red));
 
                 textout(screen_buffer, font, "Controls:", width/3, maxi+110, red);
-                snprintf(menutext, sizeof(menutext), "   Player 1 - %s   ", (playercontrols[0] > 3 ? "Joystick" : "Keyboard"));
+                snprintf(menutext, sizeof(menutext), "   Player 1 - %s   ", get_control_id_as_string(playercontrols[0]));
                 textout(screen_buffer, font, menutext, width/3, maxi+120, ((menuselected == 6) ? lightred : red));
-                snprintf(menutext, sizeof(menutext), "   Player 2 - %s   ", (playercontrols[1] > 3 ? "Joystick" : "Keyboard"));
+                snprintf(menutext, sizeof(menutext), "   Player 2 - %s   ", get_control_id_as_string(playercontrols[1]));
                 textout(screen_buffer, font, menutext, width/3, maxi+130, ((menuselected == 7) ? lightred : red));
-                snprintf(menutext, sizeof(menutext), "   Player 3 - %s   ", (playercontrols[2] > 3 ? "Joystick" : "Keyboard"));
+                snprintf(menutext, sizeof(menutext), "   Player 3 - %s   ", get_control_id_as_string(playercontrols[2]));
                 textout(screen_buffer, font, menutext, width/3, maxi+140, ((menuselected == 8) ? lightred : red));
-                snprintf(menutext, sizeof(menutext), "   Player 4 - %s   ", (playercontrols[3] > 3 ? "Joystick" : "Keyboard"));
+                snprintf(menutext, sizeof(menutext), "   Player 4 - %s   ", get_control_id_as_string(playercontrols[3]));
                 textout(screen_buffer, font, menutext, width/3, maxi+150, ((menuselected == 9) ? lightred : red));
 
                 snprintf(menutext, sizeof(menutext), "Resolution (%ix%i)   ", width, height);
@@ -291,7 +292,7 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
     if (startgame)
         {
         iZoom=iZoomMax;
-        seq=new BattleSequence(this, playerschoice, playerschoice, liveschoice, levelchoice, dcachoice, wallchoice, width, height, playercontrols, joy_sets);
+        seq=new BattleSequence(this, playerschoice, playerschoice, liveschoice, levelchoice, dcachoice, wallchoice, width, height, playercontrols);
         }
     else if (reload)
         seq=new IntroSequence(NULL, 10.0, 0.5, playerschoice, levelchoice, liveschoice, dcachoice, wallchoice);
@@ -346,80 +347,13 @@ void IntroSequence::DrawZoomedLogoInCenter(int y1,int y2)
 
 }
 
-// this all feels a bit dirty! refactoring is required.
-void IntroSequence::update_control(int playerno, int screenpos, ALLEGRO_BITMAP* screen)
+void IntroSequence::cycle_control(int playerno, int screenpos, ALLEGRO_BITMAP* screen)
 {
-    //joystick or keyboard
-    if (playercontrols[playerno] > 3) update_joystick(playerno, screenpos, screen);
-    else
-    {
-        textout(screen, GameManager::font, "not supported ", width/3 + 200, screenpos, lightred);
-        al_rest(ALLEGRO_MSECS_TO_SECS(200));
-        textout(screen, GameManager::font, "              ", width/3 + 200, screenpos, lightred);
-    }
+    int num_keyboard_layouts = 4;
+    int num_ctrls = static_cast<int>(NUM_CONTROLS);
+    int end_control_index = std::min(num_ctrls, num_keyboard_layouts + GameManager::num_joysticks_loaded);
+
+    int next_ctrl_idx = static_cast<int>(playercontrols[playerno]) + 1;
+
+    playercontrols[playerno] = static_cast<CONTROL_ID>(next_ctrl_idx % end_control_index);
 } 
-
-void IntroSequence::update_joystick(int playerno, int screenpos, ALLEGRO_BITMAP* screen)
-{
-    char menutext[50];
-    char controltext[][10] = {"Left", "Right", "Thrust", "Shield", "Fire"};
-    int joystickno = playercontrols[playerno] - 4;
-
-    for (int control = 0; control < 5; control++)
-    {
-        // get joystick input
-        snprintf(menutext, sizeof(menutext), "   %s   ", controltext[control]);
-        textout(screen, GameManager::font, menutext, width/3 + 200, screenpos, lightred);
-        joy_sets[joystickno][control] = get_joystick_action(joystickno);
-        textout(screen, GameManager::font, "   ok       ", width/3 + 200, screenpos, lightred);
-        al_rest(ALLEGRO_MSECS_TO_SECS(200));
-    }
-    textout(screen, GameManager::font, "            ", width/3 + 200, screenpos, lightred);
-}
-
-int *IntroSequence::get_joystick_action(int joystickno)
-{
-    bool got_action = false;
-    int stickno, axisno, buttonno;
-    int *checkaxis[100];
-    int checkaxiscount = 0;
-
-    //#FIXME poll_joystick();
-    // find all the axis which are false as if an axis is already at true we will ignore it, as its probably an inverse analogue trigger (or one already selected)
-   #if 0
-    for (stickno = 0; stickno < joy[joystickno].num_sticks; stickno++)
-    {
-        // loop through axis
-        for (axisno = 0; axisno < joy[joystickno].stick[stickno].num_axis; axisno++)
-        {
-            if (!joy[joystickno].stick[stickno].axis[axisno].d1) 
-            {
-                checkaxis[checkaxiscount] = &joy[joystickno].stick[stickno].axis[axisno].d1;
-                checkaxiscount++;
-            }
-            if (!joy[joystickno].stick[stickno].axis[axisno].d2) 
-            {
-                checkaxis[checkaxiscount] = &joy[joystickno].stick[stickno].axis[axisno].d2;
-                checkaxiscount++;
-            }
-
-        }
-    }
-#endif
-    while (!got_action)
-    {
-//#FIXME poll_joystick();
-        // loop through axis
-        for (axisno = 0; axisno < checkaxiscount; axisno++)
-        {
-            if (*checkaxis[axisno]) return checkaxis[axisno];
-        }
-        // loop through buttons
-   #if 0
-        for (buttonno = 0; buttonno < joy[joystickno].num_buttons; buttonno++)
-        {
-            if (joy[joystickno].button[buttonno].b) return &joy[joystickno].button[buttonno].b;
-        }
-#endif
-    }
-}

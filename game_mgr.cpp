@@ -15,7 +15,7 @@
 
 #define CHECKFPS
 
-#define FULLSCREEN
+//#define FULLSCREEN
 
 #ifdef FULLSCREEN
 #define GFXOPENARG ALLEGRO_FULLSCREEN_WINDOW
@@ -33,6 +33,7 @@ ALLEGRO_FONT* GameManager::font = nullptr;
 ALLEGRO_TIMER* GameManager::timer = nullptr;
 int GameManager::FPS = 40;
 XC_STATE* GameManager::joysticks[MAX_NUM_CONTROLLERS] = {0};
+int GameManager::num_joysticks_loaded = 0;
 
 void GameManager::Init()
 {  
@@ -70,6 +71,8 @@ void GameManager::Init()
 
       GameManager::joysticks[i] = controller;
   }
+
+  GameManager::num_joysticks_loaded = i;
 
   printf("Found %d joysticks\n", i);
 
@@ -163,6 +166,8 @@ GameSequence* GameSequence::run()
       al_register_event_source(event_queue, al_get_timer_event_source(GameManager::timer));
 
       al_register_event_source(event_queue, al_get_keyboard_event_source());
+
+      al_register_event_source(event_queue, xc_get_event_source());
 
       al_start_timer(GameManager::timer);
 

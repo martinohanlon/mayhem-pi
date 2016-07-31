@@ -106,7 +106,7 @@ int numplatforms6 = 9;
 struct edge_data edgedata6 = {0, 791, 0, 1500, true, false};
 
 // init currentlevel with level
-BattleSequence::BattleSequence(GameSequence *previous, int nbviews, int nbplayers, int nblives, int levelno, bool usedca, bool wallcollision, int s_width, int s_height, int player_controls[], int *joy_sets[][5])
+BattleSequence::BattleSequence(GameSequence *previous, int nbviews, int nbplayers, int nblives, int levelno, bool usedca, bool wallcollision, int s_width, int s_height, enum CONTROL_ID playercontrols[4])
   : GameSequence(previous),moon_physics(0.07,0.984,0.99,0.6,0.6,0.6,0.6,0.2)
 #ifdef __NET_SUPPORT__
      , gameclient(3000,"localhost"), gameserver(3000)
@@ -124,7 +124,7 @@ BattleSequence::BattleSequence(GameSequence *previous, int nbviews, int nbplayer
     wall_collision = wallcollision;
 
     InitLevelData();
-    InitMappingAndControls(player_controls, joy_sets);
+    InitMappingAndControls(playercontrols);
     InitAllSpriteGfx();
     InitSoundFx();
     InitPlayerInfo();
@@ -201,23 +201,22 @@ void BattleSequence::InitLevelData()
 
 }
 
-void BattleSequence::InitMappingAndControls(int player_controls[], int *joy_sets[][5])
+void BattleSequence::InitMappingAndControls(enum CONTROL_ID playercontrols[4])
 {
     // init commands assigning either keyboard or joystick control mappings
     int joystickno;
     for (int playerno=0; playerno < nb_views; playerno++) 
     {
         //joystick or keyboard? 0-3 = keyboard 4-7 = joystick
-        if (player_controls[playerno] > 3)
+        if (playercontrols[playerno] > 3)
         {
-            joystickno = player_controls[playerno] - 4;
-            init_mapping_joy(&joyvaisseau[playerno], joy_sets, joystickno);
-            commands[playerno].joymap = &joyvaisseau[playerno];
+            joystickno = playercontrols[playerno] - 4;
+            commands[playerno].joystick_index = joystickno;
             commands[playerno].control_type = CONTROL_JOY;
         } 
         else
         {
-            init_mapping_key(&keyvaisseau[playerno], player_controls[playerno]);
+            init_mapping_key(&keyvaisseau[playerno], playercontrols[playerno]);
             commands[playerno].keymap = &keyvaisseau[playerno];
             commands[playerno].control_type = CONTROL_KEY;
         }
