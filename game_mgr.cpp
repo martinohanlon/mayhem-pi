@@ -99,12 +99,8 @@ void GameManager::ChangeScreenRes(int width, int height)
 
 void GameManager::Shutdown()
 {
-#if 0
-  remove_sound();
-#endif
-#if 0
-  allegro_exit();
-#endif
+    al_destroy_timer(timer);
+    al_destroy_display(display);
 }
 
 void GameManager::Run(GameSequence *aSeq)
