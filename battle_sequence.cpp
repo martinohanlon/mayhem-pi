@@ -476,7 +476,7 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pre
     {
         if (!game_over_timer.is_running())
         {
-            game_over_timer.start(ALLEGRO_MSECS_TO_SECS(2000), 40); // #FIXME: Set FPS global variable
+            game_over_timer.start(ALLEGRO_MSECS_TO_SECS(2000), GameManager::FPS);
         }
         else
         {

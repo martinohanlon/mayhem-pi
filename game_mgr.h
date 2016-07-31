@@ -41,6 +41,7 @@ public:
     static ALLEGRO_DISPLAY* display;
     static ALLEGRO_FONT* font;
     static ALLEGRO_TIMER* timer;
+    static int FPS;
 };
 
 #endif

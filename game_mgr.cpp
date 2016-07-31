@@ -27,6 +27,7 @@ int GameManager::native_width;
 ALLEGRO_DISPLAY* GameManager::display = nullptr;
 ALLEGRO_FONT* GameManager::font = nullptr;
 ALLEGRO_TIMER* GameManager::timer = nullptr;
+int GameManager::FPS = 40;
 
 void GameManager::Init()
 {  
@@ -46,7 +47,7 @@ void GameManager::Init()
   al_init_ttf_addon();// initialize the ttf (True Type Font) addon
 
   GameManager::font = al_load_font("assets/default/PressStart2P.ttf", 8, 0);
-  GameManager::timer = al_create_timer(ALLEGRO_BPS_TO_SECS(40));
+  GameManager::timer = al_create_timer(ALLEGRO_BPS_TO_SECS(GameManager::FPS));
 
   if(!GameManager::timer) {
      fprintf(stderr, "failed to create timer!\n");
