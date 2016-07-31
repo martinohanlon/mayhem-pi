@@ -8,7 +8,7 @@ INCS =
 BIN  = "mayhem2-pi"
 CXXINCS= -O0 -g -Werror -Wno-write-strings -Wno-deprecated-declarations
 INCS= -O0 -g -Werror -Wno-write-strings -Wno-deprecated-declarations
-CXXFLAGS = $(CXXINCS)
+CXXFLAGS = -std=c++11 $(CXXINCS)
 CFLAGS = $(INCS)
 
 .PHONY: all all-before all-after clean clean-custom
