@@ -302,12 +302,6 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
 
 }
 
-
-GameSequence* IntroSequence::doRun()
-{
-    return nullptr;
-}
-
 void IntroSequence::DrawZoomedLogoInCenter(int y1,int y2)
 {
     int logowidth=fixtoi(fixmul(itofix(al_get_bitmap_width(iLogo)),iZoom));

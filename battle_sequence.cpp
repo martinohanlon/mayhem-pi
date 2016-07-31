@@ -506,11 +506,6 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pre
     return nullptr;
 }
 
-GameSequence* BattleSequence::doRun()
-{
- return nullptr;
-}
-
 bool BattleSequence::Gameover()
 {
     int gameovers = 0;
