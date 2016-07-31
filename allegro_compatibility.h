@@ -42,4 +42,6 @@ bool is_nonblack_pixel(allegro_pixel p);
 
 void stretch_blit(ALLEGRO_BITMAP *source, ALLEGRO_BITMAP *dest, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int dest_width, int dest_height);
 
+bool get_desktop_resolution(int adapter, int *w, int *h);
+
 #endif // ALLEGRO_COMPATIBILITY_H

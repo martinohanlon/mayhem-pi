@@ -100,3 +100,17 @@ void stretch_blit(ALLEGRO_BITMAP *source, ALLEGRO_BITMAP *dest, int source_x, in
        source_x, source_y, source_width, source_height,
        dest_x, dest_y, dest_width, dest_height, 0);
 }
+
+bool get_desktop_resolution(int adapter, int *w, int *h)
+{
+  ALLEGRO_MONITOR_INFO info;
+  if (!al_get_monitor_info(adapter, &info))
+  {
+      return false;
+  }
+
+  *w = info.x2 - info.x1;
+  *h = info.y2 - info.y1;
+
+  return true;
+}

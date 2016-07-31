@@ -11,14 +11,12 @@
 
 #include <cstdio>
 
-#define FULLSCREEN 1
+#define FULLSCREEN
 
-#if 0
 #ifdef FULLSCREEN
-#define GFXOPENARG GFX_AUTODETECT
+#define GFXOPENARG ALLEGRO_FULLSCREEN_WINDOW
 #else
-#define GFXOPENARG GFX_AUTODETECT_WINDOWED
-#endif
+#define GFXOPENARG ALLEGRO_WINDOWED
 #endif
 
 // initialise static members
@@ -71,29 +69,32 @@ void GameManager::Init()
   }
 
   //get the screen resolution
-  //#FIXME if (get_desktop_resolution(0, &display_width, &display_height) != 0) {
+  if (!get_desktop_resolution(0, &display_width, &display_height)) {
       // failed to get resolution, set to a default
       display_width = DEFAULT_WIDTH;
       display_height = DEFAULT_HEIGHT;
-  // }
+   }
+
   //set the native display properties
   native_width = display_width;
   native_height = display_height;
 
-  GameManager::display = al_create_display(display_width, display_height);
-  al_set_target_bitmap(al_get_backbuffer(display));
+  al_set_new_display_flags(GFXOPENARG);
 
-  //set_gfx_mode( GFXOPENARG, display_width, display_height, 0, 0 );
-  //set_gfx_mode( GFX_AUTODETECT_WINDOWED, DEFAULT_WIDTH, DEFAULT_HEIGHT, 0, 0 );          // windowed
+  GameManager::display = al_create_display(display_width, display_height);
 }
 
 void GameManager::ChangeScreenRes(int width, int height)
 {
-    display_width = width;
-    display_height = height;
-#if 0
-    set_gfx_mode( GFXOPENARG, display_width, display_height, 0, 0 );
-#endif
+    if(al_resize_display(GameManager::display, width, height))
+    {
+        display_width = width;
+        display_height = height;
+    }
+    else
+    {
+        fprintf(stderr, "failed to resize display!\n");
+    }
 }
 
 void GameManager::Shutdown()
