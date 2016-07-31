@@ -1,5 +1,7 @@
 #include "utils.h"
 
+#include "allegro_compatibility.h"
+
 ALLEGRO_BITMAP* create_clear_bitmap(int w,int h)
 	{
 	ALLEGRO_BITMAP *buffer;
@@ -11,7 +13,7 @@ ALLEGRO_BITMAP * screen_sprite_buffer=NULL;
 
 int create_sprite_buffer_screen()
 {
-  screen_sprite_buffer = create_clear_bitmap(32, 32);                // create ALLEGRO_BITMAP pour le petit buffer
+  screen_sprite_buffer = create_memory_bitmap(32, 32);                // create ALLEGRO_BITMAP pour le petit buffer
   return !screen_sprite_buffer;
 }
 

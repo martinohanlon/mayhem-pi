@@ -124,3 +124,14 @@ ALLEGRO_BITMAP *create_memory_bitmap(int w, int h)
     al_set_new_bitmap_flags(flags);
     return bmp;
 }
+
+
+ALLEGRO_BITMAP *load_memory_bitmap(const char* file)
+{
+    int flags = al_get_new_bitmap_flags();
+    al_set_new_bitmap_flags(flags | ALLEGRO_MEMORY_BITMAP);
+    ALLEGRO_BITMAP* bmp = al_load_bitmap(file);
+    al_set_new_bitmap_flags(flags);
+    return bmp;
+}
+
