@@ -2,6 +2,7 @@
 #define __INTROSEQUENCE_H__
 
 #include "game_mgr.h"
+#include "ticktimer.h"
 
 class IntroSequence : public GameSequence
 {
@@ -40,8 +41,7 @@ private:
    int menuitems = 12;
    int menuselected = 0;
    char menutext[50];
-
-   
+   TickTimer joystick_action_timer;
 };
 
 

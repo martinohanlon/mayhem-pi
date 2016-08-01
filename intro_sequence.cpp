@@ -8,24 +8,6 @@
 const int IntroSequence::mini=150;
 const int IntroSequence::maxi=400;
 
-// Classic mayhem joystick controls
-/*int *joy_sets[4][5] = { {&joy[0].stick[0].axis[0].d1, &joy[0].stick[0].axis[0].d2, &joy[0].stick[0].axis[1].d1, &joy[0].stick[0].axis[1].d2, &joy[0].button[0].b},
-                        {&joy[1].stick[0].axis[0].d1, &joy[1].stick[0].axis[0].d2, &joy[1].stick[0].axis[1].d1, &joy[1].stick[0].axis[1].d2, &joy[1].button[0].b},
-                        {&joy[2].stick[0].axis[0].d1, &joy[2].stick[0].axis[0].d2, &joy[2].stick[0].axis[1].d1, &joy[2].stick[0].axis[1].d2, &joy[2].button[0].b},
-                        {&joy[3].stick[0].axis[0].d1, &joy[3].stick[0].axis[0].d2, &joy[3].stick[0].axis[1].d1, &joy[3].stick[0].axis[1].d2, &joy[3].button[0].b} };*/
-
-// New joystick controls
-#if 0
-int *joy_sets[4][5] = { {&joy[0].stick[0].axis[0].d1, &joy[0].stick[0].axis[0].d2, &joy[0].button[0].b, &joy[0].button[1].b, &joy[0].button[5].b},
-                        {&joy[1].stick[0].axis[0].d1, &joy[1].stick[0].axis[0].d2, &joy[1].button[0].b, &joy[1].button[1].b, &joy[1].button[5].b},
-                        {&joy[2].stick[0].axis[0].d1, &joy[2].stick[0].axis[0].d2, &joy[2].button[0].b, &joy[2].button[1].b, &joy[2].button[5].b},
-                        {&joy[3].stick[0].axis[0].d1, &joy[3].stick[0].axis[0].d2, &joy[3].button[0].b, &joy[3].button[1].b, &joy[3].button[5].b} };
-#else
-int *joy_sets[4][5] = {{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0}};
-#endif
-// 0 - 3 : keyboard 
-// 4 - 7 : joysticks 
-
 enum CONTROL_ID playercontrols[4] = {KEYBOARD_0, KEYBOARD_1, KEYBOARD_2, KEYBOARD_3};
 
 IntroSequence::IntroSequence(GameSequence* previous, float zoom, float zoomspeed, int players, int level, int lives, bool dca, bool wall)
@@ -78,6 +60,8 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
         isRunning=false;
     }
 
+    if (joystick_action_timer.is_running())
+      joystick_action_timer.tick();
 
     bool startgame = false;
     bool exit = false;
@@ -88,10 +72,26 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
         black=al_map_rgb(0,0,0);
         red=al_map_rgb(255,0,0);
         lightred=al_map_rgb(255, 75, 75);
-#if 0
-                if (num_joysticks) poll_joystick();
-#endif
-                // joystick debug
+
+        auto joystick = GameManager::joysticks[0];
+
+        auto do_js_action = [&](bool button_pressed)
+        {
+            if (!button_pressed)
+              return false;
+
+            bool js_ok = GameManager::num_joysticks_loaded > 0;
+            bool timer_ok = joystick_action_timer.is_done();
+
+            if (js_ok && timer_ok)
+            {
+                joystick_action_timer.start(0.2, GameManager::FPS);
+                return true;
+            }
+            return false;
+        };
+
+        // joystick debug
                 /*if (num_joysticks)
                 {
                     char debugtext[20];
@@ -108,8 +108,7 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
 
                 }*/
 
-                // TODO - refactor - bit of a hack button 6 is back on an xbox 360 controller!
-                if (key_pressed[ALLEGRO_KEY_ESCAPE] /*|| joy[0].button[6].b #FIXME*/)
+                if (key_pressed[ALLEGRO_KEY_ESCAPE] || do_js_action(joystick->button_back))
                 {
                     exit = true;
                 }
@@ -135,17 +134,17 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
                 }
 
                 //menu control
-                if (key_pressed[ALLEGRO_KEY_DOWN] /*|| joy[0].stick[0].axis[1].d2 #FIXME */)
+                if (key_pressed[ALLEGRO_KEY_DOWN] || do_js_action(joystick->left_stick_y >= 0.6))
                 {
                     if (menuselected < menuitems - 1) menuselected++;
                     else menuselected = 0;
                 }
-                if (key_pressed[ALLEGRO_KEY_UP] /*|| joy[0].stick[0].axis[1].d1 #FIXME */)
+                if (key_pressed[ALLEGRO_KEY_UP] || do_js_action(joystick->left_stick_y <= -0.6))
                 {
                     if (menuselected > 0) menuselected--;
                     else menuselected = menuitems - 1;
                 }
-                if (key_pressed[ALLEGRO_KEY_LEFT] /*|| joy[0].stick[0].axis[0].d1 #FIXME */)
+                if (key_pressed[ALLEGRO_KEY_LEFT] || do_js_action(joystick->left_stick_x <= -0.6))
                 {
                     switch(menuselected)
                     {
@@ -164,9 +163,9 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
                         case 5:
                             wallchoice = !wallchoice;
                             break;
-                    }                
+                    }
                 }
-                if (key_pressed[ALLEGRO_KEY_RIGHT] /*|| joy[0].stick[0].axis[0].d2 #FIXME */)
+                if (key_pressed[ALLEGRO_KEY_RIGHT] || do_js_action(joystick->left_stick_x >= 0.6))
                 {
                     switch(menuselected)
                     {
@@ -187,7 +186,7 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
                             break;
                     }
                 }
-                if (key_pressed[ALLEGRO_KEY_ENTER] /*|| joy[0].button[0].b #FIXME */)
+                if (key_pressed[ALLEGRO_KEY_ENTER] || do_js_action(joystick->button_a))
                 {
                     switch(menuselected)
                     {

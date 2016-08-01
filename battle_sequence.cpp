@@ -105,6 +105,16 @@ struct platform_data platforms6[] =
 int numplatforms6 = 9;
 struct edge_data edgedata6 = {0, 791, 0, 1500, true, false};
 
+bool joystick_back_button_pressed()
+{
+  for (int i = 0; i < GameManager::num_joysticks_loaded; i++)
+  {
+    if (GameManager::joysticks[i]->button_back)
+      return true;
+  }
+  return false;
+}
+
 // init currentlevel with level
 BattleSequence::BattleSequence(GameSequence *previous, int nbviews, int nbplayers, int nblives, int levelno, bool usedca, bool wallcollision, int s_width, int s_height, enum CONTROL_ID playercontrols[4])
   : GameSequence(previous),moon_physics(0.07,0.984,0.99,0.6,0.6,0.6,0.6,0.2)
@@ -313,7 +323,7 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pre
 
     if (isRunning)
     {
-        if (key_pressed[ALLEGRO_KEY_ESCAPE]  /*|| joy[0].button[6].b*/)
+        if (key_pressed[ALLEGRO_KEY_ESCAPE]  || joystick_back_button_pressed())
         {
             isRunning=false;
             return ReturnScreen();
