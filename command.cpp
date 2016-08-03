@@ -2,6 +2,16 @@
 #include "vaisseau_data.h"
 #include "option.h"
 
+int mod (int a, int b)
+{
+   if(b < 0)
+     return mod(a, -b);
+   int ret = a % b;
+   if(ret < 0)
+     ret+=b;
+   return ret;
+}
+
 void handle_command(struct command *cmd)
 {
 	struct vaisseau_data *vaisseau=cmd->controlled_ship;
@@ -16,7 +26,8 @@ void handle_command(struct command *cmd)
             
             if (cmd->right) 									 // Right arrow?
                 vaisseau->angle+= vaisseau->anglestep; 										   // yes, on tourne a gauche
-        }
+            vaisseau->angle = mod(vaisseau->angle, 360);
+          }
         
         if (cmd->shield)
         {
