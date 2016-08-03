@@ -7,10 +7,15 @@
 
 bool collision_testonepixel_separate(int x1, int y1, ALLEGRO_BITMAP *bmp1,
                                      int x2, int y2, ALLEGRO_BITMAP *bmp2) {
-  unsigned char r0, g0, b0, r1, g1, b1;
-  al_unmap_rgb(al_get_pixel(bmp2, x2, y2), &r0, &g0, &b0);
-  al_unmap_rgb(al_get_pixel(bmp1, x1, y1), &r1, &g1, &b1);
-  return (r0 != 0 || g0 != 0 || b0 != 0) && (r1 != 0 || g1 != 0 || b1 != 0);
+  auto pix0 = get_pixel(bmp2, x2, y2);
+  if (is_black_pixel(pix0))
+    return false;
+
+  auto pix1 = get_pixel(bmp1, x1, y1);
+  if (is_black_pixel(pix1))
+    return false;
+
+  return true;
 }
 
 bool collision_testonepixel(int x, int y, ALLEGRO_BITMAP *bmp1,
@@ -60,60 +65,36 @@ bool test_collision(struct player_view *pv, struct level_data *currentlevel) {
   // debug
   // blit(little_screen, screen, 0, 0, 0, 150, 32, 32);
 
-  int y; // loop pour toute les lignes
-  int x; // loop pour ts les octet ds ligne
-  int xorig, yorig;
-
-  xorig = 0;
-  yorig = 0;
   int size = 31;
 
-  while (size >= 1) {
-    for (x = xorig; x < xorig + size; x++) {
-      if (collision_testonepixel(x, yorig, vaisseau->sprite_buffer_rota,
-                                 little_screen))
-        if (currentlevel->wall_collision)
+  ALLEGRO_LOCKED_REGION *reg = al_lock_bitmap(
+      little_screen, ALLEGRO_PIXEL_FORMAT_ANY, ALLEGRO_LOCK_READONLY);
+
+  assert(reg);
+
+  int num_frames = vaisseau->coll_map.num_frames;
+
+  int frame = vaisseau->angle/vaisseau->anglestep;
+
+  assert(frame >= 0 && frame < num_frames);
+
+  for (int y = 0; y < size; y++) {
+    for (int x = 0; x < size; x++) {
+      if (!is_black_pixel(get_pixel(reg, x, y)) &&
+          vaisseau->coll_map.is_collide_pixel(x,y,frame)) {
+        if (currentlevel->wall_collision) {
+          al_unlock_bitmap(little_screen);
           return true;
-        else {
+        } else {
           bounce_vaisseau(vaisseau);
+          al_unlock_bitmap(little_screen);
           return false;
         }
+      }
     }
-    for (y = yorig; y < yorig + size; y++) {
-      if (collision_testonepixel(xorig + size, y, vaisseau->sprite_buffer_rota,
-                                 little_screen))
-        if (currentlevel->wall_collision)
-          return true;
-        else {
-          bounce_vaisseau(vaisseau);
-          return false;
-        }
-    }
-    for (x = xorig + size; x >= xorig + 1; x--) {
-      if (collision_testonepixel(x, yorig + size, vaisseau->sprite_buffer_rota,
-                                 little_screen))
-        if (currentlevel->wall_collision)
-          return true;
-        else {
-          bounce_vaisseau(vaisseau);
-          return false;
-        }
-    }
-    for (y = yorig + size; y >= yorig + 1; y--) {
-      if (collision_testonepixel(xorig, y, vaisseau->sprite_buffer_rota,
-                                 little_screen))
-        if (currentlevel->wall_collision)
-          return true;
-        else {
-          bounce_vaisseau(vaisseau);
-          return false;
-        }
-    }
-    xorig += 1;
-    yorig += 1;
-    size -= 2;
   }
 
+  al_unlock_bitmap(little_screen);
   return false;
 }
 

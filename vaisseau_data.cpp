@@ -55,7 +55,7 @@ int init_vaisseau_data(struct vaisseau_data *v, struct vaisseau_gfx *gfx,
 
   v->gfx = gfx;
   v->sprite_buffer =
-      create_memory_bitmap(32, 32); // create ALLEGRO_BITMAP pour le sprite
+      al_create_bitmap(32, 32); // create ALLEGRO_BITMAP pour le sprite
   if (!v->sprite_buffer)
     return -1;
   clear_bitmap(v->sprite_buffer); // On nettoye
@@ -63,10 +63,36 @@ int init_vaisseau_data(struct vaisseau_data *v, struct vaisseau_gfx *gfx,
        32); // blit le sprite dans son buffer
 
   v->sprite_buffer_rota =
-      create_memory_bitmap(32, 32); // create ALLEGRO_BITMAP pour le sprite
+      al_create_bitmap(32, 32); // create ALLEGRO_BITMAP pour le sprite
   if (!v->sprite_buffer_rota)
     return -1;
   clear_bitmap(v->sprite_buffer_rota); // On nettoye
+
+  int num_frames = 360/VAISSEAU_ANGLESTEP;
+
+  v->coll_map.init(32,32,num_frames);
+
+  for (int frame = 0; frame < num_frames; frame++) {
+    double angle = v->anglestep * frame;
+    clear_bitmap(v->sprite_buffer_rota);
+    rotate_sprite(v->sprite_buffer_rota, v->sprite_buffer, 0, 0, angle);
+
+    ALLEGRO_LOCKED_REGION *reg =
+        al_lock_bitmap(v->sprite_buffer_rota, ALLEGRO_PIXEL_FORMAT_ANY,
+                       ALLEGRO_LOCK_READONLY);
+
+    assert(reg);
+
+    for (int y = 0; y < 32; y++) {
+      for (int x = 0; x < 32; x++) {
+        auto pixel = get_pixel(reg, x, y);
+        v->coll_map.set_pixel(x,y,frame,is_nonblack_pixel(pixel));
+      }
+    }
+
+    al_unlock_bitmap(v->sprite_buffer_rota);
+  }
+
   return 0;
 }
 
@@ -142,4 +168,41 @@ void fuel_shield_calcul(int nbvaisseau, struct vaisseau_data *v) {
 
     v++;
   }
+}
+
+
+void collision_map::init(int width_in, int height_in, int num_frames_in)
+{
+  width = width_in;
+  height = height_in;
+  num_frames = num_frames_in;
+  int num_pixels = width*height*num_frames;
+  coll_map = new bool[num_pixels];
+
+  for (int i = 0; i < num_pixels; i++) {
+      coll_map[i] = false;
+  }
+}
+
+collision_map::~collision_map() {
+  delete coll_map;
+}
+
+bool collision_map::is_collide_pixel(int x, int y, int frame) {
+  return coll_map[get_index(x,y,frame)];
+}
+
+void collision_map::set_pixel(int x, int y, int frame, bool value) {
+  coll_map[get_index(x,y,frame)] = value;
+}
+
+int collision_map::get_index(int x, int y, int frame) {
+  assert(x >= 0 && x < width);
+  assert(y >= 0 && y < height);
+  assert(frame >= 0 && frame < num_frames);
+
+  int frame_offset = width*height*frame;
+  int line_offset = width*y;
+  int pos = frame_offset + line_offset + x;
+  return pos;
 }

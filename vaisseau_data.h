@@ -26,6 +26,24 @@ struct debris_data {
   bool active;
 };
 
+struct collision_map {
+  collision_map() = default;
+  ~collision_map();
+
+  void init(int width_in, int height_in, int num_frames_in);
+
+  bool is_collide_pixel(int x, int y, int frame);
+  void set_pixel(int x, int y, int frame, bool value);
+
+  int get_index(int x, int y, int frame);
+
+  int width;
+  int height;
+  int num_frames;
+
+  bool *coll_map;
+};
+
 struct tir_data {
   int x, y;
   double xposprecise, yposprecise;
@@ -69,6 +87,7 @@ struct vaisseau_data {
   bool rebound;
   ALLEGRO_BITMAP *sprite_buffer; // Image du vaisseau
   ALLEGRO_BITMAP *sprite_buffer_rota;
+  collision_map coll_map;
   struct vaisseau_gfx *gfx;
   struct tir_data tir[MAX_TIR];
   struct tir_data backtir[MAX_TIR];
