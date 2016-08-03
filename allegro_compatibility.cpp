@@ -88,9 +88,30 @@ allegro_pixel get_pixel(ALLEGRO_BITMAP* bmp, int x, int y)
     return pixel;
 }
 
-bool is_nonblack_pixel(allegro_pixel p)
+allegro_pixel get_pixel(ALLEGRO_LOCKED_REGION* bmp, int x, int y)
+{
+    allegro_pixel pixel;
+
+    int pos = y*bmp->pitch + bmp->pixel_size*x;
+
+    unsigned char * data_pos = (unsigned char*) bmp->data;
+
+    pixel.r = data_pos[pos];
+    pixel.g = data_pos[pos +1];
+    pixel.b = data_pos[pos +2];
+
+    return pixel;
+}
+
+
+bool is_nonblack_pixel(const allegro_pixel& p)
 {
     return p.r != 0 || p.g != 0 || p.b != 0;
+}
+
+bool is_black_pixel(const allegro_pixel& p)
+{
+    return p.r == 0 && p.g == 0 && p.b == 0;
 }
 
 void stretch_blit(ALLEGRO_BITMAP *source, ALLEGRO_BITMAP *dest, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int dest_width, int dest_height)

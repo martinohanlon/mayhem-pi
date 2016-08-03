@@ -38,7 +38,10 @@ struct allegro_pixel
 };
 
 allegro_pixel get_pixel(ALLEGRO_BITMAP* bmp, int x, int y);
-bool is_nonblack_pixel(allegro_pixel p);
+allegro_pixel get_pixel(ALLEGRO_LOCKED_REGION* bmp, int x, int y);
+
+bool is_nonblack_pixel(const allegro_pixel& p);
+bool is_black_pixel(const allegro_pixel& p);
 
 void stretch_blit(ALLEGRO_BITMAP *source, ALLEGRO_BITMAP *dest, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int dest_width, int dest_height);
 
