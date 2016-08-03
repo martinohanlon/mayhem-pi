@@ -43,7 +43,6 @@ public:
     static int native_height;
     static ALLEGRO_DISPLAY* display;
     static ALLEGRO_FONT* font;
-    static ALLEGRO_TIMER* timer;
     static int FPS;
     static XC_STATE* joysticks[MAX_NUM_CONTROLLERS];
     static int num_joysticks_loaded;

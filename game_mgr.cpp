@@ -30,7 +30,6 @@ int GameManager::native_height;
 int GameManager::native_width;
 ALLEGRO_DISPLAY *GameManager::display = nullptr;
 ALLEGRO_FONT *GameManager::font = nullptr;
-ALLEGRO_TIMER *GameManager::timer = nullptr;
 int GameManager::FPS = 40;
 XC_STATE *GameManager::joysticks[MAX_NUM_CONTROLLERS] = {0};
 int GameManager::num_joysticks_loaded = 0;
@@ -52,11 +51,6 @@ void GameManager::Init() {
   al_init_ttf_addon();  // initialize the ttf (True Type Font) addon
 
   GameManager::font = al_load_font("assets/default/PressStart2P.ttf", 8, 0);
-  GameManager::timer = al_create_timer(ALLEGRO_BPS_TO_SECS(GameManager::FPS));
-
-  if (!GameManager::timer) {
-    fprintf(stderr, "failed to create timer!\n");
-  }
 
   xc_install();
 
@@ -112,7 +106,6 @@ void GameManager::ChangeScreenRes(int width, int height) {
 }
 
 void GameManager::Shutdown() {
-  al_destroy_timer(timer);
   al_destroy_display(display);
 
   for (int i = 0; i < MAX_NUM_CONTROLLERS; i++)
@@ -127,15 +120,17 @@ void GameManager::Run(GameSequence *aSeq) {
 
 #ifdef CHECKFPS
 double old_time = 0.0;
+double tick_time = 0.0;
 
 void draw_fps(ALLEGRO_BITMAP *screen_buffer) {
   double new_time = al_get_time();
-
-  char fps[10];
-  sprintf(fps, "fps=%.1f", 1.0f / (new_time - old_time));
+  char fps[100];
+  sprintf(fps, "goal fps:%d, draw fps:%.1f, tick ms:%.1f, tick fps: %.1f",
+          GameManager::FPS, 1.0 / (new_time - old_time), 1000.0 * tick_time,
+          1.0 / tick_time);
   textout(screen_buffer, GameManager::font, fps, 105, 5,
           makecol(200, 200, 200));
-  char reso[10];
+  char reso[100];
   sprintf(reso, "%ix%i", GameManager::display_width,
           GameManager::display_height);
   textout(screen_buffer, GameManager::font, reso, 5, 5, makecol(200, 200, 200));
@@ -155,14 +150,9 @@ GameSequence *GameSequence::run() {
   al_register_event_source(event_queue,
                            al_get_display_event_source(GameManager::display));
 
-  al_register_event_source(event_queue,
-                           al_get_timer_event_source(GameManager::timer));
-
   al_register_event_source(event_queue, al_get_keyboard_event_source());
 
   al_register_event_source(event_queue, xc_get_event_source());
-
-  al_start_timer(GameManager::timer);
 
   ALLEGRO_BITMAP *screen_buffer;
   screen_buffer =
@@ -174,46 +164,55 @@ GameSequence *GameSequence::run() {
   bool key_down[ALLEGRO_KEY_MAX] = {0};
 
   bool doexit = false;
-  bool redraw = true;
   bool exit_game = false;
   GameSequence *seq_next = nullptr;
-  while (!doexit) {
-    ALLEGRO_EVENT ev;
-    al_wait_for_event(event_queue, &ev);
 
-    if (ev.type == ALLEGRO_EVENT_TIMER) {
+  double last_time = al_get_time();
+  const double delta_min = ALLEGRO_BPS_TO_SECS(GameManager::FPS);
+
+  while (!doexit) {
+
+    ALLEGRO_EVENT ev;
+
+    while (al_get_next_event(event_queue, &ev)) {
+      if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
+        key_pressed[ev.keyboard.keycode] = true;
+        key_down[ev.keyboard.keycode] = true;
+      } else if (ev.type == ALLEGRO_EVENT_KEY_UP) {
+        key_pressed[ev.keyboard.keycode] = false;
+        key_down[ev.keyboard.keycode] = false;
+      } else if (ev.type == XC_EVENT_AXIS || ev.type == XC_EVENT_BUTTON_DOWN ||
+                 ev.type == XC_EVENT_BUTTON_UP) {
+        xc_update(ev);
+      } else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+        exit_game = true;
+        doexit = true;
+      }
+    }
+    double now = al_get_time();
+    bool do_tick = (now - last_time) >= delta_min;
+    if (do_tick) {
+
       al_set_target_bitmap(screen_buffer);
       al_clear_to_color(al_map_rgb(0, 0, 0));
 
       seq_next = doTick(screen_buffer, key_pressed, key_down, &exit_game);
       for (auto &pressed : key_pressed)
         pressed = false;
-      redraw = true;
 
       doexit = exit_game || seq_next != nullptr;
-    } else if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
-      key_pressed[ev.keyboard.keycode] = true;
-      key_down[ev.keyboard.keycode] = true;
-    } else if (ev.type == ALLEGRO_EVENT_KEY_UP) {
-      key_pressed[ev.keyboard.keycode] = false;
-      key_down[ev.keyboard.keycode] = false;
-    } else if (ev.type == XC_EVENT_AXIS || ev.type == XC_EVENT_BUTTON_DOWN ||
-               ev.type == XC_EVENT_BUTTON_UP) {
-      xc_update(ev);
+      last_time = now;
+      tick_time = al_get_time() - now;
     }
 
-    if (redraw && al_is_event_queue_empty(event_queue)) {
-      redraw = false;
-      draw_fps(screen_buffer);
-      al_set_target_bitmap(al_get_backbuffer(GameManager::display));
-      al_draw_bitmap(screen_buffer, 0, 0, 0);
-      al_flip_display();
-    }
+    draw_fps(screen_buffer);
+    al_set_target_bitmap(al_get_backbuffer(GameManager::display));
+    al_draw_bitmap(screen_buffer, 0, 0, 0);
+    al_flip_display();
   }
 
   al_destroy_event_queue(event_queue);
   al_destroy_bitmap(screen_buffer);
-  al_stop_timer(GameManager::timer);
 
   if (seq_next != iReturnScreen && iReturnScreen)
     delete iReturnScreen;
