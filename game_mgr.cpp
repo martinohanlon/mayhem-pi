@@ -1,8 +1,8 @@
 #include <allegro5/allegro.h>
-#include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
-#include <allegro5/allegro_image.h>
+#include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_font.h>
+#include <allegro5/allegro_image.h>
 #include <allegro5/allegro_ttf.h>
 
 #include "game_mgr.h"
@@ -28,74 +28,72 @@ int GameManager::display_height;
 int GameManager::display_width;
 int GameManager::native_height;
 int GameManager::native_width;
-ALLEGRO_DISPLAY* GameManager::display = nullptr;
-ALLEGRO_FONT* GameManager::font = nullptr;
-ALLEGRO_TIMER* GameManager::timer = nullptr;
+ALLEGRO_DISPLAY *GameManager::display = nullptr;
+ALLEGRO_FONT *GameManager::font = nullptr;
+ALLEGRO_TIMER *GameManager::timer = nullptr;
 int GameManager::FPS = 40;
-XC_STATE* GameManager::joysticks[MAX_NUM_CONTROLLERS] = {0};
+XC_STATE *GameManager::joysticks[MAX_NUM_CONTROLLERS] = {0};
 int GameManager::num_joysticks_loaded = 0;
 
-void GameManager::Init()
-{  
-  if(!al_init()) {
-     fprintf(stderr, "failed to initialize allegro!\n");
-     return;
+void GameManager::Init() {
+  if (!al_init()) {
+    fprintf(stderr, "failed to initialize allegro!\n");
+    return;
   }
 
-  if(!al_install_keyboard()) {
-     fprintf(stderr, "failed to initialize the keyboard!\n");
-     return;
+  if (!al_install_keyboard()) {
+    fprintf(stderr, "failed to initialize the keyboard!\n");
+    return;
   }
 
   al_init_image_addon();
 
   al_init_font_addon(); // initialize the font addon
-  al_init_ttf_addon();// initialize the ttf (True Type Font) addon
+  al_init_ttf_addon();  // initialize the ttf (True Type Font) addon
 
   GameManager::font = al_load_font("assets/default/PressStart2P.ttf", 8, 0);
   GameManager::timer = al_create_timer(ALLEGRO_BPS_TO_SECS(GameManager::FPS));
 
-  if(!GameManager::timer) {
-     fprintf(stderr, "failed to create timer!\n");
+  if (!GameManager::timer) {
+    fprintf(stderr, "failed to create timer!\n");
   }
 
   xc_install();
 
   int i = 0;
-  for (i = 0; i < MAX_NUM_CONTROLLERS; i++)
-  {
-      XC_STATE *controller = xc_get_state(i);
-      if (!controller) {
-        break;
-      }
+  for (i = 0; i < MAX_NUM_CONTROLLERS; i++) {
+    XC_STATE *controller = xc_get_state(i);
+    if (!controller) {
+      break;
+    }
 
-      GameManager::joysticks[i] = controller;
+    GameManager::joysticks[i] = controller;
   }
 
   GameManager::num_joysticks_loaded = i;
 
   printf("Found %d joysticks\n", i);
 
-  if(!al_install_audio()){
-     fprintf(stderr, "failed to initialize audio!\n");
+  if (!al_install_audio()) {
+    fprintf(stderr, "failed to initialize audio!\n");
   }
 
-  if(!al_init_acodec_addon()){
-     fprintf(stderr, "failed to initialize audio codecs!\n");
+  if (!al_init_acodec_addon()) {
+    fprintf(stderr, "failed to initialize audio codecs!\n");
   }
 
-  if (!al_reserve_samples(8)){
-     fprintf(stderr, "failed to reserve samples!\n");
+  if (!al_reserve_samples(8)) {
+    fprintf(stderr, "failed to reserve samples!\n");
   }
 
-  //get the screen resolution
+  // get the screen resolution
   if (!get_desktop_resolution(0, &display_width, &display_height)) {
-      // failed to get resolution, set to a default
-      display_width = DEFAULT_WIDTH;
-      display_height = DEFAULT_HEIGHT;
-   }
+    // failed to get resolution, set to a default
+    display_width = DEFAULT_WIDTH;
+    display_height = DEFAULT_HEIGHT;
+  }
 
-  //set the native display properties
+  // set the native display properties
   native_width = display_width;
   native_height = display_height;
 
@@ -104,133 +102,124 @@ void GameManager::Init()
   GameManager::display = al_create_display(display_width, display_height);
 }
 
-void GameManager::ChangeScreenRes(int width, int height)
-{
-    if(al_resize_display(GameManager::display, width, height))
-    {
-        display_width = width;
-        display_height = height;
-    }
-    else
-    {
-        fprintf(stderr, "failed to resize display!\n");
-    }
+void GameManager::ChangeScreenRes(int width, int height) {
+  if (al_resize_display(GameManager::display, width, height)) {
+    display_width = width;
+    display_height = height;
+  } else {
+    fprintf(stderr, "failed to resize display!\n");
+  }
 }
 
-void GameManager::Shutdown()
-{
-    al_destroy_timer(timer);
-    al_destroy_display(display);
+void GameManager::Shutdown() {
+  al_destroy_timer(timer);
+  al_destroy_display(display);
 
-    for (int i = 0; i < MAX_NUM_CONTROLLERS; i++)
-        delete GameManager::joysticks[i];
+  for (int i = 0; i < MAX_NUM_CONTROLLERS; i++)
+    delete GameManager::joysticks[i];
 }
 
-void GameManager::Run(GameSequence *aSeq)
-{
-  while(aSeq)
-  {
-   aSeq=aSeq->run();
+void GameManager::Run(GameSequence *aSeq) {
+  while (aSeq) {
+    aSeq = aSeq->run();
   }
 }
 
 #ifdef CHECKFPS
 double old_time = 0.0;
 
-void draw_fps(ALLEGRO_BITMAP* screen_buffer)
-{
-    double new_time = al_get_time();
+void draw_fps(ALLEGRO_BITMAP *screen_buffer) {
+  double new_time = al_get_time();
 
-    char fps[10];
-    sprintf(fps,"fps=%.1f", 1.0f/(new_time-old_time));
-    textout(screen_buffer, GameManager::font, fps, 105, 5, makecol(200,200,200));
-    char reso[10];
-    sprintf(reso, "%ix%i", GameManager::display_width, GameManager::display_height);
-    textout(screen_buffer, GameManager::font, reso, 5, 5, makecol(200,200,200));
-    old_time = new_time;
+  char fps[10];
+  sprintf(fps, "fps=%.1f", 1.0f / (new_time - old_time));
+  textout(screen_buffer, GameManager::font, fps, 105, 5,
+          makecol(200, 200, 200));
+  char reso[10];
+  sprintf(reso, "%ix%i", GameManager::display_width,
+          GameManager::display_height);
+  textout(screen_buffer, GameManager::font, reso, 5, 5, makecol(200, 200, 200));
+  old_time = new_time;
 }
 #else
-void draw_fps(ALLEGRO_BITMAP*){}
+void draw_fps(ALLEGRO_BITMAP *) {}
 #endif
 
-GameSequence* GameSequence::run()
-{
-    auto event_queue = al_create_event_queue();
-      if(!event_queue) {
-         fprintf(stderr, "failed to create event_queue!\n");
-         return nullptr;
-      }
+GameSequence *GameSequence::run() {
+  auto event_queue = al_create_event_queue();
+  if (!event_queue) {
+    fprintf(stderr, "failed to create event_queue!\n");
+    return nullptr;
+  }
 
-      al_register_event_source(event_queue, al_get_display_event_source(GameManager::display));
+  al_register_event_source(event_queue,
+                           al_get_display_event_source(GameManager::display));
 
-      al_register_event_source(event_queue, al_get_timer_event_source(GameManager::timer));
+  al_register_event_source(event_queue,
+                           al_get_timer_event_source(GameManager::timer));
 
-      al_register_event_source(event_queue, al_get_keyboard_event_source());
+  al_register_event_source(event_queue, al_get_keyboard_event_source());
 
-      al_register_event_source(event_queue, xc_get_event_source());
+  al_register_event_source(event_queue, xc_get_event_source());
 
-      al_start_timer(GameManager::timer);
+  al_start_timer(GameManager::timer);
 
-      ALLEGRO_BITMAP * screen_buffer;
-      screen_buffer = al_create_bitmap(GameManager::display_width, GameManager::display_height);
+  ALLEGRO_BITMAP *screen_buffer;
+  screen_buffer =
+      al_create_bitmap(GameManager::display_width, GameManager::display_height);
+  al_set_target_bitmap(screen_buffer);
+  al_clear_to_color(al_map_rgb(0, 0, 0));
+
+  bool key_pressed[ALLEGRO_KEY_MAX] = {0};
+  bool key_down[ALLEGRO_KEY_MAX] = {0};
+
+  bool doexit = false;
+  bool redraw = true;
+  bool exit_game = false;
+  GameSequence *seq_next = nullptr;
+  while (!doexit) {
+    ALLEGRO_EVENT ev;
+    al_wait_for_event(event_queue, &ev);
+
+    if (ev.type == ALLEGRO_EVENT_TIMER) {
       al_set_target_bitmap(screen_buffer);
-      al_clear_to_color(al_map_rgb(0,0,0));
+      al_clear_to_color(al_map_rgb(0, 0, 0));
 
-      bool key_pressed[ALLEGRO_KEY_MAX] = {0};
-      bool key_down[ALLEGRO_KEY_MAX] = {0};
+      seq_next = doTick(screen_buffer, key_pressed, key_down, &exit_game);
+      for (auto &pressed : key_pressed)
+        pressed = false;
+      redraw = true;
 
-      bool doexit = false;
-      bool redraw =true;
-      bool exit_game = false;
-      GameSequence* seq_next = nullptr;
-       while(!doexit)
-       {
-               ALLEGRO_EVENT ev;
-               al_wait_for_event(event_queue, &ev);
+      doexit = exit_game || seq_next != nullptr;
+    } else if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
+      key_pressed[ev.keyboard.keycode] = true;
+      key_down[ev.keyboard.keycode] = true;
+    } else if (ev.type == ALLEGRO_EVENT_KEY_UP) {
+      key_pressed[ev.keyboard.keycode] = false;
+      key_down[ev.keyboard.keycode] = false;
+    } else if (ev.type == XC_EVENT_AXIS || ev.type == XC_EVENT_BUTTON_DOWN ||
+               ev.type == XC_EVENT_BUTTON_UP) {
+      xc_update(ev);
+    }
 
-               if(ev.type == ALLEGRO_EVENT_TIMER) {
-                   al_set_target_bitmap(screen_buffer);
-                   al_clear_to_color(al_map_rgb(0,0,0));
+    if (redraw && al_is_event_queue_empty(event_queue)) {
+      redraw = false;
+      draw_fps(screen_buffer);
+      al_set_target_bitmap(al_get_backbuffer(GameManager::display));
+      al_draw_bitmap(screen_buffer, 0, 0, 0);
+      al_flip_display();
+    }
+  }
 
-                  seq_next = doTick(screen_buffer, key_pressed, key_down, &exit_game);
-                  for (auto& pressed : key_pressed)
-                      pressed = false;
-                  redraw = true;
+  al_destroy_event_queue(event_queue);
+  al_destroy_bitmap(screen_buffer);
+  al_stop_timer(GameManager::timer);
 
-                  doexit = exit_game || seq_next != nullptr ;
-               }
-               else if(ev.type == ALLEGRO_EVENT_KEY_DOWN) {
-                   key_pressed[ev.keyboard.keycode] = true;
-                   key_down[ev.keyboard.keycode] = true;
-               }
-               else if(ev.type == ALLEGRO_EVENT_KEY_UP) {
-                  key_pressed[ev.keyboard.keycode] = false;
-                  key_down[ev.keyboard.keycode] = false;
-               }
-               else if(ev.type == XC_EVENT_AXIS
-                       || ev.type == XC_EVENT_BUTTON_DOWN
-                       || ev.type == XC_EVENT_BUTTON_UP) {
-                   xc_update(ev);
-               }
+  if (seq_next != iReturnScreen && iReturnScreen)
+    delete iReturnScreen;
 
-               if (redraw && al_is_event_queue_empty(event_queue)) {
-                    redraw = false;
-                    draw_fps(screen_buffer);
-                    al_set_target_bitmap(al_get_backbuffer(GameManager::display));
-                    al_draw_bitmap(screen_buffer,0,0,0);
-                    al_flip_display();
-                 }
-       }
+  if (exit_game)
+    return nullptr;
 
-          al_destroy_event_queue(event_queue);
-          al_destroy_bitmap(screen_buffer);
-          al_stop_timer(GameManager::timer);
-
-    if (seq_next!=iReturnScreen && iReturnScreen)
-        delete iReturnScreen;
-
-    if (exit_game)
-        return nullptr;
-
-    return seq_next;
+  return seq_next;
 }
