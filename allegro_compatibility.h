@@ -39,6 +39,7 @@ struct allegro_pixel
 
 allegro_pixel get_pixel(ALLEGRO_BITMAP* bmp, int x, int y);
 allegro_pixel get_pixel(ALLEGRO_LOCKED_REGION* bmp, int x, int y);
+void set_pixel(ALLEGRO_LOCKED_REGION* bmp, int x, int y, ALLEGRO_COLOR color);
 
 bool is_nonblack_pixel(const allegro_pixel& p);
 bool is_black_pixel(const allegro_pixel& p);
@@ -50,5 +51,7 @@ bool get_desktop_resolution(int adapter, int *w, int *h);
 ALLEGRO_BITMAP *create_memory_bitmap(int w, int h);
 
 ALLEGRO_BITMAP *load_memory_bitmap(const char* file);
+
+int clamp(int x, int min, int max);
 
 #endif // ALLEGRO_COMPATIBILITY_H

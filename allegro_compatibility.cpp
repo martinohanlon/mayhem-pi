@@ -2,7 +2,7 @@
 #include <allegro5/allegro_primitives.h>
 
 #include <cmath>
-
+#include <algorithm>
 
 #define PI 3.14159265
 
@@ -103,6 +103,19 @@ allegro_pixel get_pixel(ALLEGRO_LOCKED_REGION* bmp, int x, int y)
     return pixel;
 }
 
+void set_pixel(ALLEGRO_LOCKED_REGION* bmp, int x, int y, ALLEGRO_COLOR color)
+{
+  int pos = y*bmp->pitch + bmp->pixel_size*x;
+
+  unsigned char * data_pos = (unsigned char*) bmp->data;
+
+  unsigned char r,g,b;
+  al_unmap_rgb(color, &r, &g, &b);
+
+  data_pos[pos]    = r;
+  data_pos[pos +1] = g;
+  data_pos[pos +2] = b;
+}
 
 bool is_nonblack_pixel(const allegro_pixel& p)
 {
@@ -156,3 +169,6 @@ ALLEGRO_BITMAP *load_memory_bitmap(const char* file)
     return bmp;
 }
 
+int clamp(int x, int min, int max) {
+  return std::min(std::max(x, min), max);
+}
