@@ -5,24 +5,6 @@
 
 #include "allegro_compatibility.h"
 
-bool collision_testonepixel_separate(int x1, int y1, ALLEGRO_BITMAP *bmp1,
-                                     int x2, int y2, ALLEGRO_BITMAP *bmp2) {
-  auto pix0 = get_pixel(bmp2, x2, y2);
-  if (is_black_pixel(pix0))
-    return false;
-
-  auto pix1 = get_pixel(bmp1, x1, y1);
-  if (is_black_pixel(pix1))
-    return false;
-
-  return true;
-}
-
-bool collision_testonepixel(int x, int y, ALLEGRO_BITMAP *bmp1,
-                            ALLEGRO_BITMAP *bmp2) {
-  return collision_testonepixel_separate(x, y, bmp1, x, y, bmp2);
-}
-
 bool test_collision(struct player_view *pv, struct level_data *currentlevel) {
   struct vaisseau_data *vaisseau = pv->player->ship;
 
@@ -57,20 +39,7 @@ bool test_collision(struct player_view *pv, struct level_data *currentlevel) {
   if (!test_it)
     return test_it;
 
-  ALLEGRO_BITMAP *little_screen = sprite_buffer_screen();
-  // 32*32 de back_map_buffer2 ou sera blitt� le sprite -> little_screen
-  blit(currentlevel->collision_bitmap, little_screen, vaisseau->xpos,
-       vaisseau->ypos, 0, 0, 32, 32);
-
-  // debug
-  // blit(little_screen, screen, 0, 0, 0, 150, 32, 32);
-
-  int size = 31;
-
-  ALLEGRO_LOCKED_REGION *reg = al_lock_bitmap(
-      little_screen, ALLEGRO_PIXEL_FORMAT_ANY, ALLEGRO_LOCK_READONLY);
-
-  assert(reg);
+  constexpr int size = 31;
 
   int num_frames = vaisseau->coll_map.num_frames;
 
@@ -78,23 +47,27 @@ bool test_collision(struct player_view *pv, struct level_data *currentlevel) {
 
   assert(frame >= 0 && frame < num_frames);
 
+  int y_max = currentlevel->coll_map.height;
+  int x_max = currentlevel->coll_map.width;
+
   for (int y = 0; y < size; y++) {
     for (int x = 0; x < size; x++) {
-      if (!is_black_pixel(get_pixel(reg, x, y)) &&
+        int x_pos = vaisseau->xpos + x;
+        int y_pos = vaisseau->ypos + y;
+        bool inside = x_pos >= 0 && x_pos < x_max && y_pos >= 0 && y_pos < y_max;
+
+      if (inside && currentlevel->coll_map.is_collide_pixel(x_pos, y_pos, 0) &&
           vaisseau->coll_map.is_collide_pixel(x,y,frame)) {
         if (currentlevel->wall_collision) {
-          al_unlock_bitmap(little_screen);
           return true;
         } else {
           bounce_vaisseau(vaisseau);
-          al_unlock_bitmap(little_screen);
           return false;
         }
       }
     }
   }
 
-  al_unlock_bitmap(little_screen);
   return false;
 }
 
@@ -105,15 +78,22 @@ void bounce_vaisseau(struct vaisseau_data *vaisseau) {
   vaisseau->vy = -vaisseau->vy / 2;
 }
 
-bool pixel_collision_detect_inbox(ALLEGRO_BITMAP *bmp1, int xl1, int yt1,
-                                  ALLEGRO_BITMAP *bmp2, int xl2, int yt2, int w,
+bool pixel_collision_detect_inbox(struct vaisseau_data *vaisseau1, int xl1, int yt1,
+                                  struct vaisseau_data *vaisseau2, int xl2, int yt2, int w,
                                   int h) {
   int x, y;
-  for (x = 0; x < w; x++)
-    for (y = 0; y < h; y++)
-      if (collision_testonepixel_separate(xl1 + x, yt1 + y, bmp1, xl2 + x,
-                                          yt2 + y, bmp2))
+  int frame0 = vaisseau1->angle/vaisseau1->anglestep;
+  int frame1 = vaisseau2->angle/vaisseau2->anglestep;
+
+
+  for (x = 0; x < w; x++) {
+    for (y = 0; y < h; y++) {
+      if (vaisseau1->coll_map.is_collide_pixel(xl1 + x,yt1 + y,frame0)
+          && vaisseau2->coll_map.is_collide_pixel(xl2 + x,yt2 + y,frame1)) {
         return true;
+        }
+    }
+}
   return false;
 }
 
@@ -159,15 +139,14 @@ bool test_collision_ship2ship(struct vaisseau_data *vaisseau1,
   // if we arrive here we might have a bounding box
   // with collision
 
-  return pixel_collision_detect_inbox(vaisseau1->sprite_buffer_rota, xl1, yt1,
-                                      vaisseau2->sprite_buffer_rota, xl2, yt2,
+  return pixel_collision_detect_inbox(vaisseau1, xl1, yt1,
+                                      vaisseau2, xl2, yt2,
                                       w, h);
 }
 
-bool testcollision_bullet4pix(ALLEGRO_BITMAP *bmp, int x, int y) {
+bool testcollision_bullet4pix(collision_map &coll_map, int x, int y, int w, int h) {
 
-  if (x < 0 || x >= al_get_bitmap_width(bmp) || y < 0 ||
-      y >= al_get_bitmap_height(bmp))
+  if (x < 0 || (x+1) >= w || (y-1) < 0 || y >= h)
     return true;
   else {
     unsigned long address_bmp; // pour le sprite
@@ -175,21 +154,16 @@ bool testcollision_bullet4pix(ALLEGRO_BITMAP *bmp, int x, int y) {
 
     int j;
     for (j = y - 1; j <= y; j++) {
-      auto pixel = get_pixel(bmp, x, j);
-      if (is_nonblack_pixel(pixel)) // i pray that black == 0!
+      if (coll_map.is_collide_pixel(x,j,0) || coll_map.is_collide_pixel(x + 1,j, 0)) {
         return true;
-
-      pixel = get_pixel(bmp, x + 1, j);
-
-      if (is_nonblack_pixel(pixel))
-        return true;
+        }
     }
   }
   return false;
 }
 
-bool testcollision_bullet1pix(ALLEGRO_BITMAP *bmp, int x, int y) {
-  return is_nonblack_pixel(get_pixel(bmp, x, y));
+bool testcollision_bullet1pix(vaisseau_data *v, int x, int y) {
+  return v->coll_map.is_collide_pixel(x,y,v->angle/v->anglestep);
 }
 
 bool collision_tir_ship(struct vaisseau_data *v, struct vaisseau_data *allv,
@@ -209,19 +183,19 @@ bool collision_tir_ship(struct vaisseau_data *v, struct vaisseau_data *allv,
       if (xtrans < 0 || xtrans >= 32 || ytrans < 0 || ytrans >= 32)
         continue;
 
-      bool b = testcollision_bullet1pix(v->sprite_buffer_rota, xtrans, ytrans);
+      bool b = testcollision_bullet1pix(v, xtrans, ytrans);
       if (xtrans + 1 < 32) {
         if (ytrans - 1 >= 0) {
-          b |= testcollision_bullet1pix(v->sprite_buffer_rota, xtrans + 1,
+          b |= testcollision_bullet1pix(v, xtrans + 1,
                                         ytrans - 1);
-          b |= testcollision_bullet1pix(v->sprite_buffer_rota, xtrans,
+          b |= testcollision_bullet1pix(v, xtrans,
                                         ytrans - 1);
         }
         b |=
-            testcollision_bullet1pix(v->sprite_buffer_rota, xtrans + 1, ytrans);
+            testcollision_bullet1pix(v, xtrans + 1, ytrans);
       } else if (ytrans - 1 >= 0) {
         b |=
-            testcollision_bullet1pix(v->sprite_buffer_rota, xtrans, ytrans - 1);
+            testcollision_bullet1pix(v, xtrans, ytrans - 1);
       }
       if (b) {
         shoot->free = true;
@@ -255,19 +229,19 @@ bool collision_backtir_ship(struct vaisseau_data *v, struct vaisseau_data *allv,
       if (xtrans < 0 || xtrans >= 32 || ytrans < 0 || ytrans >= 32)
         continue;
 
-      bool b = testcollision_bullet1pix(v->sprite_buffer_rota, xtrans, ytrans);
+      bool b = testcollision_bullet1pix(v, xtrans, ytrans);
       if (xtrans + 1 < 32) {
         if (ytrans - 1 >= 0) {
-          b |= testcollision_bullet1pix(v->sprite_buffer_rota, xtrans + 1,
+          b |= testcollision_bullet1pix(v, xtrans + 1,
                                         ytrans - 1);
-          b |= testcollision_bullet1pix(v->sprite_buffer_rota, xtrans,
+          b |= testcollision_bullet1pix(v, xtrans,
                                         ytrans - 1);
         }
         b |=
-            testcollision_bullet1pix(v->sprite_buffer_rota, xtrans + 1, ytrans);
+            testcollision_bullet1pix(v, xtrans + 1, ytrans);
       } else if (ytrans - 1 >= 0) {
         b |=
-            testcollision_bullet1pix(v->sprite_buffer_rota, xtrans, ytrans - 1);
+            testcollision_bullet1pix(v, xtrans, ytrans - 1);
       }
       if (b) {
         backshoot->free = true;
@@ -302,19 +276,19 @@ bool collision_debris_ship(struct vaisseau_data *v, struct vaisseau_data *allv,
       if (xtrans < 0 || xtrans >= 32 || ytrans < 0 || ytrans >= 32)
         continue;
 
-      bool b = testcollision_bullet1pix(v->sprite_buffer_rota, xtrans, ytrans);
+      bool b = testcollision_bullet1pix(v, xtrans, ytrans);
       if (xtrans + 1 < 32) {
         if (ytrans - 1 >= 0) {
-          b |= testcollision_bullet1pix(v->sprite_buffer_rota, xtrans + 1,
+          b |= testcollision_bullet1pix(v, xtrans + 1,
                                         ytrans - 1);
-          b |= testcollision_bullet1pix(v->sprite_buffer_rota, xtrans,
+          b |= testcollision_bullet1pix(v, xtrans,
                                         ytrans - 1);
         }
         b |=
-            testcollision_bullet1pix(v->sprite_buffer_rota, xtrans + 1, ytrans);
+            testcollision_bullet1pix(v, xtrans + 1, ytrans);
       } else if (ytrans - 1 >= 0) {
         b |=
-            testcollision_bullet1pix(v->sprite_buffer_rota, xtrans, ytrans - 1);
+            testcollision_bullet1pix(v, xtrans, ytrans - 1);
       }
       if (b) {
         debris->active = false;
@@ -349,19 +323,19 @@ bool collision_dca_ship(struct vaisseau_data *v, struct dca_data *alldca,
       if (xtrans < 0 || xtrans >= 32 || ytrans < 0 || ytrans >= 32)
         continue;
 
-      bool b = testcollision_bullet1pix(v->sprite_buffer_rota, xtrans, ytrans);
+      bool b = testcollision_bullet1pix(v, xtrans, ytrans);
       if (xtrans + 1 < 32) {
         if (ytrans - 1 >= 0) {
-          b |= testcollision_bullet1pix(v->sprite_buffer_rota, xtrans + 1,
+          b |= testcollision_bullet1pix(v, xtrans + 1,
                                         ytrans - 1);
-          b |= testcollision_bullet1pix(v->sprite_buffer_rota, xtrans,
+          b |= testcollision_bullet1pix(v, xtrans,
                                         ytrans - 1);
         }
         b |=
-            testcollision_bullet1pix(v->sprite_buffer_rota, xtrans + 1, ytrans);
+            testcollision_bullet1pix(v, xtrans + 1, ytrans);
       } else if (ytrans - 1 >= 0) {
         b |=
-            testcollision_bullet1pix(v->sprite_buffer_rota, xtrans, ytrans - 1);
+            testcollision_bullet1pix(v, xtrans, ytrans - 1);
       }
       if (b) {
         dca_tir->free = true;

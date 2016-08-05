@@ -47,6 +47,25 @@ int load_level(struct level_data * leveldat, int largeur, int hauteur)
     leveldat->mini_bitmap_buffer=al_create_bitmap(10.0*(largeur/100.0), 15.0*(largeur/100.0));
     leveldat->level_buffer=create_clear_bitmap(al_get_bitmap_width(leveldat->bitmap), al_get_bitmap_height(leveldat->bitmap));
  
+    int w = al_get_bitmap_width(leveldat->collision_bitmap);
+    int h = al_get_bitmap_height(leveldat->collision_bitmap);
+
+    leveldat->coll_map.init(w,h,1);
+
+    ALLEGRO_LOCKED_REGION *reg =
+        al_lock_bitmap(leveldat->collision_bitmap, ALLEGRO_PIXEL_FORMAT_ANY,
+                       ALLEGRO_LOCK_READONLY);
+
+    assert(reg);
+
+    for (int y = 0; y < h; y++) {
+      for (int x = 0; x < w; x++) {
+        auto pixel = get_pixel(reg, x, y);
+        leveldat->coll_map.set_pixel(x,y,0,is_nonblack_pixel(pixel));
+      }
+    }
+
+
     if (leveldat->bitmap && leveldat->mini_bitmap)
 	{
         //set_palette(leveldat->colormap);

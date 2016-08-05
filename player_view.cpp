@@ -215,13 +215,15 @@ void init_tir(struct vaisseau_data *v)
 void plot_tir(struct vaisseau_data *v, struct level_data *currentlevel)
 {
      struct tir_data *shoot;
-     
+     int w = al_get_bitmap_width(currentlevel->collision_bitmap);
+     int h = al_get_bitmap_height(currentlevel->collision_bitmap);
+
      for (int i=0; i<MAX_TIR; i++)
      {
         shoot = &v->tir[i];
         if (shoot->free)
             continue; // only iterate through the non free shoot
-        if (testcollision_bullet4pix(currentlevel->collision_bitmap, shoot->x, shoot->y))
+        if (testcollision_bullet4pix(currentlevel->coll_map, shoot->x, shoot->y, w, h))
             {
             // if there is collision we free the shoot
             // and we go on!
@@ -261,7 +263,7 @@ void plot_tir(struct vaisseau_data *v, struct level_data *currentlevel)
             backshoot = &v->backtir[i];
             if (backshoot->free)
                 continue; // only iterate through the non free shoot
-            if (testcollision_bullet4pix(currentlevel->collision_bitmap, backshoot->x, backshoot->y))
+            if (testcollision_bullet4pix(currentlevel->coll_map, backshoot->x, backshoot->y, w, h))
                 {
                 // if there is collision we free the shoot
                 // and we go on!
@@ -332,11 +334,12 @@ int test_place_backtir(struct vaisseau_data *v)
 
 void put_big_pixel(ALLEGRO_BITMAP *bmp, int x, int y, ALLEGRO_COLOR color)
 {
-    al_set_target_bitmap(bmp);
-     al_put_pixel(x, y, color);
-     al_put_pixel(x+1, y, color);
-     al_put_pixel(x, y-1, color);
-     al_put_pixel(x+1, y-1, color);
+  auto reg = al_lock_bitmap_region(bmp, x, y - 1, 2, 2, ALLEGRO_PIXEL_FORMAT_ANY, ALLEGRO_LOCK_WRITEONLY);
+  set_pixel(reg, 0, 0, color);
+  set_pixel(reg, 1, 0, color);
+  set_pixel(reg, 0, 1, color);
+  set_pixel(reg, 1, 1, color);
+  al_unlock_bitmap(bmp);
 }
 
 void draw_explosion(struct player_info *allpi, struct platform_data * plats, int nombre_vaisseau, struct level_data *currentlevel)
@@ -449,11 +452,11 @@ void init_debris(struct vaisseau_data *v)
 
 }
 
-void test_collision_debris(struct vaisseau_data *v, ALLEGRO_BITMAP *src_map)
+void test_collision_debris(struct vaisseau_data *v, collision_map& src_map, int w, int h)
 {
    for(int i=0; i<8; i++)
    {
-   if(testcollision_bullet4pix(src_map, v->debris[i].x, v->debris[i].y))
+   if(testcollision_bullet4pix(src_map, v->debris[i].x, v->debris[i].y, w, h))
    v->debris[i].active=false;
    }
 }
@@ -517,6 +520,9 @@ void plot_debris(struct vaisseau_data *v, const physics_constants& physics, stru
 
 void draw_debris(struct player_info *allpi, const physics_constants& physics, int nombre_vaisseau, struct level_data *currentlevel)
 {
+  int w = al_get_bitmap_width(currentlevel->collision_bitmap);
+  int h = al_get_bitmap_width(currentlevel->collision_bitmap);
+
    for(int i=0;i<nombre_vaisseau;i++)
    {
       if(allpi[i].ship->explode_count == 1)
@@ -524,7 +530,7 @@ void draw_debris(struct player_info *allpi, const physics_constants& physics, in
 
       if((allpi[i].ship->explode) && (allpi[i].ship->explode_count>1))
       {
-         test_collision_debris(allpi[i].ship, currentlevel->collision_bitmap);
+         test_collision_debris(allpi[i].ship, currentlevel->coll_map, w, h);
          plot_debris(allpi[i].ship, physics, currentlevel);
       }
 
@@ -606,19 +612,22 @@ void init_dca_tir(struct dca_data *dca, struct vaisseau_data *v)
 void plot_dca_tir(struct dca_data *dca, struct level_data *currentlevel)
 {
      struct tir_data *dca_tir;
+     int w = al_get_bitmap_width(currentlevel->collision_bitmap);
+     int h = al_get_bitmap_height(currentlevel->collision_bitmap);
+
 
      for (int i=0; i<MAX_DCA_TIR; i++)
      {
         dca_tir = &(dca->dca_tir[i]);
 	    if (dca_tir->free)
         continue;
-           if (testcollision_bullet4pix(currentlevel->collision_bitmap, dca_tir->x, dca_tir->y))
+           if (testcollision_bullet4pix(currentlevel->coll_map, dca_tir->x, dca_tir->y, w, h))
            {
 	       dca_tir->free=true;
 		   continue;
 		   }
 
-        put_big_pixel(currentlevel->level_buffer, dca_tir->x, dca_tir->y, currentlevel->particle_color);
+	put_big_pixel(currentlevel->level_buffer, dca_tir->x, dca_tir->y, currentlevel->particle_color);
 
         dca_tir->xposprecise = fixadd(dca_tir->xposprecise, dca_tir->dx);
         dca_tir->yposprecise = fixadd(dca_tir->yposprecise, dca_tir->dy);

@@ -57,6 +57,7 @@ struct level_data
     ALLEGRO_BITMAP * mini_bitmap;
     //PALETTE mini_colormap;
     ALLEGRO_BITMAP * collision_bitmap;
+    collision_map coll_map;
     //PALETTE collision_colormap;
     ALLEGRO_BITMAP * mini_bitmap_buffer;
 	struct platform_data * platformdata;
