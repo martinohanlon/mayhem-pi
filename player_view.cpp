@@ -521,7 +521,7 @@ void plot_debris(struct vaisseau_data *v, const physics_constants& physics, stru
 void draw_debris(struct player_info *allpi, const physics_constants& physics, int nombre_vaisseau, struct level_data *currentlevel)
 {
   int w = al_get_bitmap_width(currentlevel->collision_bitmap);
-  int h = al_get_bitmap_width(currentlevel->collision_bitmap);
+  int h = al_get_bitmap_height(currentlevel->collision_bitmap);
 
    for(int i=0;i<nombre_vaisseau;i++)
    {
