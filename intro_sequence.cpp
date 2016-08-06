@@ -4,7 +4,7 @@
 #include "battle_sequence.h"
 #include "allegro_compatibility.h"
 #include "mapping_joy.h"
-
+#include "menuhandler.h"
 #include <allegro5/allegro_primitives.h>
 
 const int IntroSequence::mini=150;
@@ -242,53 +242,60 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
 
                     }
                 }
-
+                char layout_str[1000];
                 auto font = GameManager::font;
-                textout(screen_buffer, GameManager::font, "Press F2/F3/F4 to play for 2/3/4 players or ESC to leave", width/4, maxi+5, red);
 
-                textout(screen_buffer, font, "Use arrow keys and enter:", width/4, maxi+15, red);
+                MenuHandler mh;
 
-                textout(screen_buffer, font, "Start game", width/3, maxi+30, ((menuselected == 0) ? lightred : red));
+                mh.reset();
+                mh.selected_idx = menuselected;
+                mh.maxi = maxi;
+                mh.width = width;
 
-                textout(screen_buffer, font, "Options:", width/3, maxi+45, red);
+                mh.addline("Start game");
+                mh.addline("Options:", false, 15);
+
                 snprintf(menutext, sizeof(menutext), "   Players - %d   ", playerschoice);
-                textout(screen_buffer, font, menutext, width/3, maxi+55, ((menuselected == 1) ? lightred : red));
+                mh.addline(menutext);
 
                 snprintf(menutext, sizeof(menutext), "   Level - %d   ", levelchoice + 1);
-                textout(screen_buffer, font, menutext, width/3, maxi+65, ((menuselected == 2) ? lightred : red));
+                mh.addline(menutext);
 
                 snprintf(menutext, sizeof(menutext), "   Lives - %d   ", liveschoice);
-                textout(screen_buffer, font, menutext, width/3, maxi+75, ((menuselected == 3) ? lightred : red));
+                mh.addline(menutext);
 
                 snprintf(menutext, sizeof(menutext), "   Use DCA - %s   ", ((dcachoice) ? "yes" : "no" ));
-                textout(screen_buffer, font, menutext, width/3, maxi+85, ((menuselected == 4) ? lightred : red));
+                mh.addline(menutext);
 
                 snprintf(menutext, sizeof(menutext), "   Wall Collision - %s   ", ((wallchoice) ? "yes" : "no" ));
-                textout(screen_buffer, font, menutext, width/3, maxi+95, ((menuselected == 5) ? lightred : red));
+                mh.addline(menutext);
 
-                textout(screen_buffer, font, "Controls:", width/3, maxi+110, red);
-                snprintf(menutext, sizeof(menutext), "   Player 1 - %s   ", get_control_id_as_string(playercontrols[0]));
-                textout(screen_buffer, font, menutext, width/3, maxi+120, ((menuselected == 6) ? lightred : red));
-                snprintf(menutext, sizeof(menutext), "   Player 2 - %s   ", get_control_id_as_string(playercontrols[1]));
-                textout(screen_buffer, font, menutext, width/3, maxi+130, ((menuselected == 7) ? lightred : red));
-                snprintf(menutext, sizeof(menutext), "   Player 3 - %s   ", get_control_id_as_string(playercontrols[2]));
-                textout(screen_buffer, font, menutext, width/3, maxi+140, ((menuselected == 8) ? lightred : red));
-                snprintf(menutext, sizeof(menutext), "   Player 4 - %s   ", get_control_id_as_string(playercontrols[3]));
-                textout(screen_buffer, font, menutext, width/3, maxi+150, ((menuselected == 9) ? lightred : red));
+                mh.addline("Controls:", false, 15);
 
-                snprintf(menutext, sizeof(menutext), "Resolution (%ix%i)   ", width, height);
-                textout(screen_buffer, font, menutext, width/3, maxi+165, red);
+                snprintf(menutext, sizeof(menutext), "   Player 1 - %s", get_control_id_as_string(playercontrols[0]));
+                mh.addline(menutext);
+
+                snprintf(menutext, sizeof(menutext), "   Player 2 - %s", get_control_id_as_string(playercontrols[1]));
+                mh.addline(menutext);
+
+                snprintf(menutext, sizeof(menutext), "   Player 3 - %s", get_control_id_as_string(playercontrols[2]));
+                mh.addline(menutext);
+
+                snprintf(menutext, sizeof(menutext), "   Player 4 - %s", get_control_id_as_string(playercontrols[3]));
+                mh.addline(menutext);
+
+                snprintf(menutext, sizeof(menutext), "Resolution (%ix%i):   ", width, height);
+                mh.addline(menutext, false, 15);
 
                 if (width == GameManager::native_width && height == GameManager::native_height)
                     snprintf(menutext, sizeof(menutext), "   Switch to Low - 1024x768   ");
                 else
                     snprintf(menutext, sizeof(menutext), "   Switch to Native - %ix%i   ", GameManager::native_width, GameManager::native_height);
-                textout(screen_buffer, font, menutext, width/3, maxi+175, ((menuselected == 10) ? lightred : red));
+                mh.addline(menutext);
 
-                textout(screen_buffer, font, "Exit", width/3, maxi+190, ((menuselected == 11) ? lightred : red));
+                mh.addline("Exit", true, 15);
 
-                // blit the screen buffer to the 'actual' screen
-                //blit(screen_buffer, screen, 0, 0, 0, 0, width, height);
+                mh.draw(screen_buffer, font);
     }
 
     *exit_game = exit;
