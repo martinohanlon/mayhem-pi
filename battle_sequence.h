@@ -10,6 +10,7 @@
 #include "vaisseau_data.h"
 #include "vaisseau_gfx.h"
 #include "mapping_key.h"
+#include "mapping_joy.h"
 #include "player_input.h"
 #include "soundfx.h"
 #include "command.h"
@@ -64,6 +65,7 @@ private:
         bool wall_collision;
         struct vaisseau_data vaisseaux[NB_MAX_VAISSEAU];
         struct mapping_key keyvaisseau[NB_MAX_VAISSEAU];
+        struct mapping_joy joyvaisseau[NB_MAX_VAISSEAU];
         struct command commands[NB_MAX_VAISSEAU];
   // for each player we will need one of this structure initialization is made just after
   // allegro is actually started so that the ALLEGRO_BITMAP can get created.

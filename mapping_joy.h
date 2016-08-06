@@ -31,6 +31,14 @@ enum class JoyButton {
   BUTTON_XBOX
 };
 
+struct mapping_joy {
+  JoyButton left   = JoyButton::LEFT_STICK_X_LEFT;
+  JoyButton right  = JoyButton::LEFT_STICK_X_RIGHT;
+  JoyButton thrust = JoyButton::BUTTON_A;
+  JoyButton shield = JoyButton::BUTTON_B;
+  JoyButton fire   = JoyButton::BUTTON_RIGHT_SHOULDER;
+};
+
 bool is_pressed(XC_STATE* joystick, JoyButton button);
 
 

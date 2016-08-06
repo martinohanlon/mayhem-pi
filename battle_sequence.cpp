@@ -222,6 +222,7 @@ void BattleSequence::InitMappingAndControls(enum CONTROL_ID playercontrols[4])
         {
             joystickno = playercontrols[playerno] - 4;
             commands[playerno].joystick_index = joystickno;
+            commands[playerno].joymap = &joyvaisseau[playerno];
             commands[playerno].control_type = CONTROL_JOY;
         } 
         else

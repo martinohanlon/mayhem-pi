@@ -1,4 +1,5 @@
 #include "player_input.h"
+#include "mapping_joy.h"
 
 #include "allegro_compatibility.h"
 #include "game_mgr.h"
@@ -25,11 +26,12 @@ void get_key_input(struct command *cmd, bool key_down[])
 void get_joy_input(struct command *cmd)
 {
 	auto joystick = GameManager::joysticks[cmd->joystick_index];
-	cmd->left = joystick->left_stick_x <= -0.6;
-	cmd->right = joystick->left_stick_x >= 0.6;
-	cmd->shield = joystick->button_b;
-	cmd->fire = joystick->button_right_shoulder;
-	cmd->thrust = joystick->button_a;
+	struct mapping_joy* joymap = cmd->joymap;
+	cmd->left   = is_pressed(joystick, joymap->left);
+	cmd->right  = is_pressed(joystick, joymap->right);
+	cmd->shield = is_pressed(joystick, joymap->shield);
+	cmd->fire   = is_pressed(joystick, joymap->fire);
+	cmd->thrust = is_pressed(joystick, joymap->thrust);
 }
 
 const char* get_control_id_as_string(enum CONTROL_ID cid)
