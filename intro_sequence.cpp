@@ -3,6 +3,8 @@
 #include "intro_sequence.h"
 #include "battle_sequence.h"
 #include "allegro_compatibility.h"
+#include "mapping_joy.h"
+
 #include <allegro5/allegro_primitives.h>
 
 const int IntroSequence::mini=150;
@@ -73,11 +75,15 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
         red=al_map_rgb(255,0,0);
         lightred=al_map_rgb(255, 75, 75);
 
-        auto joystick = GameManager::joysticks[0];
-
-        auto do_js_action = [&](bool button_pressed)
+        auto do_js_action = [&](JoyButton button)
         {
-            if (!button_pressed)
+          auto joystick = GameManager::joysticks[0];
+
+          if (joystick == nullptr)
+            return false;
+
+
+            if (!is_pressed(joystick, button))
               return false;
 
             bool js_ok = GameManager::num_joysticks_loaded > 0;
@@ -108,7 +114,7 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
 
                 }*/
 
-                if (key_pressed[ALLEGRO_KEY_ESCAPE] || do_js_action(joystick->button_back))
+                if (key_pressed[ALLEGRO_KEY_ESCAPE] || do_js_action(JoyButton::BUTTON_BACK))
                 {
                     exit = true;
                 }
@@ -134,17 +140,17 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
                 }
 
                 //menu control
-                if (key_pressed[ALLEGRO_KEY_DOWN] || do_js_action(joystick->left_stick_y >= 0.6))
+                if (key_pressed[ALLEGRO_KEY_DOWN] || do_js_action(JoyButton::LEFT_STICK_Y_DOWN))
                 {
                     if (menuselected < menuitems - 1) menuselected++;
                     else menuselected = 0;
                 }
-                if (key_pressed[ALLEGRO_KEY_UP] || do_js_action(joystick->left_stick_y <= -0.6))
+                if (key_pressed[ALLEGRO_KEY_UP] || do_js_action(JoyButton::LEFT_STICK_Y_UP))
                 {
                     if (menuselected > 0) menuselected--;
                     else menuselected = menuitems - 1;
                 }
-                if (key_pressed[ALLEGRO_KEY_LEFT] || do_js_action(joystick->left_stick_x <= -0.6))
+                if (key_pressed[ALLEGRO_KEY_LEFT] || do_js_action(JoyButton::LEFT_STICK_X_LEFT))
                 {
                     switch(menuselected)
                     {
@@ -165,7 +171,7 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
                             break;
                     }
                 }
-                if (key_pressed[ALLEGRO_KEY_RIGHT] || do_js_action(joystick->left_stick_x >= 0.6))
+                if (key_pressed[ALLEGRO_KEY_RIGHT] || do_js_action(JoyButton::LEFT_STICK_X_RIGHT))
                 {
                     switch(menuselected)
                     {
@@ -186,7 +192,7 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
                             break;
                     }
                 }
-                if (key_pressed[ALLEGRO_KEY_ENTER] || do_js_action(joystick->button_a))
+                if (key_pressed[ALLEGRO_KEY_ENTER] || do_js_action(JoyButton::BUTTON_A))
                 {
                     switch(menuselected)
                     {

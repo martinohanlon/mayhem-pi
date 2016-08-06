@@ -1,0 +1,34 @@
+#include "mapping_joy.h"
+
+bool is_pressed(XC_STATE* joystick, JoyButton button) {
+
+switch(button) {
+  case JoyButton::LEFT_STICK_X_LEFT    : return(joystick->left_stick_x <= -0.6);
+  case JoyButton::LEFT_STICK_X_RIGHT   : return(joystick->left_stick_x >= 0.6);
+  case JoyButton::LEFT_STICK_Y_UP      : return(joystick->left_stick_y <= -0.6);
+  case JoyButton::LEFT_STICK_Y_DOWN    : return(joystick->left_stick_y >= 0.6);
+  case JoyButton::LEFT_TRIGGER         : return(joystick->left_trigger >= 0.6);
+  case JoyButton::RIGHT_STICK_X_LEFT   : return(joystick->right_stick_x <= -0.6);
+  case JoyButton::RIGHT_STICK_X_RIGHT  : return(joystick->right_stick_x >= 0.6);
+  case JoyButton::RIGHT_STICK_Y_UP     : return(joystick->right_stick_y <= -0.6);
+  case JoyButton::RIGHT_STICK_Y_DOWN   : return(joystick->right_stick_y >= 0.6);
+  case JoyButton::RIGHT_TRIGGER        : return(joystick->right_trigger >= 0.6);
+  case JoyButton::DPAD_X_LEFT          : return(joystick->dpad_x <= -0.6);
+  case JoyButton::DPAD_X_RIGHT         : return(joystick->dpad_x >= 0.6);
+  case JoyButton::DPAD_Y_UP            : return(joystick->dpad_y <= -0.6);
+  case JoyButton::DPAD_Y_DOWN          : return(joystick->dpad_y >= 0.6);
+  case JoyButton::BUTTON_A             : return(joystick->button_a);
+  case JoyButton::BUTTON_B             : return(joystick->button_b);
+  case JoyButton::BUTTON_X             : return(joystick->button_x);
+  case JoyButton::BUTTON_Y             : return(joystick->button_y);
+  case JoyButton::BUTTON_LEFT_STICK    : return(joystick->button_left_stick);
+  case JoyButton::BUTTON_RIGHT_STICK   : return(joystick->button_right_stick);
+  case JoyButton::BUTTON_LEFT_SHOULDER : return(joystick->button_left_shoulder);
+  case JoyButton::BUTTON_RIGHT_SHOULDER: return(joystick->button_right_shoulder);
+  case JoyButton::BUTTON_START         : return(joystick->button_start);
+  case JoyButton::BUTTON_BACK          : return(joystick->button_back);
+  case JoyButton::BUTTON_XBOX          : return(joystick->button_xbox);
+  default:
+    return false;
+  }
+}
