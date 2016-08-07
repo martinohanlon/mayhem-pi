@@ -38,10 +38,24 @@ private:
    bool quickExit=false;
    bool canQuickExit=false;
 
-   int menuitems = 12;
+   int menuitems = 32;
    int menuselected = 0;
    char menutext[50];
    TickTimer joystick_action_timer;
+
+   int menu_exit_idx = 0;
+   int menu_resolution_idx = 0;
+
+   int menu_kbd_layout1_idx = 0;
+   int menu_kbd_layout2_idx = 0;
+   int menu_kbd_layout3_idx = 0;
+   int menu_kbd_layout4_idx = 0;
+
+   int menu_joy_layout1_idx = 0;
+   int menu_joy_layout2_idx = 0;
+   int menu_joy_layout3_idx = 0;
+   int menu_joy_layout4_idx = 0;
+
 };
 
 

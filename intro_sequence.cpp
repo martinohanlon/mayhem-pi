@@ -29,7 +29,20 @@ IntroSequence::IntroSequence(GameSequence* previous, float zoom, float zoomspeed
     dcachoice = dca;
     wallchoice = wall;
 
-    
+    menu_kbd_layout1_idx = 10;
+    menu_kbd_layout2_idx = 15;
+    menu_kbd_layout3_idx = 20;
+    menu_kbd_layout4_idx = 25;
+
+    menu_joy_layout1_idx = 30;
+    menu_joy_layout2_idx = 35;
+    menu_joy_layout3_idx = 40;
+    menu_joy_layout4_idx = 45;
+
+    menu_resolution_idx = menu_joy_layout1_idx + GameManager::num_joysticks_loaded*5;
+    menu_exit_idx = menu_resolution_idx + 1;
+
+    menuitems = menu_exit_idx + 1;
 }
 
 IntroSequence::~IntroSequence()
@@ -91,7 +104,7 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
 
             if (js_ok && timer_ok)
             {
-                joystick_action_timer.start(0.2, GameManager::FPS);
+                joystick_action_timer.start(0.10, GameManager::FPS);
                 return true;
             }
             return false;
@@ -229,17 +242,15 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
                         case 9:
                             cycle_control(3, maxi+150, screen_buffer);
                             break;
-                        case 10:
-                            if (width == GameManager::native_width && height == GameManager::native_height)
-                                GameManager::ChangeScreenRes(1024, 768);
-                            else
-                                GameManager::ChangeScreenRes(GameManager::native_width, GameManager::native_height);
-                            reload = true;
-                            break;
-                        case 11:
-                            exit = true;
-                            break;
-
+                    }
+                    if (menuselected == menu_resolution_idx) {
+                        if (width == GameManager::native_width && height == GameManager::native_height)
+                            GameManager::ChangeScreenRes(1024, 768);
+                        else
+                            GameManager::ChangeScreenRes(GameManager::native_width, GameManager::native_height);
+                        reload = true;
+                    } else if(menuselected == menu_exit_idx) {
+                        exit = true;
                     }
                 }
                 char layout_str[1000];
@@ -251,6 +262,7 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
                 mh.selected_idx = menuselected;
                 mh.maxi = maxi;
                 mh.width = width;
+                mh.max_visible_lines = 25;
 
                 mh.addline("Start game");
                 mh.addline("Options:", false, 15);
@@ -283,6 +295,42 @@ GameSequence* IntroSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pres
 
                 snprintf(menutext, sizeof(menutext), "   Player 4 - %s", get_control_id_as_string(playercontrols[3]));
                 mh.addline(menutext);
+
+                mh.addline("Controller layouts:", false, 15);
+
+                for (int i = 0; i < 4; i++) {
+                  snprintf(menutext, sizeof(menutext), "   Keyboard %d", (i+1));
+                  mh.addline(menutext, false, 10);
+                  snprintf(menutext, sizeof(menutext), "      Left   - %s", key_to_str(mapping_key::key_sets[i][0]));
+                  mh.addline(menutext);
+                  snprintf(menutext, sizeof(menutext), "      Right  - %s", key_to_str(mapping_key::key_sets[i][1]));
+                  mh.addline(menutext);
+                  snprintf(menutext, sizeof(menutext), "      Thrust - %s", key_to_str(mapping_key::key_sets[i][2]));
+                  mh.addline(menutext);
+                  snprintf(menutext, sizeof(menutext), "      Shield - %s", key_to_str(mapping_key::key_sets[i][3]));
+                  mh.addline(menutext);
+                  snprintf(menutext, sizeof(menutext), "      Fire   - %s", key_to_str(mapping_key::key_sets[i][4]));
+                  mh.addline(menutext);
+                }
+                //
+                if (GameManager::num_joysticks_loaded > 0) {
+                  //mh.addline("Joystick Layouts:", false, 15);
+
+                  for (int i = 0; i < GameManager::num_joysticks_loaded; i++) {
+                    snprintf(menutext, sizeof(menutext), "   Joystick %d", (i+1));
+                    mh.addline(menutext, false, 10);
+                    snprintf(menutext, sizeof(menutext), "      Left   - %s", button_to_str(mapping_joy::btn_sets[i][0]));
+                    mh.addline(menutext);
+                    snprintf(menutext, sizeof(menutext), "      Right  - %s", button_to_str(mapping_joy::btn_sets[i][1]));
+                    mh.addline(menutext);
+                    snprintf(menutext, sizeof(menutext), "      Thrust - %s", button_to_str(mapping_joy::btn_sets[i][2]));
+                    mh.addline(menutext);
+                    snprintf(menutext, sizeof(menutext), "      Shield - %s", button_to_str(mapping_joy::btn_sets[i][3]));
+                    mh.addline(menutext);
+                    snprintf(menutext, sizeof(menutext), "      Fire   - %s", button_to_str(mapping_joy::btn_sets[i][4]));
+                    mh.addline(menutext);
+                  }
+                }
 
                 snprintf(menutext, sizeof(menutext), "Resolution (%ix%i):   ", width, height);
                 mh.addline(menutext, false, 15);
@@ -368,4 +416,4 @@ void IntroSequence::cycle_control(int playerno, int screenpos, ALLEGRO_BITMAP* s
     int next_ctrl_idx = static_cast<int>(playercontrols[playerno]) + 1;
 
     playercontrols[playerno] = static_cast<CONTROL_ID>(next_ctrl_idx % end_control_index);
-} 
+}

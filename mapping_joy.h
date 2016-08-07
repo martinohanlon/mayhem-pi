@@ -37,9 +37,12 @@ struct mapping_joy {
   JoyButton thrust = JoyButton::BUTTON_A;
   JoyButton shield = JoyButton::BUTTON_B;
   JoyButton fire   = JoyButton::BUTTON_RIGHT_SHOULDER;
+
+  static JoyButton btn_sets[4][5];
 };
 
 bool is_pressed(XC_STATE* joystick, JoyButton button);
 
+char *button_to_str(JoyButton button);
 
 #endif // MAPPING_JOY_H

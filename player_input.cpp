@@ -37,10 +37,10 @@ void get_joy_input(struct command *cmd)
 const char* get_control_id_as_string(enum CONTROL_ID cid)
 {
   switch (cid) {
-  case KEYBOARD_0: return "Keyboard layout 1";
-  case KEYBOARD_1: return "Keyboard layout 2";
-  case KEYBOARD_2: return "Keyboard layout 3";
-  case KEYBOARD_3: return "Keyboard layout 4";
+  case KEYBOARD_0: return "Kbd Layout 1";
+  case KEYBOARD_1: return "Kbd Layout 2";
+  case KEYBOARD_2: return "Kbd Layout 3";
+  case KEYBOARD_3: return "Kbd Layout 4";
   case JOYSTICK_0: return "Joystick 1";
   case JOYSTICK_1: return "Joystick 2";
   case JOYSTICK_2: return "Joystick 3";
