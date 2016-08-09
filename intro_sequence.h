@@ -3,6 +3,7 @@
 
 #include "game_mgr.h"
 #include "ticktimer.h"
+#include "mapping_joy.h"
 
 class IntroSequence : public GameSequence
 {
@@ -13,6 +14,8 @@ public:
 private:
    static const int mini, maxi;
    GameSequence* doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pressed[ALLEGRO_KEY_MAX], bool key_down[ALLEGRO_KEY_MAX], bool* exit_game) override;
+   void handle_key_presses(bool key_pressed[ALLEGRO_KEY_MAX], bool* reload, bool* startgame, bool* exit);
+
    double iZoom;
    double iZoomMax;
    double iZoomSpeed;
@@ -28,7 +31,8 @@ private:
    bool dcachoice;
    bool wallchoice;
    
-   void cycle_control(int playerno, int screenpos, ALLEGRO_BITMAP* screen);
+   void cycle_control(int playerno);
+   bool do_js_action(JoyButton button);
    
    ALLEGRO_COLOR black;
    ALLEGRO_COLOR red;
@@ -55,6 +59,9 @@ private:
    int menu_joy_layout2_idx = 0;
    int menu_joy_layout3_idx = 0;
    int menu_joy_layout4_idx = 0;
+
+   bool selecting_new_keyboard_button = false;
+   bool selecting_new_joystick_button = false;
 
 };
 

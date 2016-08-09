@@ -70,3 +70,12 @@ char* button_to_str(JoyButton button) {
     return "?";
   }
 }
+
+void init_mapping_joy(struct mapping_joy* joymap, int keysetno)
+{
+    joymap->left   = mapping_joy::btn_sets[keysetno][0];
+    joymap->right  = mapping_joy::btn_sets[keysetno][1];
+    joymap->thrust = mapping_joy::btn_sets[keysetno][2];
+    joymap->shield = mapping_joy::btn_sets[keysetno][3];
+    joymap->fire   = mapping_joy::btn_sets[keysetno][4];
+}

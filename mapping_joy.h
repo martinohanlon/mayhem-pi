@@ -45,4 +45,7 @@ bool is_pressed(XC_STATE* joystick, JoyButton button);
 
 char *button_to_str(JoyButton button);
 
+void init_mapping_joy(struct mapping_joy* joymap, int keysetno);
+
+
 #endif // MAPPING_JOY_H
