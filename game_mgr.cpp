@@ -112,12 +112,6 @@ void GameManager::Shutdown() {
     delete GameManager::joysticks[i];
 }
 
-void GameManager::Run(GameSequence *aSeq) {
-  while (aSeq) {
-    aSeq = aSeq->run();
-  }
-}
-
 #ifdef CHECKFPS
 double old_time = 0.0;
 double tick_time = 0.0;
@@ -140,11 +134,12 @@ void draw_fps(ALLEGRO_BITMAP *screen_buffer) {
 void draw_fps(ALLEGRO_BITMAP *) {}
 #endif
 
-GameSequence *GameSequence::run() {
+void GameManager::Run(GameSequence *aSeq) {
+
   auto event_queue = al_create_event_queue();
   if (!event_queue) {
     fprintf(stderr, "failed to create event_queue!\n");
-    return nullptr;
+    return;
   }
 
   al_register_event_source(event_queue,
@@ -196,7 +191,7 @@ GameSequence *GameSequence::run() {
       al_set_target_bitmap(screen_buffer);
       al_clear_to_color(al_map_rgb(0, 0, 0));
 
-      seq_next = doTick(screen_buffer, key_pressed, key_down, &exit_game);
+      seq_next = aSeq->doTick(screen_buffer, key_pressed, key_down, &exit_game);
       for (auto &pressed : key_pressed)
         pressed = false;
 
@@ -209,16 +204,21 @@ GameSequence *GameSequence::run() {
     al_set_target_bitmap(al_get_backbuffer(GameManager::display));
     al_draw_bitmap(screen_buffer, 0, 0, 0);
     al_flip_display();
+
+    if (doexit) {
+        auto iReturnScreen = aSeq->ReturnScreen();
+        if (seq_next != iReturnScreen && iReturnScreen)
+          delete iReturnScreen;
+
+        if (exit_game)
+          break;
+
+        aSeq = seq_next;
+
+        doexit = false;
+    }
   }
 
   al_destroy_event_queue(event_queue);
   al_destroy_bitmap(screen_buffer);
-
-  if (seq_next != iReturnScreen && iReturnScreen)
-    delete iReturnScreen;
-
-  if (exit_game)
-    return nullptr;
-
-  return seq_next;
 }
