@@ -109,6 +109,8 @@ GameSequence* IntroSequence::doRun()
             #ifdef USE_VSYNC
             vsync();    // wait the raster
             #endif 
+            // on some platforms (Pi2) this loop gets stuck! No idea why... So break if need be.
+            if (!isRunning) break;
 		}
 	} while(isRunning); 
 

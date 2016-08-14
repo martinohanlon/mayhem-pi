@@ -59,8 +59,8 @@ If joysticks are connected, they are used as the players controls, if there are 
 Key | Left | Right | Shield | Thrust | Fire
 --- | --- | --- | --- | --- | ---
 1 | z | x | c | v | g 
-2 | left | right | pad del | pad 0 | pad enter
 3 | b | n | , | m | l
+2 | left | right | pad del | pad 0 | pad enter
 4 | y | u | o | i | 0
 
 ##Install
@@ -106,6 +106,7 @@ git clone https://github.com/martinohanlon/mayhem-pi
 * 0.8 - joystick control
 * 0.9 - new powerup icons
 * 0.10 - screen resolution & perf improvements
+* 0.10.1 - bug fix on Pi
 
 ##Contributors
 [Anthony Prieur](https://github.com/devpack)
