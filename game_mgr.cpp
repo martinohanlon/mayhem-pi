@@ -30,7 +30,7 @@ int GameManager::native_height;
 int GameManager::native_width;
 ALLEGRO_DISPLAY *GameManager::display = nullptr;
 ALLEGRO_FONT *GameManager::font = nullptr;
-int GameManager::FPS = 40;
+int GameManager::FPS = 65;
 XC_STATE *GameManager::joysticks[MAX_NUM_CONTROLLERS] = {0};
 int GameManager::num_joysticks_loaded = 0;
 
@@ -115,13 +115,14 @@ void GameManager::Shutdown() {
 #ifdef CHECKFPS
 double old_time = 0.0;
 double tick_time = 0.0;
+double tick_fps = 0.0;
 
 void draw_fps(ALLEGRO_BITMAP *screen_buffer) {
   double new_time = al_get_time();
   char fps[100];
   sprintf(fps, "goal fps:%d, draw fps:%.1f, tick ms:%.1f, tick fps: %.1f",
           GameManager::FPS, 1.0 / (new_time - old_time), 1000.0 * tick_time,
-          1.0 / tick_time);
+          tick_fps);
   textout(screen_buffer, GameManager::font, fps, 105, 5,
           makecol(200, 200, 200));
   char reso[100];
@@ -191,11 +192,13 @@ void GameManager::Run(GameSequence *aSeq) {
       al_set_target_bitmap(screen_buffer);
       al_clear_to_color(al_map_rgb(0, 0, 0));
 
-      seq_next = aSeq->doTick(screen_buffer, key_pressed, key_down, &exit_game);
+      seq_next = aSeq->doTick(screen_buffer, key_pressed, key_down, &exit_game, (now -last_time));
       for (auto &pressed : key_pressed)
         pressed = false;
 
       doexit = exit_game || seq_next != nullptr;
+
+      tick_fps = 1.0 / (now - last_time);
       last_time = now;
       tick_time = al_get_time() - now;
     }

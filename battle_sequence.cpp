@@ -6,6 +6,10 @@
 
 #include "allegro_compatibility.h"
 
+#include <algorithm>
+
+#define MAX_DELTA_INCREMENT 0.1
+
 
 //------------------//
 // LEVEL VARIABLES  //
@@ -318,10 +322,11 @@ void BattleSequence::InitSoundFx()
     create_sprite_buffer_screen();
 }
 
-GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pressed[ALLEGRO_KEY_MAX], bool key_down[ALLEGRO_KEY_MAX], bool* exit_game)
+GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pressed[ALLEGRO_KEY_MAX], bool key_down[ALLEGRO_KEY_MAX], bool* exit_game, double dt)
 {
     int i; // for everythign counter
 
+    dt = std::min(dt, MAX_DELTA_INCREMENT);
 
     if (isRunning)
     {
@@ -361,19 +366,19 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pre
           #else
 
           if(!player_gameover(&players[0]))
-              handle_command(&commands[0]);
+              handle_command(&commands[0], dt);
           #endif
 
           if(!player_gameover(&players[1]))
-              handle_command(&commands[1]);
+              handle_command(&commands[1], dt);
 
           if(nb_views>=3)
               if(!player_gameover(&players[2]))
-                  handle_command(&commands[2]);
+                  handle_command(&commands[2], dt);
 
           if(nb_views>=4)
               if(!player_gameover(&players[3]))
-                  handle_command(&commands[3]);
+                  handle_command(&commands[3], dt);
 
           calcul_pos(moon_physics,nb_players,vaisseaux,currentlevel->platformdata,currentlevel->nbplatforms);  // Position
           fuel_shield_calcul(nb_players,vaisseaux);
@@ -399,7 +404,7 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pre
           gestion_option(opt, currentlevel,vaisseaux, views, nb_players,nb_views);
 
           for(i=0;i<nb_players;i++)
-              gestion_tir(&vaisseaux[i], currentlevel);
+              gestion_tir(&vaisseaux[i], currentlevel, dt);
 
           if(use_dca)
           {

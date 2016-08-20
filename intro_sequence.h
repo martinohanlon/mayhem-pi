@@ -13,7 +13,7 @@ public:
    void DrawZoomedLogoInCenter(int y1,int y2);
 private:
    static const int mini, maxi;
-   GameSequence* doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pressed[ALLEGRO_KEY_MAX], bool key_down[ALLEGRO_KEY_MAX], bool* exit_game) override;
+   GameSequence* doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pressed[ALLEGRO_KEY_MAX], bool key_down[ALLEGRO_KEY_MAX], bool* exit_game, double dt) override;
    void handle_key_presses(bool key_pressed[ALLEGRO_KEY_MAX], bool* reload, bool* startgame, bool* exit);
 
    double iZoom;

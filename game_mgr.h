@@ -20,7 +20,7 @@ public:
    GameSequence(GameSequence *returnScreen)
                       : iReturnScreen(returnScreen) {}
    virtual ~GameSequence(){};
-   virtual GameSequence* doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pressed[ALLEGRO_KEY_MAX], bool key_down[ALLEGRO_KEY_MAX], bool* exit_game) {return nullptr;} ;
+   virtual GameSequence* doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pressed[ALLEGRO_KEY_MAX], bool key_down[ALLEGRO_KEY_MAX], bool* exit_game, double dt) {return nullptr;} ;
    GameSequence *ReturnScreen() const { return iReturnScreen; };
 
 protected:

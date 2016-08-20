@@ -21,6 +21,6 @@ struct command {
     int joystick_index;
 };
 
-void handle_command(struct command *cmd);
+void handle_command(struct command *cmd, double dt);
 
 #endif

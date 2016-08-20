@@ -136,6 +136,7 @@ void init_ship_pos_from_platforms(struct vaisseau_data *v,
   v->landed = true;
   v->rebound = false;
   v->angle = 0;
+  v->angle_precise = 0;
   v->refueling = false;
 }
 

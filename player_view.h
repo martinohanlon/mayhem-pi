@@ -20,7 +20,7 @@ void rotate_sprite(struct player_view * v);
 void display_rotate_sprite_in_all_view(struct player_view * v, struct player_view allviews[], int nbviews);
 void display_rotate_sprites(struct player_view allviews[], int nbviews, struct level_data *currentlevel);
 
-void gestion_tir(struct vaisseau_data *v, struct level_data *currentlevel);
+void gestion_tir(struct vaisseau_data *v, struct level_data *currentlevel, double dt);
 void put_big_pixel(ALLEGRO_BITMAP *bmp, int x, int y, ALLEGRO_COLOR color);
 int  test_place_tir(struct vaisseau_data *v);
 int  test_place_backtir(struct vaisseau_data *v);

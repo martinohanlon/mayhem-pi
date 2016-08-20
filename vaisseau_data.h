@@ -79,6 +79,7 @@ struct vaisseau_data {
   double xposprecise, yposprecise;
   int xpos, ypos;
   int angle;
+  double angle_precise;
   double thrust;
   bool shield;
   bool fire;

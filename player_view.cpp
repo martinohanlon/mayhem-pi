@@ -212,7 +212,7 @@ void init_tir(struct vaisseau_data *v)
      }
 }
 
-void plot_tir(struct vaisseau_data *v, struct level_data *currentlevel)
+void plot_tir(struct vaisseau_data *v, struct level_data *currentlevel, double dt)
 {
      struct tir_data *shoot;
      int w = al_get_bitmap_width(currentlevel->collision_bitmap);
@@ -233,8 +233,8 @@ void plot_tir(struct vaisseau_data *v, struct level_data *currentlevel)
 
         put_big_pixel(currentlevel->level_buffer, shoot->x, shoot->y, currentlevel->particle_color);
 
-        shoot->xposprecise = fixadd(shoot->xposprecise, shoot->dx);
-        shoot->yposprecise = fixadd(shoot->yposprecise, shoot->dy);
+        shoot->xposprecise = fixadd(shoot->xposprecise, shoot->dx*(dt/0.025));
+        shoot->yposprecise = fixadd(shoot->yposprecise, shoot->dy*(dt/0.025));
         shoot->x = fixtoi(shoot->xposprecise);
         shoot->y = fixtoi(shoot->yposprecise);
         
@@ -273,8 +273,8 @@ void plot_tir(struct vaisseau_data *v, struct level_data *currentlevel)
 
             put_big_pixel(currentlevel->level_buffer, backshoot->x, backshoot->y, currentlevel->particle_color);
 
-            backshoot->xposprecise = fixadd(backshoot->xposprecise, backshoot->dx);
-            backshoot->yposprecise = fixadd(backshoot->yposprecise, backshoot->dy);
+            backshoot->xposprecise = fixadd(backshoot->xposprecise, backshoot->dx*(dt/0.025));
+            backshoot->yposprecise = fixadd(backshoot->yposprecise, backshoot->dy*(dt/0.025));
             backshoot->x = fixtoi(backshoot->xposprecise);
             backshoot->y = fixtoi(backshoot->yposprecise);
             
@@ -299,10 +299,10 @@ void plot_tir(struct vaisseau_data *v, struct level_data *currentlevel)
 }
 
 // src_map necessary for collision detection
-void gestion_tir(struct vaisseau_data *v, struct level_data *currentlevel)
+void gestion_tir(struct vaisseau_data *v, struct level_data *currentlevel, double dt)
 {
      init_tir(v);
-     plot_tir(v, currentlevel);
+     plot_tir(v, currentlevel, dt);
 }
 
 
