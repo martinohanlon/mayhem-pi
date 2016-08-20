@@ -143,16 +143,16 @@ void init_ship_pos_from_platforms(struct vaisseau_data *v,
   v->refueling = false;
 }
 
-void fuel_shield_calcul(int nbvaisseau, struct vaisseau_data *v) {
+void fuel_shield_calcul(int nbvaisseau, struct vaisseau_data *v, double dt) {
   while (nbvaisseau--) {
     v->refueling = false;
     if (v->fire_delay)
-      v->fuel -= 3;
+      v->fuel -= 3*(dt/0.025);
     if (!(v->landed || v->rebound) && (v->thrust != itofix(0)) && (v->fuel > 0))
-      v->fuel -= v->speed_fuel_down;
+      v->fuel -= v->speed_fuel_down*(dt/0.025);
     else if ((v->landed || v->rebound) && (v->thrust == itofix(0)) &&
              (v->fuel < v->max_fuel)) {
-      v->fuel += v->speed_fuel_up;
+      v->fuel += v->speed_fuel_up*(dt/0.025);
       v->refueling = true;
     }
     if (v->fuel < 0)

@@ -381,7 +381,7 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pre
                   handle_command(&commands[3], dt);
 
           calcul_pos(moon_physics,nb_players,vaisseaux,currentlevel->platformdata,currentlevel->nbplatforms, dt);  // Position
-          fuel_shield_calcul(nb_players,vaisseaux);
+          fuel_shield_calcul(nb_players,vaisseaux, dt);
 
           // sound both player
           play_soundfx_from_shipdata(&sounds[0],&vaisseaux[0]);

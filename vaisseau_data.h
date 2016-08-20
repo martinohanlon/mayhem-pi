@@ -57,7 +57,7 @@ struct vaisseau_data {
   double thrust_max;
   int anglestep;
 
-  int fuel;
+  double fuel;
   int shield_force;
 
   int max_fuel;
@@ -110,6 +110,6 @@ void init_ship_pos_from_platforms(struct vaisseau_data *v,
                                   struct platform_data *plats);
 
 // to be called at each vbl!
-void fuel_shield_calcul(int nbvaisseau, struct vaisseau_data *v);
+void fuel_shield_calcul(int nbvaisseau, struct vaisseau_data *v, double dt);
 
 #endif
