@@ -117,7 +117,10 @@ void init_ship_pos_from_platforms(struct vaisseau_data *v,
   v->shield_force = v->max_shield_force;
 
   v->explode_count = 0;
+  v->explode_tick = 0;
   v->explode = false;
+  v->explode_appear_time_passed = false;
+
 
   v->option_type = OPT_NOOPTION;
   v->speed_shield_force_down = VAISSEAU_SPEED_SHIELD_FORCE_DOWN;

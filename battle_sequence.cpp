@@ -264,7 +264,7 @@ void BattleSequence::InitAllSpriteGfx()
                            VAISSEAU_SPEED_SHIELD_FORCE_UP);
         
     // time after explosion, time active, time player has
-    init_option_data(opt, option_sprites, 49, 150*0.025, 1500*0.025);
+    init_option_data(opt, option_sprites, 49*0.025, 150*0.025, 1500*0.025);
 }
 
 void BattleSequence::InitPlayerInfo()
@@ -412,7 +412,7 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pre
                   gestion_dca(&currentlevel->alldca[0], &vaisseaux[i], currentlevel);
           }
 
-          draw_explosion(players, currentlevel->platformdata, nb_players, currentlevel);
+          draw_explosion(players, currentlevel->platformdata, nb_players, currentlevel, dt);
 
           draw_debris(players, moon_physics, nb_players, currentlevel, dt);
 

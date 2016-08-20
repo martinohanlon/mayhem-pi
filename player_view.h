@@ -25,7 +25,7 @@ void put_big_pixel(ALLEGRO_BITMAP *bmp, int x, int y, ALLEGRO_COLOR color);
 int  test_place_tir(struct vaisseau_data *v);
 int  test_place_backtir(struct vaisseau_data *v);
 
-void draw_explosion(struct player_info *allpi, struct platform_data * plats, int nombre_vaisseau, struct level_data *currentlevel);
+void draw_explosion(struct player_info *allpi, struct platform_data * plats, int nombre_vaisseau, struct level_data *currentlevel, double dt);
 void mega_collision_test(struct player_info *allpi, struct player_view *views, struct vaisseau_data *vaisseaux, struct level_data *currentlevel, int nbplayers, int nombre_vaisseau);
 
 

@@ -75,7 +75,7 @@ void play_soundfx_from_shipdata(struct soundfx *sfx,struct vaisseau_data* v)
     al_play_sample(sfx->rebound,1.0,0.0,1.0,ALLEGRO_PLAYMODE_ONCE,nullptr);
   if (v->fire_delay)
     al_play_sample(sfx->shoot,1.0,0.0,1.0,ALLEGRO_PLAYMODE_ONCE,nullptr);
-  if (v->explode && v->explode_count == 1) // TODO, fix this is disgusting...
+  if (v->explode && v->explode_tick == 1) // TODO, fix this is disgusting...
     al_play_sample(sfx->boom, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, nullptr);
 }
 

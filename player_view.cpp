@@ -342,32 +342,37 @@ void put_big_pixel(ALLEGRO_BITMAP *bmp, int x, int y, ALLEGRO_COLOR color)
   al_unlock_bitmap(bmp);
 }
 
-void draw_explosion(struct player_info *allpi, struct platform_data * plats, int nombre_vaisseau, struct level_data *currentlevel)
+void draw_explosion(struct player_info *allpi, struct platform_data * plats, int nombre_vaisseau, struct level_data *currentlevel, double dt)
 {
 	int i;
 	int j;
 	for(i=0;i<nombre_vaisseau;i++)
 		{
 		if(allpi[i].ship->explode)
-			if (allpi[i].ship->explode_count<48)
+			if (allpi[i].ship->explode_count<(48*0.025))
 				{
-                  draw_sprite(currentlevel->level_buffer, get_sprite_explosion_frame(allpi[i].ship->explode_count), allpi[i].ship->xpos, allpi[i].ship->ypos);
+		  draw_sprite(currentlevel->level_buffer, get_sprite_explosion_frame(allpi[i].ship->explode_count*40), allpi[i].ship->xpos, allpi[i].ship->ypos);
 
                 // if the ship has exploded across the gap, draw it on the other side
                 if (currentlevel->edgedata.wrapx)                    
                     if ((currentlevel->edgedata.wrapx) && (allpi[i].ship->xpos + 32 > currentlevel->edgedata.rightx))
                     {
-                     draw_sprite(currentlevel->level_buffer, get_sprite_explosion_frame(allpi[i].ship->explode_count), allpi[i].ship->xpos - al_get_bitmap_width(currentlevel->bitmap), allpi[i].ship->ypos);
+                     draw_sprite(currentlevel->level_buffer, get_sprite_explosion_frame(allpi[i].ship->explode_count*40), allpi[i].ship->xpos - al_get_bitmap_width(currentlevel->bitmap), allpi[i].ship->ypos);
                     }
-                allpi[i].ship->explode_count++; 
+                allpi[i].ship->explode_count +=dt;
+                allpi[i].ship->explode_tick++;
 				}
 			else
 				{
-                   if(allpi[i].ship->explode_count<200)
-                      allpi[i].ship->explode_count++;
+		   if(allpi[i].ship->explode_count<200*0.025) {
+		      allpi[i].ship->explode_count +=dt;
+		      allpi[i].ship->explode_tick++;
+		     }
                    else
                    {
 				   allpi[i].ship->explode_count=0;
+				   allpi[i].ship->explode_tick=0;
+				   allpi[i].ship->explode_appear_time_passed=false;
 				   allpi[i].ship->explode=false;
 				   init_ship_pos_from_platforms(allpi[i].ship,&plats[i]);
                    allpi[i].nblives--;
@@ -525,10 +530,10 @@ void draw_debris(struct player_info *allpi, const physics_constants& physics, in
 
    for(int i=0;i<nombre_vaisseau;i++)
    {
-      if(allpi[i].ship->explode_count == 1)
+      if(allpi[i].ship->explode_tick == 1)
       init_debris(allpi[i].ship);
 
-      if((allpi[i].ship->explode) && (allpi[i].ship->explode_count>1))
+      if((allpi[i].ship->explode) && (allpi[i].ship->explode_tick>1))
       {
          test_collision_debris(allpi[i].ship, currentlevel->coll_map, w, h);
          plot_debris(allpi[i].ship, physics, currentlevel, dt);

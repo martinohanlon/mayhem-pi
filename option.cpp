@@ -51,7 +51,7 @@ void init_option(struct option_data *opt, struct level_data *currentlevel, struc
         for(int i=0;i<nombre_vaisseau;i++)
 		{            
             // is it at explode_count 100
-			if (allv[i].explode_count == opt->explode_appear_time)
+            if (!allv[i].explode_appear_time_passed && allv[i].explode_count >= opt->explode_appear_time)
             {
                 int x, y;
                 int opt_type = rand() % NB_OPT_TYPE + 1;
@@ -65,9 +65,16 @@ void init_option(struct option_data *opt, struct level_data *currentlevel, struc
                     opt->y = y;
                     opt->type = opt_type;
                     continue;
+
             }
         }
     }
+
+    for(int i=0;i<nombre_vaisseau;i++) {
+      allv[i].explode_appear_time_passed =
+          allv[i].explode_count >= opt->explode_appear_time;
+    }
+
 }
 
 
@@ -153,7 +160,7 @@ void gestion_option(struct option_data *opt, struct level_data *currentlevel, st
 
 }
 
-int init_option_data(struct option_data *opt, struct option_sprite *option_sprites, int explode_appear_time, double active_time, double player_expire_time)
+int init_option_data(struct option_data *opt, struct option_sprite *option_sprites, double explode_appear_time, double active_time, double player_expire_time)
 {
     srand(time(NULL));
 

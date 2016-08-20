@@ -68,10 +68,12 @@ struct vaisseau_data {
   int speed_shield_force_down;
   int speed_shield_force_up;
 
-  int explode_count;
+  int explode_tick;
+  double explode_count;
   bool explode;
   int option_type;
   double option_expire_time;
+  bool explode_appear_time_passed;
 
   int impactx, impacty;
   double ax, ay;

@@ -31,13 +31,13 @@ struct option_data {
     double time_in;
     bool   active;
     double active_time;
-    int    explode_appear_time;
+    double explode_appear_time;
     double player_expire_time;
     struct option_sprite *option_sprites;
 };
 
 void unload_option(struct option_data *opt);
-int init_option_data(struct option_data *opt, struct option_sprite *option_sprites, int explode_appear_time, double active_time, double player_expire_time);
+int init_option_data(struct option_data *opt, struct option_sprite *option_sprites, double explode_appear_time, double active_time, double player_expire_time);
 void gestion_option(struct option_data *opt, struct level_data *currentlevel,struct vaisseau_data *allv, struct player_view *views, int nbplayers, int nbviews, double dt);
 
 #endif
