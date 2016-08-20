@@ -32,7 +32,7 @@ void mega_collision_test(struct player_info *allpi, struct player_view *views, s
 void init_debris(struct vaisseau_data *v);
 void test_collision_debris(struct vaisseau_data *v, ALLEGRO_BITMAP *src_map);
 void plot_debris(struct vaisseau_data *v, const physics_constants& physics, struct level_data *currentlevel);
-void draw_debris(struct player_info *allpi, const physics_constants& physics, int nombre_vaisseau, struct level_data *currentlevel);
+void draw_debris(struct player_info *allpi, const physics_constants& physics, int nombre_vaisseau, struct level_data *currentlevel, double dt);
 
 void gestion_minimap(struct vaisseau_data *vaisseaux, struct level_data *currentlevel, int nbplayers, int largeur, int hauteur);
 

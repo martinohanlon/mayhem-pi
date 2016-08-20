@@ -462,7 +462,7 @@ void test_collision_debris(struct vaisseau_data *v, collision_map& src_map, int 
 }
 
 
-void plot_debris(struct vaisseau_data *v, const physics_constants& physics, struct level_data *currentlevel)
+void plot_debris(struct vaisseau_data *v, const physics_constants& physics, struct level_data *currentlevel, double dt)
 {
 
     for (int j=0; j<8; j++)
@@ -489,8 +489,8 @@ void plot_debris(struct vaisseau_data *v, const physics_constants& physics, stru
             v->debris[i].vx = fixadd(v->debris[i].vx, fixdiv(v->vx, ftofix(2.5)));
             v->debris[i].vy = fixadd(v->debris[i].vy, fixdiv(v->vy, ftofix(8.5)));
 
-            v->debris[i].xposprecise = fixadd(v->debris[i].xposprecise, fixmul(physics.iCoeffvx, v->debris[i].vx));
-            v->debris[i].yposprecise = fixadd(v->debris[i].yposprecise, fixmul(physics.iCoeffvy, v->debris[i].vy));
+            v->debris[i].xposprecise = fixadd(v->debris[i].xposprecise, fixmul(physics.iCoeffvx, v->debris[i].vx)*(dt/0.025));
+            v->debris[i].yposprecise = fixadd(v->debris[i].yposprecise, fixmul(physics.iCoeffvy, v->debris[i].vy)*(dt/0.025));
 
             v->debris[i].x = fixtoi(v->debris[i].xposprecise);
             v->debris[i].y = fixtoi(v->debris[i].yposprecise);
@@ -518,7 +518,7 @@ void plot_debris(struct vaisseau_data *v, const physics_constants& physics, stru
 }
 
 
-void draw_debris(struct player_info *allpi, const physics_constants& physics, int nombre_vaisseau, struct level_data *currentlevel)
+void draw_debris(struct player_info *allpi, const physics_constants& physics, int nombre_vaisseau, struct level_data *currentlevel, double dt)
 {
   int w = al_get_bitmap_width(currentlevel->collision_bitmap);
   int h = al_get_bitmap_height(currentlevel->collision_bitmap);
@@ -531,7 +531,7 @@ void draw_debris(struct player_info *allpi, const physics_constants& physics, in
       if((allpi[i].ship->explode) && (allpi[i].ship->explode_count>1))
       {
          test_collision_debris(allpi[i].ship, currentlevel->coll_map, w, h);
-         plot_debris(allpi[i].ship, physics, currentlevel);
+         plot_debris(allpi[i].ship, physics, currentlevel, dt);
       }
 
       if(!allpi[i].ship->explode)

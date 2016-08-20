@@ -414,7 +414,7 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pre
 
           draw_explosion(players, currentlevel->platformdata, nb_players, currentlevel);
 
-          draw_debris(players, moon_physics, nb_players, currentlevel);
+          draw_debris(players, moon_physics, nb_players, currentlevel, dt);
 
           gestion_minimap(vaisseaux, currentlevel, nb_players, screen_width, screen_height);
           blit(currentlevel->mini_bitmap_buffer, screen_buffer, 0, 0, (screen_width / 2) - (5*(screen_width/100.0)), (screen_height / 2) - (al_get_bitmap_height(currentlevel->mini_bitmap_buffer) / 2) , al_get_bitmap_width(currentlevel->mini_bitmap_buffer), al_get_bitmap_height(currentlevel->mini_bitmap_buffer));
