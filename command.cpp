@@ -52,7 +52,7 @@ void handle_command(struct command *cmd, double dt)
                 // pointe le sprite thrust
                 if (vaisseau->option_type != OPT_THRUST) vaisseau->sprite_buffer = vaisseau->gfx->sprite_thrust; 
                 else vaisseau->sprite_buffer = vaisseau->gfx->sprite_thrust2;
-                vaisseau->thrust = vaisseau->thrust_max*(dt/0.025);						   // acceleration
+                vaisseau->thrust = vaisseau->thrust_max;						   // acceleration
                 vaisseau->shield = false;								   // shield desactiv
                 vaisseau->landed = false;										   // pas pos
             }
