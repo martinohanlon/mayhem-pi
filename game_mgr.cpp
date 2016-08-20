@@ -192,7 +192,8 @@ void GameManager::Run(GameSequence *aSeq) {
       al_set_target_bitmap(screen_buffer);
       al_clear_to_color(al_map_rgb(0, 0, 0));
 
-      seq_next = aSeq->doTick(screen_buffer, key_pressed, key_down, &exit_game, (now -last_time));
+      seq_next = aSeq->doTick(screen_buffer, key_pressed, key_down, &exit_game,
+                              (now - last_time));
       for (auto &pressed : key_pressed)
         pressed = false;
 
@@ -209,16 +210,16 @@ void GameManager::Run(GameSequence *aSeq) {
     al_flip_display();
 
     if (doexit) {
-        auto iReturnScreen = aSeq->ReturnScreen();
-        if (seq_next != iReturnScreen && iReturnScreen)
-          delete iReturnScreen;
+      auto iReturnScreen = aSeq->ReturnScreen();
+      if (seq_next != iReturnScreen && iReturnScreen)
+        delete iReturnScreen;
 
-        if (exit_game)
-          break;
+      if (exit_game)
+        break;
 
-        aSeq = seq_next;
+      aSeq = seq_next;
 
-        doexit = false;
+      doexit = false;
     }
   }
 

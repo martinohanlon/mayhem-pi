@@ -68,25 +68,24 @@ int init_vaisseau_data(struct vaisseau_data *v, struct vaisseau_gfx *gfx,
     return -1;
   clear_bitmap(v->sprite_buffer_rota); // On nettoye
 
-  int num_frames = 360/VAISSEAU_ANGLESTEP;
+  int num_frames = 360 / VAISSEAU_ANGLESTEP;
 
-  v->coll_map.init(32,32,num_frames);
+  v->coll_map.init(32, 32, num_frames);
 
   for (int frame = 0; frame < num_frames; frame++) {
     double angle = v->anglestep * frame;
     clear_bitmap(v->sprite_buffer_rota);
     rotate_sprite(v->sprite_buffer_rota, v->sprite_buffer, 0, 0, angle);
 
-    ALLEGRO_LOCKED_REGION *reg =
-        al_lock_bitmap(v->sprite_buffer_rota, ALLEGRO_PIXEL_FORMAT_ANY,
-                       ALLEGRO_LOCK_READONLY);
+    ALLEGRO_LOCKED_REGION *reg = al_lock_bitmap(
+        v->sprite_buffer_rota, ALLEGRO_PIXEL_FORMAT_ANY, ALLEGRO_LOCK_READONLY);
 
     assert(reg);
 
     for (int y = 0; y < 32; y++) {
       for (int x = 0; x < 32; x++) {
         auto pixel = get_pixel(reg, x, y);
-        v->coll_map.set_pixel(x,y,frame,is_nonblack_pixel(pixel));
+        v->coll_map.set_pixel(x, y, frame, is_nonblack_pixel(pixel));
       }
     }
 
@@ -121,7 +120,6 @@ void init_ship_pos_from_platforms(struct vaisseau_data *v,
   v->explode = false;
   v->explode_appear_time_passed = false;
 
-
   v->option_type = OPT_NOOPTION;
   v->speed_shield_force_down = VAISSEAU_SPEED_SHIELD_FORCE_DOWN;
   v->thrust_max = ftofix(VAISSEAU_THRUST_MAX);
@@ -147,12 +145,12 @@ void fuel_shield_calcul(int nbvaisseau, struct vaisseau_data *v, double dt) {
   while (nbvaisseau--) {
     v->refueling = false;
     if (v->fire_delay)
-      v->fuel -= 3*(dt/0.025);
+      v->fuel -= 3 * (dt / 0.025);
     if (!(v->landed || v->rebound) && (v->thrust != itofix(0)) && (v->fuel > 0))
-      v->fuel -= v->speed_fuel_down*(dt/0.025);
+      v->fuel -= v->speed_fuel_down * (dt / 0.025);
     else if ((v->landed || v->rebound) && (v->thrust == itofix(0)) &&
              (v->fuel < v->max_fuel)) {
-      v->fuel += v->speed_fuel_up*(dt/0.025);
+      v->fuel += v->speed_fuel_up * (dt / 0.025);
       v->refueling = true;
     }
     if (v->fuel < 0)
@@ -161,9 +159,9 @@ void fuel_shield_calcul(int nbvaisseau, struct vaisseau_data *v, double dt) {
       v->fuel = v->max_fuel;
 
     if (v->shield && v->shield_force > 0)
-      v->shield_force -= v->speed_shield_force_down*(dt/0.025);
+      v->shield_force -= v->speed_shield_force_down * (dt / 0.025);
     else if (!v->shield && v->shield_force < v->max_shield_force)
-      v->shield_force += v->speed_shield_force_up*(dt/0.025);
+      v->shield_force += v->speed_shield_force_up * (dt / 0.025);
 
     if (v->shield_force < 0)
       v->shield_force = 0;
@@ -174,30 +172,26 @@ void fuel_shield_calcul(int nbvaisseau, struct vaisseau_data *v, double dt) {
   }
 }
 
-
-void collision_map::init(int width_in, int height_in, int num_frames_in)
-{
+void collision_map::init(int width_in, int height_in, int num_frames_in) {
   width = width_in;
   height = height_in;
   num_frames = num_frames_in;
-  int num_pixels = width*height*num_frames;
+  int num_pixels = width * height * num_frames;
   coll_map = new bool[num_pixels];
 
   for (int i = 0; i < num_pixels; i++) {
-      coll_map[i] = false;
+    coll_map[i] = false;
   }
 }
 
-collision_map::~collision_map() {
-  delete coll_map;
-}
+collision_map::~collision_map() { delete coll_map; }
 
 bool collision_map::is_collide_pixel(int x, int y, int frame) {
-  return coll_map[get_index(x,y,frame)];
+  return coll_map[get_index(x, y, frame)];
 }
 
 void collision_map::set_pixel(int x, int y, int frame, bool value) {
-  coll_map[get_index(x,y,frame)] = value;
+  coll_map[get_index(x, y, frame)] = value;
 }
 
 int collision_map::get_index(int x, int y, int frame) {
@@ -205,8 +199,8 @@ int collision_map::get_index(int x, int y, int frame) {
   assert(y >= 0 && y < height);
   assert(frame >= 0 && frame < num_frames);
 
-  int frame_offset = width*height*frame;
-  int line_offset = width*y;
+  int frame_offset = width * height * frame;
+  int line_offset = width * y;
   int pos = frame_offset + line_offset + x;
   return pos;
 }

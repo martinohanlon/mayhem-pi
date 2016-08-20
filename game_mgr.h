@@ -6,44 +6,45 @@
 
 #include "xc.h"
 
-#define  DEFAULT_WIDTH  1024
-#define  DEFAULT_HEIGHT 768
+#define DEFAULT_WIDTH 1024
+#define DEFAULT_HEIGHT 768
 
-//vsync creates some really erratic results on modern windows systems
+// vsync creates some really erratic results on modern windows systems
 //#define USE_VSYNC
 
 #define MAX_NUM_CONTROLLERS 4
 
-class GameSequence
-{
+class GameSequence {
 public:
-   GameSequence(GameSequence *returnScreen)
-                      : iReturnScreen(returnScreen) {}
-   virtual ~GameSequence(){};
-   virtual GameSequence* doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pressed[ALLEGRO_KEY_MAX], bool key_down[ALLEGRO_KEY_MAX], bool* exit_game, double dt) {return nullptr;} ;
-   GameSequence *ReturnScreen() const { return iReturnScreen; };
+  GameSequence(GameSequence *returnScreen) : iReturnScreen(returnScreen) {}
+  virtual ~GameSequence(){};
+  virtual GameSequence *doTick(ALLEGRO_BITMAP *screen_buffer,
+                               bool key_pressed[ALLEGRO_KEY_MAX],
+                               bool key_down[ALLEGRO_KEY_MAX], bool *exit_game,
+                               double dt) {
+    return nullptr;
+  };
+  GameSequence *ReturnScreen() const { return iReturnScreen; };
 
 protected:
-   GameSequence *iReturnScreen;
+  GameSequence *iReturnScreen;
 };
 
-
-class GameManager
-{
+class GameManager {
 public:
-    static void Init();
-    static void Shutdown();
-    static void Run(GameSequence *aSeq);
-    static void ChangeScreenRes(int width, int height);
-    static int display_width;
-    static int display_height;
-    static int native_width;
-    static int native_height;
-    static ALLEGRO_DISPLAY* display;
-    static ALLEGRO_FONT* font;
-    static int FPS;
-    static XC_STATE* joysticks[MAX_NUM_CONTROLLERS];
-    static int num_joysticks_loaded;
+  static void Init();
+  static void Shutdown();
+  static void Run(GameSequence *aSeq);
+  static void ChangeScreenRes(int width, int height);
+  static int display_width;
+  static int display_height;
+  static int native_width;
+  static int native_height;
+  static ALLEGRO_DISPLAY *display;
+  static ALLEGRO_FONT *font;
+  static int FPS;
+  static XC_STATE *joysticks[MAX_NUM_CONTROLLERS];
+  static int num_joysticks_loaded;
 };
 
 #endif

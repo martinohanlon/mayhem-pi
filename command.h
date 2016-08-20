@@ -9,16 +9,16 @@
 struct vaisseau_data;
 
 struct command {
-    bool left;
-    bool right;
-    bool fire;
-    bool shield;
-    bool thrust;
-    struct vaisseau_data* controlled_ship;
-    int control_type;
-    struct mapping_key* keymap;
-    struct mapping_joy* joymap;
-    int joystick_index;
+  bool left;
+  bool right;
+  bool fire;
+  bool shield;
+  bool thrust;
+  struct vaisseau_data *controlled_ship;
+  int control_type;
+  struct mapping_key *keymap;
+  struct mapping_joy *joymap;
+  int joystick_index;
 };
 
 void handle_command(struct command *cmd, double dt);

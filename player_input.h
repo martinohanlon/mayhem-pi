@@ -4,8 +4,7 @@
 #include "command.h"
 #include "mapping_key.h"
 
-enum CONTROL_ID
-{
+enum CONTROL_ID {
   KEYBOARD_0 = 0,
   KEYBOARD_1 = 1,
   KEYBOARD_2 = 2,
@@ -17,12 +16,12 @@ enum CONTROL_ID
   NUM_CONTROLS = 8
 };
 
-void get_control_input(int nbplayers, struct command* cmds, bool key_down[]);
+void get_control_input(int nbplayers, struct command *cmds, bool key_down[]);
 
 void get_key_input(struct command *cmd, bool key_down[]);
 
 void get_joy_input(struct command *cmd);
 
-const char* get_control_id_as_string(enum CONTROL_ID cid);
+const char *get_control_id_as_string(enum CONTROL_ID cid);
 
 #endif
