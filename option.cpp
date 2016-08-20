@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-void option_time(struct option_data *opt)
+void option_time(struct option_data *opt, double dt)
 {
     if(opt->active)
     {
@@ -13,7 +13,7 @@ void option_time(struct option_data *opt)
             opt->time_in=0;
         }
         else 
-            opt->time_in++;
+            opt->time_in += dt;
     }
 }
 
@@ -96,7 +96,6 @@ void attrib_option(struct option_data *opt, struct vaisseau_data *allv, int test
         }
 
         opt->active=false;
-        opt->time_out=0;
         opt->time_in=0;
         
     }
@@ -145,7 +144,7 @@ void draw_option(struct option_data *opt, struct level_data *currentlevel)
 
 void gestion_option(struct option_data *opt, struct level_data *currentlevel, struct vaisseau_data *allv, struct player_view *views, int nbplayers, int nbviews, double dt)
 {
-    option_time(opt);                         // alternance option active ou pas
+    option_time(opt, dt);                         // alternance option active ou pas
 
     init_option(opt, currentlevel, allv, nbplayers);           // init la pos + type de l'option
 
@@ -154,12 +153,11 @@ void gestion_option(struct option_data *opt, struct level_data *currentlevel, st
 
 }
 
-int init_option_data(struct option_data *opt, struct option_sprite *option_sprites, int explode_appear_time, int active_time, double player_expire_time)
+int init_option_data(struct option_data *opt, struct option_sprite *option_sprites, int explode_appear_time, double active_time, double player_expire_time)
 {
     srand(time(NULL));
 
     opt->active = false;
-    opt->time_out = 0;
     opt->time_in = 0;
     opt->type = 0;
     opt->x = 0;

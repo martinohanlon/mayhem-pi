@@ -264,7 +264,7 @@ void BattleSequence::InitAllSpriteGfx()
                            VAISSEAU_SPEED_SHIELD_FORCE_UP);
         
     // time after explosion, time active, time player has
-    init_option_data(opt, option_sprites, 49, 150, 1500*0.025);
+    init_option_data(opt, option_sprites, 49, 150*0.025, 1500*0.025);
 }
 
 void BattleSequence::InitPlayerInfo()
