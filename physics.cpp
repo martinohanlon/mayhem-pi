@@ -15,7 +15,7 @@ physics_constants::physics_constants(float g, float xfrott, float yfrott,
 }
 
 
-void calcul_pos(const physics_constants& physics,int nbvaisseau,struct vaisseau_data *vaisseau,struct platform_data platforms[],int nbplatforms)
+void calcul_pos(const physics_constants& physics,int nbvaisseau,struct vaisseau_data *vaisseau,struct platform_data platforms[],int nbplatforms, double dt)
 {
 	while(nbvaisseau--)
 	{
@@ -33,15 +33,15 @@ void calcul_pos(const physics_constants& physics,int nbvaisseau,struct vaisseau_
 		vaisseau->impactx=vaisseau->impacty=0;
 		}
 
-	  vaisseau->vx = fixadd(vaisseau->vx, fixmul(physics.iCoeffax, vaisseau->ax));                   // vx += coeffa * ax
-      vaisseau->vy = fixadd(vaisseau->vy, fixmul(physics.iCoeffay, vaisseau->ay));                   // vy += coeffa * ay
+          vaisseau->vx = fixadd(vaisseau->vx, fixmul(physics.iCoeffax, vaisseau->ax)*(dt/0.025));                   // vx += coeffa * ax
+      vaisseau->vy = fixadd(vaisseau->vy, fixmul(physics.iCoeffay, vaisseau->ay)*(dt/0.025));                   // vy += coeffa * ay
 
 
       vaisseau->vx = fixmul(vaisseau->vx, physics.iXfrott);                               // on freine de xfrott
-	  vaisseau->vy = fixmul(vaisseau->vy, physics.iYfrott);                               // on freine de yfrott
+          vaisseau->vy = fixmul(vaisseau->vy, physics.iYfrott);                               // on freine de yfrott
 
-      vaisseau->xposprecise = fixadd(vaisseau->xposprecise,fixmul(physics.iCoeffvx, vaisseau->vx));   // xpos += coeffv * vx
-      vaisseau->yposprecise = fixadd(vaisseau->yposprecise,fixmul(physics.iCoeffvy, vaisseau->vy));   // ypos += coeffv * vy
+      vaisseau->xposprecise = fixadd(vaisseau->xposprecise,fixmul(physics.iCoeffvx, vaisseau->vx)*(dt/0.025));   // xpos += coeffv * vx
+      vaisseau->yposprecise = fixadd(vaisseau->yposprecise,fixmul(physics.iCoeffvy, vaisseau->vy)*(dt/0.025));   // ypos += coeffv * vy
       }                                                      
       else
       {

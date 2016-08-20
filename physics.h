@@ -22,7 +22,7 @@ public:
 };
 
 
-void calcul_pos(const physics_constants& physics, int nbvaisseau,struct vaisseau_data *vaisseau,struct platform_data platforms[],int nbplatforms);
+void calcul_pos(const physics_constants& physics, int nbvaisseau,struct vaisseau_data *vaisseau,struct platform_data platforms[],int nbplatforms, double dt);
 bool test_landed(struct vaisseau_data* vaisseau, struct platform_data *plt);
 
 #endif
