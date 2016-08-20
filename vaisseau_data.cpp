@@ -161,9 +161,9 @@ void fuel_shield_calcul(int nbvaisseau, struct vaisseau_data *v, double dt) {
       v->fuel = v->max_fuel;
 
     if (v->shield && v->shield_force > 0)
-      v->shield_force -= v->speed_shield_force_down;
+      v->shield_force -= v->speed_shield_force_down*(dt/0.025);
     else if (!v->shield && v->shield_force < v->max_shield_force)
-      v->shield_force += v->speed_shield_force_up;
+      v->shield_force += v->speed_shield_force_up*(dt/0.025);
 
     if (v->shield_force < 0)
       v->shield_force = 0;

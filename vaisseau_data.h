@@ -58,7 +58,7 @@ struct vaisseau_data {
   int anglestep;
 
   double fuel;
-  int shield_force;
+  double shield_force;
 
   int max_fuel;
   int speed_fuel_down;
