@@ -71,7 +71,7 @@ struct vaisseau_data {
   int explode_count;
   bool explode;
   int option_type;
-  int option_expire_time;
+  double option_expire_time;
 
   int impactx, impacty;
   double ax, ay;

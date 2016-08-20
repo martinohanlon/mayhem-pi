@@ -264,7 +264,7 @@ void BattleSequence::InitAllSpriteGfx()
                            VAISSEAU_SPEED_SHIELD_FORCE_UP);
         
     // time after explosion, time active, time player has
-    init_option_data(opt, option_sprites, 49, 150, 1500);
+    init_option_data(opt, option_sprites, 49, 150, 1500*0.025);
 }
 
 void BattleSequence::InitPlayerInfo()
@@ -401,7 +401,7 @@ GameSequence* BattleSequence::doTick(ALLEGRO_BITMAP* screen_buffer, bool key_pre
 
           mega_collision_test(players, views, vaisseaux, currentlevel, nb_views, nb_players);
 
-          gestion_option(opt, currentlevel,vaisseaux, views, nb_players,nb_views);
+          gestion_option(opt, currentlevel,vaisseaux, views, nb_players,nb_views, dt);
 
           for(i=0;i<nb_players;i++)
               gestion_tir(&vaisseaux[i], currentlevel, dt);

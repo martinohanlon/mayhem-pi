@@ -103,7 +103,7 @@ void attrib_option(struct option_data *opt, struct vaisseau_data *allv, int test
 
 }
 
-void gestion_player_options(struct option_data *opt, struct vaisseau_data *allv, int nbplayers)
+void gestion_player_options(struct option_data *opt, struct vaisseau_data *allv, int nbplayers, double dt)
 {
     struct vaisseau_data *v;
     for(int i=0; i<nbplayers; i++)
@@ -114,7 +114,7 @@ void gestion_player_options(struct option_data *opt, struct vaisseau_data *allv,
         if (v->option_type != OPT_NOOPTION)
         {
             // has the players option expired?
-            if (v->option_expire_time == 0)
+            if (v->option_expire_time <= 0)
             {
                 // reset the players option
                 if (v->option_type == OPT_SLOWSHIELD) v->speed_shield_force_down = VAISSEAU_SPEED_SHIELD_FORCE_DOWN;
@@ -122,7 +122,7 @@ void gestion_player_options(struct option_data *opt, struct vaisseau_data *allv,
                 
                 v->option_type = OPT_NOOPTION;
             }
-            else --v->option_expire_time;
+            else v->option_expire_time -= dt;
         }
         
         // has this player taken the option? 
@@ -143,18 +143,18 @@ void draw_option(struct option_data *opt, struct level_data *currentlevel)
     }
 }
 
-void gestion_option(struct option_data *opt, struct level_data *currentlevel, struct vaisseau_data *allv, struct player_view *views, int nbplayers, int nbviews)
+void gestion_option(struct option_data *opt, struct level_data *currentlevel, struct vaisseau_data *allv, struct player_view *views, int nbplayers, int nbviews, double dt)
 {
     option_time(opt);                         // alternance option active ou pas
 
     init_option(opt, currentlevel, allv, nbplayers);           // init la pos + type de l'option
 
-    gestion_player_options(opt, allv, nbplayers);
+    gestion_player_options(opt, allv, nbplayers, dt);
     draw_option(opt, currentlevel);       // affiche sprite option
 
 }
 
-int init_option_data(struct option_data *opt, struct option_sprite *option_sprites, int explode_appear_time, int active_time, int player_expire_time)
+int init_option_data(struct option_data *opt, struct option_sprite *option_sprites, int explode_appear_time, int active_time, double player_expire_time)
 {
     srand(time(NULL));
 
