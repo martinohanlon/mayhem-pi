@@ -134,15 +134,6 @@ bool get_desktop_resolution(int adapter, int *w, int *h) {
   return true;
 }
 
-ALLEGRO_BITMAP *create_memory_bitmap(int w, int h) {
-  ALLEGRO_BITMAP *bmp;
-  int flags = al_get_new_bitmap_flags();
-  al_set_new_bitmap_flags(flags | ALLEGRO_MEMORY_BITMAP);
-  bmp = al_create_bitmap(w, h);
-  al_set_new_bitmap_flags(flags);
-  return bmp;
-}
-
 ALLEGRO_BITMAP *load_memory_bitmap(const char *file) {
   int flags = al_get_new_bitmap_flags();
   al_set_new_bitmap_flags(flags | ALLEGRO_MEMORY_BITMAP);
@@ -150,5 +141,3 @@ ALLEGRO_BITMAP *load_memory_bitmap(const char *file) {
   al_set_new_bitmap_flags(flags);
   return bmp;
 }
-
-int clamp(int x, int min, int max) { return std::min(std::max(x, min), max); }

@@ -134,7 +134,6 @@ BattleSequence::BattleSequence(GameSequence *previous, int nbviews,
 }
 
 BattleSequence::~BattleSequence() {
-  clean_sprite_buffer_screen();
   // stop sound
   cleanup_soundfx(&sounds[0]);
   cleanup_soundfx(&sounds[1]);
@@ -352,8 +351,6 @@ void BattleSequence::InitSoundFx() {
                               assets[3].shieldloopwav, assets[3].refuelloopwav,
                               assets[3].shootwav, assets[3].boomwav,
                               assets[3].reboundwav);
-
-  create_sprite_buffer_screen();
 }
 
 GameSequence *BattleSequence::doTick(ALLEGRO_BITMAP *screen_buffer,
@@ -498,10 +495,6 @@ GameSequence *BattleSequence::doTick(ALLEGRO_BITMAP *screen_buffer,
       blit(v->back_map_buffer, screen_buffer, 0, 0, v->x, v->y,
            v->w + 2 * v->bordersize, v->h + 2 * v->bordersize);
     }
-
-#ifdef USE_VSYNC
-    vsync(); // wait the raster
-#endif
 
     if (Gameover()) {
       if (!game_over_timer.is_running()) {

@@ -51,10 +51,6 @@ void stretch_blit(ALLEGRO_BITMAP *source, ALLEGRO_BITMAP *dest, int source_x,
 
 bool get_desktop_resolution(int adapter, int *w, int *h);
 
-ALLEGRO_BITMAP *create_memory_bitmap(int w, int h);
-
 ALLEGRO_BITMAP *load_memory_bitmap(const char *file);
-
-int clamp(int x, int min, int max);
 
 #endif // ALLEGRO_COMPATIBILITY_H
