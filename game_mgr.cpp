@@ -4,6 +4,7 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_ttf.h>
+#include <allegro5/allegro_primitives.h>
 
 #include "game_mgr.h"
 
@@ -46,7 +47,7 @@ void GameManager::Init() {
   }
 
   al_init_image_addon();
-
+  al_init_primitives_addon();
   al_init_font_addon(); // initialize the font addon
   al_init_ttf_addon();  // initialize the ttf (True Type Font) addon
 

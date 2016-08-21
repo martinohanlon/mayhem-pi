@@ -31,12 +31,12 @@ void clear_bitmap(ALLEGRO_BITMAP *bitmap) {
 
 void hline(ALLEGRO_BITMAP *bmp, int x1, int y, int x2, ALLEGRO_COLOR color) {
   al_set_target_bitmap(bmp);
-  al_draw_line(x1, y, x2, y, color, 1);
+  al_draw_line(x1 +0.5, y +0.5, x2 +0.5, y+ 0.5, color, 1);
 }
 
 void vline(ALLEGRO_BITMAP *bmp, int x, int y1, int y2, ALLEGRO_COLOR color) {
   al_set_target_bitmap(bmp);
-  al_draw_line(x, y1, x, y2, color, 1);
+  al_draw_line(x +0.5, y1 +0.5, x + 0.5, y2 +0.5, color, 1);
 }
 
 ALLEGRO_COLOR makecol(unsigned char r, unsigned char g, unsigned char b) {
