@@ -2,44 +2,46 @@
 #define __NETGAME_H__
 #include "command.h"
 
-#if defined (_TYPEDEFSOCKET_)
-typedef unsigned int           SOCKET;
-typedef struct { int count; SOCKET array[FD_SETSIZE]; } fd_set;
+#if defined(_TYPEDEFSOCKET_)
+typedef unsigned int SOCKET;
+typedef struct {
+  int count;
+  SOCKET array[FD_SETSIZE];
+} fd_set;
 #endif
 
-class netinit
-{
+class netinit {
 public:
-	netinit();
-	~netinit();
+  netinit();
+  ~netinit();
 };
 
-class netgameclient
-{
+class netgameclient {
 public:
-	netgameclient(int port, char* srvname);
-	bool init();
-	~netgameclient();
-	bool send(const struct command *cmd);
+  netgameclient(int port, char *srvname);
+  bool init();
+  ~netgameclient();
+  bool send(const struct command *cmd);
+
 private:
-	SOCKET iSock;
-	long iAddr;
-	int iPort;
+  SOCKET iSock;
+  long iAddr;
+  int iPort;
 };
 
-class netgameserver
-{
+class netgameserver {
 public:
-	netgameserver(int port);
-	~netgameserver();
-	bool init();
-	bool recv(struct command &cmd);
+  netgameserver(int port);
+  ~netgameserver();
+  bool init();
+  bool recv(struct command &cmd);
+
 private:
-	int iPort;
-	SOCKET iSock;
-	//fd_set iReadSet;
-	struct command iCmd;
-	unsigned int iBufRead;
+  int iPort;
+  SOCKET iSock;
+  // fd_set iReadSet;
+  struct command iCmd;
+  unsigned int iBufRead;
 };
 
 #endif
