@@ -59,8 +59,8 @@ If joysticks are connected, they are used as the players controls, if there are 
 Key | Left | Right | Shield | Thrust | Fire
 --- | --- | --- | --- | --- | ---
 1 | z | x | c | v | g 
-3 | b | n | , | m | l
 2 | left | right | pad del | pad 0 | pad enter
+3 | b | n | , | m | l
 4 | y | u | o | i | 0
 
 ##Install
