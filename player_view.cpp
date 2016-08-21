@@ -10,6 +10,8 @@
 
 #include "allegro_compatibility.h"
 
+#include <allegro5/allegro_primitives.h>
+
 int init_player_view(struct player_view *pv, int x, int y, int w, int h,
                      struct player_info *player) {
   pv->bordersize = 10;
@@ -335,13 +337,8 @@ int test_place_backtir(struct vaisseau_data *v) {
 }
 
 void put_big_pixel(ALLEGRO_BITMAP *bmp, int x, int y, ALLEGRO_COLOR color) {
-  auto reg = al_lock_bitmap_region(
-      bmp, x, y - 1, 2, 2, ALLEGRO_PIXEL_FORMAT_ANY, ALLEGRO_LOCK_WRITEONLY);
-  set_pixel(reg, 0, 0, color);
-  set_pixel(reg, 1, 0, color);
-  set_pixel(reg, 0, 1, color);
-  set_pixel(reg, 1, 1, color);
-  al_unlock_bitmap(bmp);
+  al_set_target_bitmap(bmp);
+  al_draw_filled_rectangle(x, y, x+2, y+2,color);
 }
 
 void draw_explosion(struct player_info *allpi, struct platform_data *plats,
