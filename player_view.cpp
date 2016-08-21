@@ -108,7 +108,7 @@ void draw_basic_player_view(struct player_view *v,int nbviews, BITMAP *src_map,P
         vline(v->back_map_buffer,v->w+v->bordersize+(v->bordersize/2)-3,v->h+v->bordersize,v->bordersize+(v->h-barheight_shield),shield_col);
     }
 	// reset clip after
-	set_clip(v->back_map_buffer, v->bordersize, v->bordersize, v->w,v->h);
+	set_clip(v->back_map_buffer, v->bordersize, v->bordersize, v->w + v->bordersize ,v->h + v->bordersize);
     v++;
    }
 }

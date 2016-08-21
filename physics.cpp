@@ -23,8 +23,8 @@ void calcul_pos(const physics_constants& physics,int nbvaisseau,struct vaisseau_
       if (!vaisseau->explode)
       if (!vaisseau->landed)
       {
-      vaisseau->ax = fixmul(vaisseau->thrust, fixsin(itofix(vaisseau->angle)));            // ax = thrust * sinµ
-      vaisseau->ay = fixadd(physics.iG, fixmul(vaisseau->thrust, -fixcos(itofix(vaisseau->angle))));// ay = g + thrust * (-cosµ)
+      vaisseau->ax = fixmul(vaisseau->thrust, fixsin(itofix(vaisseau->angle)));            // ax = thrust * sin1
+      vaisseau->ay = fixadd(physics.iG, fixmul(vaisseau->thrust, -fixcos(itofix(vaisseau->angle))));// ay = g + thrust * (-cos1)
 	  // gestion impact
 	  if (vaisseau->impactx || vaisseau->impacty)
 		{

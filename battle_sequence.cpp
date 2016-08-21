@@ -308,200 +308,235 @@ void BattleSequence::InitSoundFx()
 
 GameSequence* BattleSequence::doRun()
 {
-  int i; // for everythign counter
-  
-  //create an in memory screen buffer, the 'real' screen is only blitted once a frame
-  BITMAP * screen_buffer;
-  screen_buffer = create_clear_bitmap(screen_width, screen_height);
+    int i; // for everythign counter
 
-#ifdef CHECKFPS
-  int check_fps=1;
-  int retrace_count_init=retrace_count;
-#endif
+    //create an in memory screen buffer, the 'real' screen is only blitted once a frame
+    BITMAP * screen_buffer;
+    screen_buffer = create_clear_bitmap(screen_width, screen_height);
 
-  bool isRunning=true;
-  InterruptTimer::start();
-  while(isRunning)
-  {
-    while(InterruptTimer::wasTriggered()) {
-        // TODO - refactor - bit of a hack button 6 is back on an xbox 360 controller!
-        if(key[KEY_ESC]  || joy[0].button[6].b || Gameover())
+    #ifdef CHECKFPS
+    int check_fps=1;
+    int retrace_count_init=retrace_count;
+    #endif
+    
+    int missed_frame_count = 0;
+    //int source_x = 0, source_y = 0;
+
+    bool isRunning=true;
+    InterruptTimer::start();
+    while(isRunning)
+    {
+        while(InterruptTimer::wasTriggered()) 
         {
-            isRunning=false;
-            break;
-        }
-        
-        get_control_input(nb_players, commands);
-
-        #ifdef __NETSUPPORT__
-        struct command  *cmdptr=keyvaisseau[0].cmd;
-        if (memcmp(&netpadcmd,cmdptr,sizeof(struct command)))
+            // TODO - refactor - bit of a hack button 6 is back on an xbox 360 controller!
+            if(key[KEY_ESC]  || joy[0].button[6].b || Gameover())
             {
-            static int count=0;
-            static int miss=0;
-            char bf[20];
-            sprintf(bf,"net send:%d",count++);
-            textout(screen_buffer,font,bf,700,50,makecol(255,255,255));
-            if (!gameclient.send(keyvaisseau[0].cmd))
-                {
-                sprintf(bf,"send miss:%d",miss++);
-                textout(screen_buffer,font,bf,700,60,makecol(255,255,255));
-                }
-            }
-        if (gameserver.recv(netpadcmd))
-            {
-            static int count=0;
-            char bf[20];
-            sprintf(bf,"net recv:%d",count++);
-            textout(screen_buffer,font,bf,700,80,makecol(255,255,255));
-            netpadcmd.controlled_ship=&vaisseaux[0];
-            }
-
-        handle_command(&netpadcmd);
-        #else
-        
-        if(!player_gameover(&players[0]))
-            handle_command(&commands[0]);
-        #endif
-        
-        if(!player_gameover(&players[1]))
-            handle_command(&commands[1]);
-
-        if(nb_views>=3)
-            if(!player_gameover(&players[2]))
-                handle_command(&commands[2]);
-
-        if(nb_views>=4)
-            if(!player_gameover(&players[3]))
-                handle_command(&commands[3]);
-                
-        calcul_pos(moon_physics,nb_players,vaisseaux,currentlevel->platformdata,currentlevel->nbplatforms);  // Position
-        fuel_shield_calcul(nb_players,vaisseaux);
-        
-        // sound both player
-        play_soundfx_from_shipdata(&sounds[0],&vaisseaux[0]);
-        play_soundfx_from_shipdata(&sounds[1],&vaisseaux[1]);
-        if(nb_views>=3)
-            play_soundfx_from_shipdata(&sounds[2],&vaisseaux[2]);
-        if(nb_views>=4)
-            play_soundfx_from_shipdata(&sounds[3],&vaisseaux[3]);
-
-        // create level buffer
-        blit(currentlevel->bitmap, currentlevel->level_buffer, 0, 0, 0, 0, currentlevel->bitmap->w, currentlevel->bitmap->h);
-
-        draw_basic_player_view(views, nb_views, currentlevel->bitmap, currentlevel->colormap);
-
-        // first we rotate the sprite then display the shooting
-        for(i=0;i<nb_players;i++)
-            rotate_sprite(&views[i]);
-
-        mega_collision_test(players, views, vaisseaux, currentlevel, nb_views, nb_players);
-
-        gestion_option(opt, currentlevel,vaisseaux, views, nb_players,nb_views);
-
-        for(i=0;i<nb_players;i++)
-            gestion_tir(&vaisseaux[i], currentlevel);
-
-        if(use_dca) 
-        {
-            for(i=0;i<nb_players;i++)
-                gestion_dca(&currentlevel->alldca[0], &vaisseaux[i], currentlevel);
-        }
-
-        draw_explosion(players, currentlevel->platformdata, nb_players, currentlevel);
-        
-        draw_debris(players, moon_physics, nb_players, currentlevel);
-        
-        gestion_minimap(vaisseaux, currentlevel, nb_players, screen_width, screen_height);
-        blit(currentlevel->mini_bitmap_buffer, screen_buffer, 0, 0, (screen_width / 2) - (5*(screen_width/100.0)), (screen_height / 2) - (currentlevel->mini_bitmap_buffer->h / 2) , currentlevel->mini_bitmap_buffer->w, currentlevel->mini_bitmap_buffer->h);
-
-        if(currentlevel==&levels[0]) warp_zone(vaisseaux, nb_players);
-        gestion_warps(vaisseaux, currentlevel, nb_players);
-
-        display_rotate_sprites(views, nb_views, currentlevel);
-
-        // back_map_buffer dans screen
-        for(i=0;i<nb_views;i++)
-        {
-            struct player_view* v = &views[i];
-            struct vaisseau_data *ship = v->player->ship;
-            blit(currentlevel->level_buffer, v->back_map_buffer,
-                ship->xpos - (v->w/2), ship->ypos - (v->h/2),
-                v->bordersize, v->bordersize, v->w, v->h);
-
-            // does the level wrap in x
-            if (currentlevel->edgedata.wrapx)
-            {
-
-                if (ship->xpos - (v->w/2) < 0) 
-                {
-                    blit(currentlevel->level_buffer, v->back_map_buffer,
-                        currentlevel->bitmap->w + (ship->xpos - (v->w/2)), ship->ypos - (v->h/2),
-                        v->bordersize, v->bordersize, v->w - (ship->xpos - (v->w/2)), v->h);
-                }
-                else if (ship->xpos + (v->w/2) > currentlevel->bitmap->w)
-                {                    
-                    blit(currentlevel->level_buffer, v->back_map_buffer,
-                        0, ship->ypos - (v->h/2),
-                        v->bordersize + (v->w - (ship->xpos + (v->w/2) - currentlevel->bitmap->w)) - 1, v->bordersize, 
-                        ship->xpos + (v->w/2) - currentlevel->bitmap->w, v->h);
-                }
+                isRunning=false;
+                break;
             }
             
-            blit(v->back_map_buffer, screen_buffer, 0, 0, v->x, v->y, v->w+2*v->bordersize, v->h+2*v->bordersize);
-        }
+            get_control_input(nb_players, commands);
+
+            #ifdef __NETSUPPORT__
+            struct command  *cmdptr=keyvaisseau[0].cmd;
+            if (memcmp(&netpadcmd,cmdptr,sizeof(struct command)))
+                {
+                static int count=0;
+                static int miss=0;
+                char bf[20];
+                sprintf(bf,"net send:%d",count++);
+                textout(screen_buffer,font,bf,700,50,makecol(255,255,255));
+                if (!gameclient.send(keyvaisseau[0].cmd))
+                    {
+                    sprintf(bf,"send miss:%d",miss++);
+                    textout(screen_buffer,font,bf,700,60,makecol(255,255,255));
+                    }
+                }
+            if (gameserver.recv(netpadcmd))
+                {
+                static int count=0;
+                char bf[20];
+                sprintf(bf,"net recv:%d",count++);
+                textout(screen_buffer,font,bf,700,80,makecol(255,255,255));
+                netpadcmd.controlled_ship=&vaisseaux[0];
+                }
+
+            handle_command(&netpadcmd);
+            #else
+            
+            if(!player_gameover(&players[0]))
+                handle_command(&commands[0]);
+            #endif
+            
+            if(!player_gameover(&players[1]))
+                handle_command(&commands[1]);
+
+            if(nb_views>=3)
+                if(!player_gameover(&players[2]))
+                    handle_command(&commands[2]);
+
+            if(nb_views>=4)
+                if(!player_gameover(&players[3]))
+                    handle_command(&commands[3]);
+                    
+            calcul_pos(moon_physics,nb_players,vaisseaux,currentlevel->platformdata,currentlevel->nbplatforms);  // Position
+            fuel_shield_calcul(nb_players,vaisseaux);
+            
+            // sound both player
+            play_soundfx_from_shipdata(&sounds[0],&vaisseaux[0]);
+            play_soundfx_from_shipdata(&sounds[1],&vaisseaux[1]);
+            if(nb_views>=3)
+                play_soundfx_from_shipdata(&sounds[2],&vaisseaux[2]);
+            if(nb_views>=4)
+                play_soundfx_from_shipdata(&sounds[3],&vaisseaux[3]);
+
+            // create level buffer
+            blit(currentlevel->bitmap, currentlevel->level_buffer, 0, 0, 0, 0, currentlevel->bitmap->w, currentlevel->bitmap->h);
+
+            draw_basic_player_view(views, nb_views, currentlevel->bitmap, currentlevel->colormap);
+
+            // first we rotate the sprite then display the shooting
+            for(i=0;i<nb_players;i++)
+                rotate_sprite(&views[i]);
+
+            mega_collision_test(players, views, vaisseaux, currentlevel, nb_views, nb_players);
+
+            gestion_option(opt, currentlevel,vaisseaux, views, nb_players,nb_views);
+
+            for(i=0;i<nb_players;i++)
+                gestion_tir(&vaisseaux[i], currentlevel);
+
+            if(use_dca) 
+            {
+                for(i=0;i<nb_players;i++)
+                    gestion_dca(&currentlevel->alldca[0], &vaisseaux[i], currentlevel);
+            }
+
+            draw_explosion(players, currentlevel->platformdata, nb_players, currentlevel);
+            
+            draw_debris(players, moon_physics, nb_players, currentlevel);
+            
+            gestion_minimap(vaisseaux, currentlevel, nb_players, screen_width, screen_height);
+            blit(currentlevel->mini_bitmap_buffer, screen_buffer, 0, 0, (screen_width / 2) - (5*(screen_width/100.0)), (screen_height / 2) - (currentlevel->mini_bitmap_buffer->h / 2) , currentlevel->mini_bitmap_buffer->w, currentlevel->mini_bitmap_buffer->h);
+
+            if(currentlevel==&levels[0]) warp_zone(vaisseaux, nb_players);
+            gestion_warps(vaisseaux, currentlevel, nb_players);
+
+            display_rotate_sprites(views, nb_views, currentlevel);
+
+            // back_map_buffer dans screen
+            for(i=0;i<nb_views;i++)
+            {
+                struct player_view* v = &views[i];
+                struct vaisseau_data *ship = v->player->ship;
+                
+                //put the ship in the middle, unless they are at the edge of the level
+                int source_y = ship->ypos - (v->h/2); 
+                if (source_y < 0) source_y = 0;
+                else if (source_y + v->h > currentlevel->bitmap->h) source_y = currentlevel->bitmap->h - v->h;
+                
+                int source_x = ship->xpos - (v->w/2);
+                if (!currentlevel->edgedata.wrapx)
+                {
+                    if (source_x < 0) source_x = 0;
+                    else if (source_x + v->w > currentlevel->bitmap->w) source_x = currentlevel->bitmap->w - v->w;
+                }
+                else
+                // the level wraps in x - if so fill in the left or right
+                {
+                    // left
+                    if (source_x < 0) 
+                    {
+                        blit(currentlevel->level_buffer, v->back_map_buffer,
+                            currentlevel->bitmap->w + (ship->xpos - (v->w/2)), source_y,
+                            v->bordersize, v->bordersize, v->w - (ship->xpos - (v->w/2)), v->h);
+                    }
+                    // right
+                    else if (source_x + v->w > currentlevel->bitmap->w)
+                    {                    
+                        blit(currentlevel->level_buffer, v->back_map_buffer,
+                            0, source_y,
+                            v->bordersize + (v->w - (ship->xpos + (v->w/2) - currentlevel->bitmap->w)) - 1, v->bordersize, 
+                            ship->xpos + (v->w/2) - currentlevel->bitmap->w, v->h);
+                    }
+                }
+
+                // blit the level into the players view
+                blit(currentlevel->level_buffer, v->back_map_buffer,
+                    source_x, source_y,
+                    v->bordersize, v->bordersize, v->w, v->h);
+                     
+                // blit the players view to the screen buffer
+                blit(v->back_map_buffer, screen_buffer, 0, 0, v->x, v->y, v->w+2*v->bordersize, v->h+2*v->bordersize);
+            }
+            
         
-    #ifdef CHECKFPS
-        check_fps++;
-        if (check_fps == 100)
+        // only update the screen if the game is 'up to date' i.e. not the timing counter is not behind
+        // - this way the game always plays at the same speed, but the screen is only update when it is 'free'
+        if (InterruptTimer::timing_counter == 0 || missed_frame_count == 10) 
         {
-            char fps[10];
-            sprintf(fps,"fps=%.1f",check_fps*70.0/(retrace_count-retrace_count_init));
-            textout(screen_buffer, font, fps, 105, 5, makecol(200,200,200));
+			
+		    #ifdef CHECKFPS
+			check_fps++;
+			if (check_fps == 100)
+			{
+				char fps[10];
+				sprintf(fps,"fps=%.1f",check_fps*70.0/(retrace_count-retrace_count_init));
+				textout(screen_buffer, font, fps, 105, 5, makecol(200,200,200));
 
-            char reso[10];
-            sprintf(reso, "%ix%i", screen_width, screen_height);
-            textout(screen_buffer, font, reso, 5, 5, makecol(200,200,200));
+				char reso[10];
+				sprintf(reso, "%ix%i", screen_width, screen_height);
+				textout(screen_buffer, font, reso, 5, 5, makecol(200,200,200));
 
-            //debug interupt counter
-            /*char counter[10];
-            sprintf(counter, "%i", InterruptTimer::timing_counter);
-            textout(screen_buffer,font, counter, 205, 5, makecol(200,200,200));*/
+				//debug interupt counter
+				/*char counter[10];
+				sprintf(counter, "%i", InterruptTimer::timing_counter);
+				textout(screen_buffer,font, counter, 205, 5, makecol(200,200,200));*/
 
-            check_fps=0;
-            retrace_count_init=retrace_count;
-         }
-    #endif
-        
-        // blit the screen buffer to the 'actual' screen
-        blit(screen_buffer, screen, 0, 0, 0, 0, screen_width, screen_height);
-    
-    #ifdef USE_VSYNC
-        vsync();    // wait the raster
-    #endif 
-    } // eof while(InterruptTimer())
-  } // eof while (isRunning)
-  
-  if (Gameover())
-  {
-      char gameovermsg[10];
-      //who won?
-      int winner = 0;
-      int winnerlives = -1;
-      for(i=0;i<nb_players;i++)
-        if(players[i].nblives > winnerlives)
-        {
-            winnerlives = players[i].nblives;
-            winner = i + 1;
+				check_fps=0;
+				retrace_count_init=retrace_count;
+			 }
+		    #endif
+				        
+			if (missed_frame_count == 10) textout(screen_buffer, font, "Warning (slow) - switch to low res", 205, 5, makecol(255,0,0));
+		
+			// blit the screen buffer to the 'actual' screen
+			blit(screen_buffer, screen, 0, 0, 0, 0, screen_width, screen_height);
+			missed_frame_count = 0;
+			
+
+            #ifdef USE_VSYNC
+            vsync();    // wait the raster
+            #endif
         }
-      if(winner == 0) sprintf(gameovermsg, "     Game over. Draw!");    
-      else sprintf(gameovermsg, "Game over. Player %i wins!", winner);
-      textout(screen,font, gameovermsg, (screen_width / 2) - 100, 5, makecol(255,0,0));
-      rest(2000);
-  }
-  InterruptTimer::reset();
-  destroy_bitmap(screen_buffer);
-  return  ReturnScreen();
+		else 
+		{
+			missed_frame_count++;
+		}
+        
+        } // eof while(InterruptTimer())
+    } // eof while (isRunning)
+
+    if (Gameover())
+    {
+        char gameovermsg[10];
+        //who won?
+        int winner = 0;
+        int winnerlives = -1;
+        for(i=0;i<nb_players;i++)
+            if(players[i].nblives > winnerlives)
+            {
+                winnerlives = players[i].nblives;
+                winner = i + 1;
+            }
+        if(winner == 0) sprintf(gameovermsg, "     Game over. Draw!");    
+        else sprintf(gameovermsg, "Game over. Player %i wins!", winner);
+        textout(screen,font, gameovermsg, (screen_width / 2) - 100, 5, makecol(255,0,0));
+        rest(2000);
+    }
+    InterruptTimer::reset();
+    destroy_bitmap(screen_buffer);
+    return  ReturnScreen();
 }
 
 bool BattleSequence::Gameover()

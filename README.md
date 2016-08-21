@@ -5,7 +5,7 @@
 ##Description
 [Mayhem](http://www.lemonamiga.com/games/details.php?id=2972) was originally released as Public Domain / Shareware on the [Amiga](https://en.wikipedia.org/wiki/Amiga). It was ported to the PC in 2002 by [devpack](https://github.com/devpack) and released onto github in 2011 [github.com/devpack/mayhem](https://github.com/devpack/mayhem). 
 
-![Mayhem game image](mayhem.jpg)
+![Mayhem game image](mayhem2.jpg)
 
 [Video of the original amiga game](https://www.youtube.com/watch?v=fs30DLGxqhs).
 
@@ -66,7 +66,7 @@ Key | Left | Right | Shield | Thrust | Fire
 ##Install
 
 ```
-sudo apt-get install liballegro4.4 liballegro4-dev
+sudo apt-get install liballegro4.4
 git clone https://github.com/martinohanlon/mayhem-pi
 ```
 
@@ -79,6 +79,7 @@ cd mayhem-pi
 
 ##Compile
 ```
+sudo apt-get install liballegro4-dev
 cd mayhem-pi
 make
 ```
@@ -90,7 +91,7 @@ To run Mayhem on RetroPie, X needs to be installed - Install it using the RetroP
 To install Mayhem to the 'ports' section of RetroPie:
 
 ```
-sudo apt-get install liballegro4.4 liballegro4-dev
+sudo apt-get install liballegro4.4
 cd /home/pi/RetroPie/roms/ports
 git clone https://github.com/martinohanlon/mayhem-pi
 ```
@@ -106,7 +107,7 @@ git clone https://github.com/martinohanlon/mayhem-pi
 * 0.8 - joystick control
 * 0.9 - new powerup icons
 * 0.10 - screen resolution & perf improvements
-* 0.10.1 - bug fix on Pi
+* 0.11 - screen rendering, timing changes, bug fix
 
 ##Contributors
 [Anthony Prieur](https://github.com/devpack)
