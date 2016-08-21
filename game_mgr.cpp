@@ -125,11 +125,11 @@ void draw_fps(ALLEGRO_BITMAP *screen_buffer) {
           GameManager::FPS, 1.0 / (new_time - old_time), 1000.0 * tick_time,
           tick_fps);
   textout(screen_buffer, GameManager::font, fps, 105, 5,
-          makecol(200, 200, 200));
+          al_map_rgb(200, 200, 200));
   char reso[100];
   sprintf(reso, "%ix%i", GameManager::display_width,
           GameManager::display_height);
-  textout(screen_buffer, GameManager::font, reso, 5, 5, makecol(200, 200, 200));
+  textout(screen_buffer, GameManager::font, reso, 5, 5, al_map_rgb(200, 200, 200));
   old_time = new_time;
 }
 #else

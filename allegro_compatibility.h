@@ -21,7 +21,6 @@ void clear_bitmap(ALLEGRO_BITMAP *bitmap);
 void hline(ALLEGRO_BITMAP *bmp, int x1, int y, int x2, ALLEGRO_COLOR color);
 void vline(ALLEGRO_BITMAP *bmp, int x, int y1, int y2, ALLEGRO_COLOR color);
 
-ALLEGRO_COLOR makecol(unsigned char r, unsigned char g, unsigned char b);
 void blit(ALLEGRO_BITMAP *source, ALLEGRO_BITMAP *dest, int source_x,
           int source_y, int dest_x, int dest_y, int width, int height);
 void textout(ALLEGRO_BITMAP *screen_buffer, ALLEGRO_FONT *font,

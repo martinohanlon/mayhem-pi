@@ -39,10 +39,6 @@ void vline(ALLEGRO_BITMAP *bmp, int x, int y1, int y2, ALLEGRO_COLOR color) {
   al_draw_line(x +0.5, y1 +0.5, x + 0.5, y2 +0.5, color, 1);
 }
 
-ALLEGRO_COLOR makecol(unsigned char r, unsigned char g, unsigned char b) {
-  return al_map_rgb(r, g, b);
-}
-
 void blit(ALLEGRO_BITMAP *source, ALLEGRO_BITMAP *dest, int source_x,
           int source_y, int dest_x, int dest_y, int width, int height) {
   al_set_target_bitmap(dest);

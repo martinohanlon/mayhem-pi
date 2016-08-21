@@ -69,9 +69,9 @@ GameSequence *IntroSequence::doTick(ALLEGRO_BITMAP *screen_buffer,
   clear_bitmap(iDoublebuffer);
   DrawZoomedLogoInCenter(mini, maxi);
   // draw 2 horizontal lines
-  hline(iDoublebuffer, 0, 0, width, makecol(255, 255, 255));
+  hline(iDoublebuffer, 0, 0, width, al_map_rgb(255, 255, 255));
   hline(iDoublebuffer, 0, IntroSequence::maxi - IntroSequence::mini - 1, width,
-        makecol(255, 255, 255));
+        al_map_rgb(255, 255, 255));
 
   // blit to the screen
   blit(iDoublebuffer, screen_buffer, 0, 0, 0, mini, width, maxi - mini);

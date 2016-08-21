@@ -524,7 +524,7 @@ GameSequence *BattleSequence::doTick(ALLEGRO_BITMAP *screen_buffer,
       else
         sprintf(gameovermsg, "Game over. Player %i wins!", winner);
       textout(screen_buffer, GameManager::font, gameovermsg,
-              (screen_width / 2) - 100, 5, makecol(255, 0, 0));
+              (screen_width / 2) - 100, 5, al_map_rgb(255, 0, 0));
 
       if (game_over_timer.is_done()) {
         return ReturnScreen();
