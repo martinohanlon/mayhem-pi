@@ -15,7 +15,7 @@ Mayhem 2 is a multiplayer (2 - 4) flight shooter with a really simple objective 
 
 [Video of Mayhem 2](https://youtu.be/Vxozz0Ijdr0)
 
-[Martin O'Hanlon](https://github.com/martinohanlon) picked it up from [code.google.com/p/mayhem](https://code.google.com/archive/p/mayhem/) ([New BSD License](https://opensource.org/licenses/BSD-3-Clause)) and with the help of Lee Taylor added new levels and features. [Jonas Karlsson](https://github.com/karjonas) migrated Mayhem 2 to [allegro 5](https://http://liballeg.org/).
+[Martin O'Hanlon](https://github.com/martinohanlon) picked it up from [code.google.com/p/mayhem](https://code.google.com/archive/p/mayhem/) ([New BSD License](https://opensource.org/licenses/BSD-3-Clause)) and with the help of Lee Taylor added new levels and features. [Jonas Karlsson](https://github.com/karjonas) migrated Mayhem 2 to [allegro 5](http://liballeg.org/).
 
 [Video of a new level in Mayhem 2](https://youtu.be/E3mho6J6OG8)
 
