@@ -82,7 +82,7 @@ sudo raspi-config
 You will need to download the game and compile [allegro 5](https://http://liballeg.org/) - this will take a while, particularly on a Pi 0/1.
 
 ```
-git clone https://github.com/martinohanlon/mayhem-pi
+git clone -b allegro5 https://github.com/martinohanlon/mayhem-pi
 cd mayhem-pi
 ./compile_allegro5.sh
 ```
