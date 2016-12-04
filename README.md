@@ -67,11 +67,24 @@ Key | Left | Right | Shield | Thrust | Fire
 3 | b | n | , | m | l
 4 | y | u | o | i | 0
 
-##Install
+##Setup
+
+Mayhem 2 needs at least 96MB of RAM dedicated to the GPU, you can set this using `raspi-config`
 
 ```
-sudo apt-get install liballegro4.4
+sudo raspi-config
+```
+
+`Advanced Options` > `Memory Split` > change value to 96
+
+##Install
+
+You will need to download the game and compile [allegro 5](https://http://liballeg.org/) - this will take a while, particularly on a Pi 0/1.
+
+```
 git clone https://github.com/martinohanlon/mayhem-pi
+cd mayhem-pi
+./compile_allegro5.sh
 ```
 
 ##Run
@@ -82,22 +95,20 @@ cd mayhem-pi
 ```
 
 ##Compile
+
 ```
-sudo apt-get install liballegro4-dev
 cd mayhem-pi
 make
 ```
 
 ## RetroPie 
 
-To run Mayhem on RetroPie, X needs to be installed - Install it using the RetroPie menu - `RetroPie Config > Update > Raspbian Tools > Install Desktop`.
-
 To install Mayhem to the 'ports' section of RetroPie:
 
 ```
-sudo apt-get install liballegro4.4
 cd /home/pi/RetroPie/roms/ports
 git clone https://github.com/martinohanlon/mayhem-pi
+./compile_allegro5.sh
 ```
 
 ##Version history
