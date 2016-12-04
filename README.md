@@ -3,17 +3,21 @@
 ##http://www.stuffaboutcode.com
 
 ##Description
-[Mayhem](http://www.lemonamiga.com/games/details.php?id=2972) was originally released as Public Domain / Shareware on the [Amiga](https://en.wikipedia.org/wiki/Amiga). It was ported to the PC in 2002 by [devpack](https://github.com/devpack) and released onto github in 2011 [github.com/devpack/mayhem](https://github.com/devpack/mayhem). 
+
+
+Mayhem 2 is a multiplayer (2 - 4) flight shooter with a really simple objective - destroy your opponents before they destroy you.
 
 ![Mayhem game image](mayhem2.jpg)
 
+[Mayhem](http://www.lemonamiga.com/games/details.php?id=2972) was originally released as Public Domain / Shareware on the [Amiga](https://en.wikipedia.org/wiki/Amiga). It was ported to the PC in 2002 by [devpack](https://github.com/devpack) and released onto github in 2011 [github.com/devpack/mayhem](https://github.com/devpack/mayhem). 
+
 [Video of the original amiga game](https://www.youtube.com/watch?v=fs30DLGxqhs).
 
-I picked it up from [code.google.com/p/mayhem](https://code.google.com/archive/p/mayhem/) ([New BSD License](https://opensource.org/licenses/BSD-3-Clause)) and with the help of Lee Taylor have added new levels and features.
+[Video of Mayhem 2](https://youtu.be/Vxozz0Ijdr0)
 
-[Video 1](https://youtu.be/Vxozz0Ijdr0)
+[Martin O'Hanlon](https://github.com/martinohanlon) picked it up from [code.google.com/p/mayhem](https://code.google.com/archive/p/mayhem/) ([New BSD License](https://opensource.org/licenses/BSD-3-Clause)) and with the help of Lee Taylor added new levels and features. [Jonas Karlsson](https://github.com/karjonas) migrated Mayhem 2 to [allegro 5](https://http://liballeg.org/).
 
-[Video 2 - new level](https://youtu.be/E3mho6J6OG8)
+[Video of a new level in Mayhem 2](https://youtu.be/E3mho6J6OG8)
 
 This is the [Raspberry Pi](https://www.raspberrypi.org) port of the game, you can find the Windows PC fork at [github.com/martinohanlon/mayhem](https://github.com/martinohanlon/mayhem). 
 
@@ -21,7 +25,7 @@ This is the [Raspberry Pi](https://www.raspberrypi.org) port of the game, you ca
 
 ##Gameplay
 
-Mayhem is a multiplayer (2 - 4) flight shooter with a really simple objective - destroy your opponents before they destroy you.
+Destroy your opponents by shooting them, you win when all other players have run out of lives.
 
 Your ship has limited fuel which will run down when you boost, if you run out you will be unable to control your ship, to refuel, land on any flat surface.
 
@@ -108,6 +112,7 @@ git clone https://github.com/martinohanlon/mayhem-pi
 * 0.9 - new powerup icons
 * 0.10 - screen resolution & perf improvements
 * 0.11 - screen rendering, timing changes, bug fix
+* 0.12 - allegro5 migration
 
 ##Contributors
 [Anthony Prieur](https://github.com/devpack)
@@ -115,3 +120,5 @@ git clone https://github.com/martinohanlon/mayhem-pi
 [Martin O'Hanlon](https://github.com/martinohanlon)
 
 Lee Taylor
+
+[Jonas Karlsson](https://github.com/karjonas)
