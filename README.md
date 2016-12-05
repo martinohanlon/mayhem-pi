@@ -107,7 +107,7 @@ To install Mayhem to the 'ports' section of RetroPie:
 
 ```
 cd /home/pi/RetroPie/roms/ports
-git clone https://github.com/martinohanlon/mayhem-pi
+git clone -b allegro5 https://github.com/martinohanlon/mayhem-pi
 ./compile_allegro5.sh
 ```
 
