@@ -7,9 +7,9 @@ git checkout 5.2.1
 mkdir ~/allegro5/build
 cd ~/allegro5/build
 #just shared libraries
-#cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-raspberrypi.cmake
+cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-raspberrypi.cmake
 #including static libraries
-cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-raspberrypi.cmake -DGRADE_DEBUG=on -DSHARED=off -DSTATIC=on
+#cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchain-raspberrypi.cmake -DGRADE_DEBUG=on -DSHARED=off -DSTATIC=on
 make
 sudo make install
 export PKG_CONFIG_PATH=/home/pi/allegro5/build/lib/pkgconfig

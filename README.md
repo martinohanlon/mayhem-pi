@@ -108,7 +108,7 @@ To compile Mayhem2.
 make
 ```
 
-To compile Mayhem2 to distribute, including static linking to the allegro libraries.
+To compile Mayhem2 to distribute, including static linking to the allegro libraries. Modify compile_allegro to include the additional flags, recompile and use Makefilestatic.
 
 ```
 make clean
