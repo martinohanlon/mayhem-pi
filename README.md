@@ -79,12 +79,11 @@ sudo raspi-config
 
 ##Install
 
-You will need to download the game and compile [allegro 5](https://http://liballeg.org/) - this will take a while, particularly on a Pi 0/1.
+You will need to download the game and install libdumb1 dependency 
 
 ```
+sudo apt-get install libdumb1
 git clone -b allegro5 https://github.com/martinohanlon/mayhem-pi
-cd mayhem-pi
-./compile_allegro5.sh
 ```
 
 ##Run
@@ -96,10 +95,25 @@ cd mayhem-pi
 
 ##Compile
 
+Compiling Mayhem2 will need [allegro 5](https://http://liballeg.org/) to be compiled and installed - this will take a while, particularly on a Pi 0/1.
+
 ```
 cd mayhem-pi
+./compile_allegro5
+```
+
+To compile Mayhem2.
+
+```
 make
 ```
+
+To compile Mayhem2 to distribute, including static linking to the allegro libraries.
+
+```
+make clean
+make -f Makefilestatic
+``` 
 
 ## RetroPie 
 
@@ -107,8 +121,8 @@ To install Mayhem to the 'ports' section of RetroPie:
 
 ```
 cd /home/pi/RetroPie/roms/ports
+sudo apt-get install libdumb1
 git clone -b allegro5 https://github.com/martinohanlon/mayhem-pi
-./compile_allegro5.sh
 ```
 
 ##Version history
