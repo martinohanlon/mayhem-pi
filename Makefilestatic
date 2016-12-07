@@ -3,10 +3,11 @@ CC = gcc
 RES  = 
 OBJ  = allegro_compatibility.o battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o player_input.o mapping_key.o mapping_joy.o menuhandler.o Mayhem2.o option.o physics.o platform_data.o player_info.o player_view.o soundfx.o ticktimer.o utils.o vaisseau_data.o vaisseau_gfx.o xc.o $(RES)
 LINKOBJ  = allegro_compatibility.o battle_sequence.o collision.o command.o game_mgr.o intro_sequence.o player_input.o mapping_key.o mapping_joy.o menuhandler.o Mayhem2.o option.o physics.o platform_data.o player_info.o player_view.o soundfx.o ticktimer.o utils.o vaisseau_data.o vaisseau_gfx.o xc.o $(RES)
-LIBS = -lallegro -lallegro_audio -lallegro_image -lallegro_primitives -lallegro_font -lallegro_ttf -lallegro_acodec
+#LIBS = -lallegro -lallegro_audio -lallegro_image -lallegro_primitives -lallegro_font -lallegro_ttf -lallegro_acodec
+LIBS = -L"/opt/vc/lib" -lGLESv2 -lEGL -lbcm_host `pkg-config --cflags --libs --static allegro-static-5 allegro_audio-static-5 allegro_font-static-5 allegro_image-static-5 allegro_primitives-static-5 allegro_ttf-static-5 allegro_acodec-static-5`
 INCS = 
 BIN  = "mayhem2-pi"
-CXXINCS= -O0 -g -Werror -Wno-write-strings -Wno-deprecated-declarations
+CXXINCS= -O0 -g -Werror -Wno-write-strings -Wno-deprecated-declarations -I"/opt/vc/lib"
 INCS= -O0 -g -Werror -Wno-write-strings -Wno-deprecated-declarations
 CXXFLAGS = -std=c++11 $(CXXINCS)
 CFLAGS = $(INCS)

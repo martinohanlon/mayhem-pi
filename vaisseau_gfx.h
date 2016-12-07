@@ -1,25 +1,20 @@
 #ifndef __VAISSEAU_GFX_H__
 #define __VAISSEAU_GFX_H__
 
-#include <allegro.h>
+#include <allegro5/allegro.h>
 
-  struct vaisseau_gfx {
-	BITMAP * sprite;
-	BITMAP * sprite_thrust;
-	BITMAP * sprite_thrust2;
-	BITMAP * sprite_shield;
-	PALETTE  sprite_colors;
-	PALETTE  sprite_thrust_colors;
-	PALETTE  sprite_thrust2_colors;
-	PALETTE  sprite_shield_colors; 
-  };
+struct vaisseau_gfx {
+  ALLEGRO_BITMAP *sprite;
+  ALLEGRO_BITMAP *sprite_thrust;
+  ALLEGRO_BITMAP *sprite_thrust2;
+  ALLEGRO_BITMAP *sprite_shield;
+};
 
-
-
-bool init_vaisseau_gfx_from_file(struct vaisseau_gfx* vaisseau,char * normal, char * thrust, char * thrust2, char * shield);
-void cleanup_vaisseau_gfx(struct vaisseau_gfx* vaisseau);
-int init_sprite_explosion(char *bmpname);
-BITMAP* get_sprite_explosion();
+bool init_vaisseau_gfx_from_file(struct vaisseau_gfx *vaisseau, const char *normal,
+                                 const char *thrust, const char *thrust2, const char *shield);
+void cleanup_vaisseau_gfx(struct vaisseau_gfx *vaisseau);
+int init_sprite_explosion(const char *bmpname);
+ALLEGRO_BITMAP *get_sprite_explosion();
 void cleanup_sprite_explosion();
-BITMAP* get_sprite_explosion_frame(int i);
+ALLEGRO_BITMAP *get_sprite_explosion_frame(int i);
 #endif
