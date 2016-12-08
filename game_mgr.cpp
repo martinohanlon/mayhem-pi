@@ -16,7 +16,7 @@
 
 #define CHECKFPS
 
-#define SHOWDEBUG
+//#define SHOWDEBUG
 
 #define FULLSCREEN
 
@@ -152,7 +152,7 @@ void draw_fps(ALLEGRO_BITMAP *screen_buffer) {
           GameManager::FPS, 1.0 / (new_time - old_time), 1000.0 * tick_time,
           tick_fps, 1000 * GameManager::debug_time);
   #else
-  sprintf(fps, "fps:%.1f", 1.0 / (new_time - old_time));
+  sprintf(fps, "fps:%.1f", tick_fps);
   #endif
   textout(screen_buffer, GameManager::font, fps, 105, 5,
           al_map_rgb(200, 200, 200));
