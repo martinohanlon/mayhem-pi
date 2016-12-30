@@ -1,59 +1,51 @@
 #ifndef __GAMEMANAGER_H_
 #define __GAMEMANAGER_H_
 
-#include <allegro.h>
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_font.h>
 
-#define  DEFAULT_WIDTH  1024
-#define  DEFAULT_HEIGHT 768
+#include "xc.h"
 
-//vsync creates some really erratic results on modern windows systems
-//#define USE_VSYNC
+#define DEFAULT_WIDTH 1024
+#define DEFAULT_HEIGHT 768
 
-class GameSequence
-{
+#define MAX_NUM_CONTROLLERS 4
+
+class GameSequence {
 public:
-   GameSequence(GameSequence *returnScreen)
-                      : iReturnScreen(returnScreen) {}
-   virtual ~GameSequence(){};
-   GameSequence* run() { GameSequence* s=doRun(); if (s!=iReturnScreen && iReturnScreen) delete iReturnScreen; return s; };
-
+  GameSequence(GameSequence *returnScreen) : iReturnScreen(returnScreen) {}
+  virtual ~GameSequence(){};
+  virtual GameSequence *doTick(ALLEGRO_BITMAP *screen_buffer,
+                               bool key_pressed[ALLEGRO_KEY_MAX],
+                               bool key_down[ALLEGRO_KEY_MAX], bool *exit_game,
+                               double dt) {
+    return nullptr;
+  };
+  GameSequence *ReturnScreen() const { return iReturnScreen; };
 
 protected:
-   virtual GameSequence* doRun() = 0 ;
-   GameSequence *ReturnScreen() const { return iReturnScreen; };
-private:
-   GameSequence *iReturnScreen;
+  GameSequence *iReturnScreen;
 };
 
-
-class GameManager
-{
+class GameManager {
 public:
-    static void Init();
-    static void Shutdown();
-    static void Run(GameSequence *aSeq);
-    static void ChangeScreenRes(int width, int height);
-    static int display_width;
-    static int display_height;
-    static int native_width;
-    static int native_height;
+  static void Init();
+  static void Shutdown();
+  static void Run(GameSequence *aSeq);
+  static void ChangeScreenRes(int width, int height);
+  static int display_width;
+  static int display_height;
+  static int native_width;
+  static int native_height;
+  static ALLEGRO_DISPLAY *display;
+  static ALLEGRO_FONT *font;
+  static int FPS;
+  static XC_STATE *joysticks[MAX_NUM_CONTROLLERS];
+  static int num_joysticks_loaded;
+  static float debug_start;
+  static float debug_time;
+  static void StartDebugTime();
+  static void EndDebugTime();
 };
-
-class InterruptTimer
-{
-public:
-    static void init() { reset(); install_timer(); LOCK_VARIABLE(timing_counter); LOCK_FUNCTION(&InterruptTimer::irq); install_int_ex(&InterruptTimer::irq, BPS_TO_TIMER(40)); };
-    static void shutdown() { remove_timer(); };
-	static volatile int timing_counter;
-	inline static void start() { timing_counter = 0; };
-	inline static void reset() { timing_counter = -1; };
-	static void irq() { if (timing_counter>=0) ++timing_counter;	};
-    // change to stop triggers building up and game suddenly processing lots of triggers all in 1 go
-	static bool wasTriggered() { if (timing_counter>0) { timing_counter--; if (timing_counter > 2) timing_counter = 0; return true; } return false; };
-    END_OF_FUNCTION(wasTriggered);
-    //Something wierd is going on here... Under windows 10 you dont get 40 fps, and with the above code you end up with a LOT more..  Something isn't pegging the interupt properly.
-    //sstatic bool wasTriggered() { if (timing_counter>0) { timing_counter=0; return true; } return false; };
-};
-
 
 #endif

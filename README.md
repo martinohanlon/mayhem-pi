@@ -3,17 +3,21 @@
 ##http://www.stuffaboutcode.com
 
 ##Description
-[Mayhem](http://www.lemonamiga.com/games/details.php?id=2972) was originally released as Public Domain / Shareware on the [Amiga](https://en.wikipedia.org/wiki/Amiga). It was ported to the PC in 2002 by [devpack](https://github.com/devpack) and released onto github in 2011 [github.com/devpack/mayhem](https://github.com/devpack/mayhem). 
+
+
+Mayhem 2 is a multiplayer (2 - 4) flight shooter with a really simple objective - destroy your opponents before they destroy you.
 
 ![Mayhem game image](mayhem2.jpg)
 
+[Mayhem](http://www.lemonamiga.com/games/details.php?id=2972) was originally released as Public Domain / Shareware on the [Amiga](https://en.wikipedia.org/wiki/Amiga). It was ported to the PC in 2002 by [devpack](https://github.com/devpack) and released onto github in 2011 [github.com/devpack/mayhem](https://github.com/devpack/mayhem). 
+
 [Video of the original amiga game](https://www.youtube.com/watch?v=fs30DLGxqhs).
 
-I picked it up from [code.google.com/p/mayhem](https://code.google.com/archive/p/mayhem/) ([New BSD License](https://opensource.org/licenses/BSD-3-Clause)) and with the help of Lee Taylor have added new levels and features.
+[Video of Mayhem 2](https://youtu.be/Vxozz0Ijdr0)
 
-[Video 1](https://youtu.be/Vxozz0Ijdr0)
+[Martin O'Hanlon](https://github.com/martinohanlon) picked it up from [code.google.com/p/mayhem](https://code.google.com/archive/p/mayhem/) ([New BSD License](https://opensource.org/licenses/BSD-3-Clause)) and with the help of Lee Taylor added new levels and features. [Jonas Karlsson](https://github.com/karjonas) migrated Mayhem 2 to [allegro 5](http://liballeg.org/).
 
-[Video 2 - new level](https://youtu.be/E3mho6J6OG8)
+[Video of a new level in Mayhem 2](https://youtu.be/E3mho6J6OG8)
 
 This is the [Raspberry Pi](https://www.raspberrypi.org) port of the game, you can find the Windows PC fork at [github.com/martinohanlon/mayhem](https://github.com/martinohanlon/mayhem). 
 
@@ -21,7 +25,7 @@ This is the [Raspberry Pi](https://www.raspberrypi.org) port of the game, you ca
 
 ##Gameplay
 
-Mayhem is a multiplayer (2 - 4) flight shooter with a really simple objective - destroy your opponents before they destroy you.
+Destroy your opponents by shooting them, you win when all other players have run out of lives.
 
 Your ship has limited fuel which will run down when you boost, if you run out you will be unable to control your ship, to refuel, land on any flat surface.
 
@@ -63,11 +67,23 @@ Key | Left | Right | Shield | Thrust | Fire
 3 | b | n | , | m | l
 4 | y | u | o | i | 0
 
-##Install
+##Setup
+
+Mayhem 2 needs at least 96MB of RAM dedicated to the GPU, you can set this using `raspi-config`
 
 ```
-sudo apt-get install liballegro4.4
-git clone https://github.com/martinohanlon/mayhem-pi
+sudo raspi-config
+```
+
+`Advanced Options` > `Memory Split` > change value to 96
+
+##Install
+
+You will need to download the game and install libdumb1 dependency 
+
+```
+sudo apt-get install libdumb1
+git clone -b allegro5 https://github.com/martinohanlon/mayhem-pi
 ```
 
 ##Run
@@ -78,22 +94,35 @@ cd mayhem-pi
 ```
 
 ##Compile
+
+Compiling Mayhem2 will need [allegro 5](https://http://liballeg.org/) to be compiled and installed - this will take a while, particularly on a Pi 0/1.
+
 ```
-sudo apt-get install liballegro4-dev
 cd mayhem-pi
+./compile_allegro5
+```
+
+To compile Mayhem2.
+
+```
 make
 ```
 
-## RetroPie 
+To compile Mayhem2 to distribute, including static linking to the allegro libraries. Modify compile_allegro to include the additional flags, recompile and use Makefilestatic.
 
-To run Mayhem on RetroPie, X needs to be installed - Install it using the RetroPie menu - `RetroPie Config > Update > Raspbian Tools > Install Desktop`.
+```
+make clean
+make -f Makefilestatic
+``` 
+
+## RetroPie 
 
 To install Mayhem to the 'ports' section of RetroPie:
 
 ```
-sudo apt-get install liballegro4.4
 cd /home/pi/RetroPie/roms/ports
-git clone https://github.com/martinohanlon/mayhem-pi
+sudo apt-get install libdumb1
+git clone -b allegro5 https://github.com/martinohanlon/mayhem-pi
 ```
 
 ##Version history
@@ -108,6 +137,7 @@ git clone https://github.com/martinohanlon/mayhem-pi
 * 0.9 - new powerup icons
 * 0.10 - screen resolution & perf improvements
 * 0.11 - screen rendering, timing changes, bug fix
+* 0.12 - allegro5 migration
 
 ##Contributors
 [Anthony Prieur](https://github.com/devpack)
@@ -115,3 +145,5 @@ git clone https://github.com/martinohanlon/mayhem-pi
 [Martin O'Hanlon](https://github.com/martinohanlon)
 
 Lee Taylor
+
+[Jonas Karlsson](https://github.com/karjonas)
