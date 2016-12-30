@@ -45,6 +45,8 @@ IntroSequence::IntroSequence(GameSequence *previous, float zoom,
 IntroSequence::~IntroSequence() {
   if (iLogo)
     al_destroy_bitmap(iLogo);
+  if (iDoublebuffer)
+    al_destroy_bitmap(iDoublebuffer);
 }
 
 GameSequence *IntroSequence::doTick(ALLEGRO_BITMAP *screen_buffer,

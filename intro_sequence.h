@@ -25,8 +25,8 @@ private:
   double iZoom;
   double iZoomMax;
   double iZoomSpeed;
-  ALLEGRO_BITMAP *iLogo;
-  ALLEGRO_BITMAP *iDoublebuffer;
+  ALLEGRO_BITMAP *iLogo = nullptr;
+  ALLEGRO_BITMAP *iDoublebuffer = nullptr;
 
   int width;
   int height;
