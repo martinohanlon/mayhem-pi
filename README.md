@@ -1,8 +1,8 @@
-#Mayhem 2 - Raspberry Pi 
-##Martin O'Hanlon (martin@ohanlonweb.com)
-##http://www.stuffaboutcode.com
+# Mayhem 2 - Raspberry Pi
+## Martin O'Hanlon (martin@ohanlonweb.com)
+## http://www.stuffaboutcode.com
 
-##Description
+## Description
 
 
 Mayhem 2 is a multiplayer (2 - 4) flight shooter with a really simple objective - destroy your opponents before they destroy you.
@@ -23,7 +23,7 @@ This is the [Raspberry Pi](https://www.raspberrypi.org) port of the game, you ca
 
 [Blog post](http://www.stuffaboutcode.com/2016/04/mayhem-classic-amiga-game-ported-to.html)
 
-##Gameplay
+## Gameplay
 
 Destroy your opponents by shooting them, you win when all other players have run out of lives.
 
@@ -33,7 +33,7 @@ You can protect yourself from attack using your shields which will stop all bull
 
 Powerups are dropped (sometimes) when a player is destroyed (by either crashing or being shot) and when collected will give you a temporary boost.
 
-###Options
+### Options
 
 Levels 1-3 are the original game levels, all other levels are new to Mayhem 2.
 
@@ -41,9 +41,9 @@ DCA are anti spaceship guns which will fire at the player if they get too close.
 
 Wall collision can be turned off for new players to get used to the controls and playing the game.
 
-##Controls
+## Controls
 
-###Joysticks
+### Joysticks
 
 Default joystick controls, assume an "xbox / ps like" joystick:
 
@@ -56,7 +56,7 @@ Button 6 (RB) | Fire
 
 Joystick controls can changed using the menu.
 
-###Keys
+### Keys
 
 If joysticks are connected, they are used as the players controls, if there are less than 4 joysticks connected, keys are used for the rest of the players in order:
 
@@ -67,7 +67,7 @@ Key | Left | Right | Shield | Thrust | Fire
 3 | b | n | , | m | l
 4 | y | u | o | i | 0
 
-##Setup
+## Setup
 
 Mayhem 2 needs at least 96MB of RAM dedicated to the GPU, you can set this using `raspi-config`
 
@@ -77,7 +77,7 @@ sudo raspi-config
 
 `Advanced Options` > `Memory Split` > change value to 96
 
-##Install
+## Install
 
 You will need to download the game and install libdumb1 dependency 
 
@@ -86,14 +86,14 @@ sudo apt-get install libdumb1
 git clone -b allegro5 https://github.com/martinohanlon/mayhem-pi
 ```
 
-##Run
+## Run
 
 ```
 cd mayhem-pi
 ./start.sh
 ```
 
-##Compile
+## Compile
 
 Compiling Mayhem2 will need [allegro 5](https://http://liballeg.org/) to be compiled and installed - this will take a while, particularly on a Pi 0/1.
 
@@ -125,7 +125,19 @@ sudo apt-get install libdumb1
 git clone -b allegro5 https://github.com/martinohanlon/mayhem-pi
 ```
 
-##Version history
+## Other Linux distributions
+
+Although this is described as being for “Raspberry PI”, and the instructions above are for [Raspbian](https://www.raspberrypi.org/downloads/raspbian/), it works just as well with other flavours of Linux on an ordinary desktop or laptop computer.  For example, to build for [Fedora](https://getfedora.org/):
+
+```bash
+sudo yum install -y allegro5-addon-acodec-devel allegro5-addon-audio-devel allegro5-addon-image-devel allegro5-addon-ttf-devel allegro5-devel git
+git clone https://github.com/martinohanlon/mayhem-pi.git
+cd mayhem-pi
+make
+./mayhem2-pi
+```
+
+## Version history
 * beta - compiles, runs, ongoing mods
 * 0.1 - added new levels and features
 * 0.2 - seamless warping across map edges
@@ -139,7 +151,7 @@ git clone -b allegro5 https://github.com/martinohanlon/mayhem-pi
 * 0.11 - screen rendering, timing changes, bug fix
 * 0.12 - allegro5 migration
 
-##Contributors
+## Contributors
 [Anthony Prieur](https://github.com/devpack)
 
 [Martin O'Hanlon](https://github.com/martinohanlon)
