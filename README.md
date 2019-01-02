@@ -125,6 +125,18 @@ sudo apt-get install libdumb1
 git clone -b allegro5 https://github.com/martinohanlon/mayhem-pi
 ```
 
+## Other Linux distributions
+
+Although this is described as being for “Raspberry PI”, and the instructions above are for [Raspbian](https://www.raspberrypi.org/downloads/raspbian/), it works just as well with other flavours of Linux on an ordinary desktop or laptop computer.  For example, to build for [Fedora](https://getfedora.org/):
+
+```bash
+sudo yum install -y allegro5-addon-acodec-devel allegro5-addon-audio-devel allegro5-addon-image-devel allegro5-addon-ttf-devel allegro5-devel git
+git clone https://github.com/martinohanlon/mayhem-pi.git
+cd mayhem-pi
+make
+./mayhem2-pi
+```
+
 ## Version history
 * beta - compiles, runs, ongoing mods
 * 0.1 - added new levels and features
